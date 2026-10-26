@@ -1,0 +1,67 @@
+.workspaceMain {
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Full intern dashboard layout */
+.intern-dashboard-shell {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.intern-dashboard-navbar {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.intern-dashboard-body {
+  min-width: 0;
+  flex: 1 0 auto;
+  align-items: stretch;
+}
+
+.intern-dashboard-content {
+  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.intern-dashboard-page {
+  width: 100%;
+  min-width: 0;
+}
+
+.intern-dashboard-footer {
+  width: 100%;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+/* Keep the footer inside the main column on mobile too */
+@media (max-width: 760px) {
+  .workspaceMain {
+    padding-bottom: max(6rem, env(safe-area-inset-bottom));
+  }
+
+  .intern-dashboard-body {
+    width: 100%;
+  }
+
+  .intern-dashboard-footer {
+    padding-bottom: max(5rem, env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspaceMain *,
+  .intern-dashboard-shell * {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

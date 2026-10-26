@@ -1,0 +1,1273 @@
+/* VELoop Rewards — InternCash wallet animations */
+
+.rewards-page {
+  --wallet-motion-duration: 700ms;
+}
+
+/* Main wallet: subtle, premium ambient movement */
+.wallet-hero {
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.wallet-orb {
+  will-change: transform, opacity;
+  animation: wallet-orb-float 11s ease-in-out infinite alternate;
+}
+
+.wallet-orb-two {
+  animation-delay: -5s;
+  animation-duration: 14s;
+}
+
+.wallet-orbit {
+  transform-origin: center;
+  will-change: transform;
+  animation: wallet-orbit-rotate 32s linear infinite;
+}
+
+.wallet-orbit-two {
+  animation-direction: reverse;
+  animation-duration: 25s;
+}
+
+.wallet-stat {
+  transition:
+    transform 240ms ease,
+    background-color 240ms ease,
+    border-color 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.wallet-stat:hover {
+  transform: translateY(-2px);
+  border-color: rgb(255 255 255 / 22%);
+  background-color: rgb(255 255 255 / 12%);
+  box-shadow: 0 10px 25px rgb(10 10 40 / 10%);
+}
+
+.reward-rule-card {
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.reward-rule-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgb(30 41 59 / 7%);
+}
+
+/* Dialog entrance */
+.wallet-modal {
+  animation: wallet-modal-enter 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* FAQ answer entrance */
+.wallet-faq-answer {
+  animation: wallet-faq-enter 220ms ease both;
+}
+
+/* Reusable keyframes */
+@keyframes wallet-orb-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.96);
+    opacity: 0.7;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(-14px, 12px, 0) scale(1.08);
+    opacity: 0.8;
+  }
+}
+
+@keyframes wallet-orbit-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes wallet-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes wallet-faq-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect system accessibility preferences */
+@media (prefers-reduced-motion: reduce) {
+  .wallet-orb,
+  .wallet-orbit,
+  .wallet-modal,
+  .wallet-faq-answer {
+    animation: none !important;
+  }
+
+  .wallet-stat,
+  .reward-rule-card {
+    transition: none !important;
+  }
+
+  .wallet-stat:hover,
+  .reward-rule-card:hover {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   VELoop Rewards — Wallet and Interactive World Map
+========================================================= */
+
+.rewards-page {
+  display: grid;
+  gap: 24px;
+  color: #172033;
+}
+
+.reward-map-preview,
+.reward-map-modal,
+.reward-details-sheet {
+  font-family: inherit;
+}
+
+.reward-map-preview {
+  position: relative;
+  overflow: hidden;
+  padding: 22px;
+  border: 1px solid #e4ddfa;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #f8f5ff, #fff 54%, #eef7ff);
+  box-shadow: 0 10px 34px rgb(58 42 112 / 5%);
+}
+
+.reward-map-preview-heading,
+.reward-map-preview-title,
+.reward-map-preview-footer,
+.reward-map-preview-node,
+.reward-map-header,
+.reward-map-header-title,
+.reward-map-header-actions {
+  display: flex;
+  align-items: center;
+}
+
+.reward-map-preview-heading,
+.reward-map-preview-footer,
+.reward-map-header {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.reward-map-preview-title,
+.reward-map-header-title {
+  gap: 12px;
+  min-width: 0;
+}
+
+.reward-map-preview-icon,
+.reward-map-header-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+  border: 1px solid #e7dfff;
+  border-radius: 15px;
+  color: #7149c8;
+  background: white;
+  box-shadow: 0 3px 10px rgb(72 47 130 / 6%);
+}
+
+.reward-map-kicker {
+  display: block;
+  margin-bottom: 4px;
+  color: #7655b9;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.14em;
+}
+
+.reward-map-preview h2,
+.reward-map-header h2 {
+  margin: 0;
+  color: #1b1931;
+  font-size: 19px;
+  font-weight: 850;
+  letter-spacing: -0.035em;
+}
+
+.reward-map-preview p,
+.reward-map-header p {
+  margin: 4px 0 0;
+  color: #70768a;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.reward-map-preview-sparkle {
+  flex-shrink: 0;
+  color: #9a72e6;
+  animation: reward-sparkle-float 3s ease-in-out infinite;
+}
+
+.reward-map-preview-path {
+  display: grid;
+  gap: 0;
+  margin-top: 20px;
+}
+
+.reward-map-preview-node {
+  position: relative;
+  width: 100%;
+  gap: 12px;
+  padding: 12px 10px;
+  border: 0;
+  border-radius: 15px;
+  color: inherit;
+  text-align: left;
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.reward-map-preview-node:hover {
+  background: rgb(255 255 255 / 85%);
+  transform: translateX(3px);
+}
+
+.reward-map-preview-node-art {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  border: 1px solid #e8e3f4;
+  border-radius: 15px;
+  background: white;
+}
+
+.reward-map-preview-node-art img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.reward-map-preview-node-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.reward-map-preview-node-text strong {
+  overflow: hidden;
+  color: #26213b;
+  font-size: 13px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reward-map-preview-node-text small {
+  color: #747b8c;
+  font-size: 11px;
+}
+
+.reward-map-preview-node > svg {
+  flex-shrink: 0;
+  color: #a49ab8;
+}
+
+.reward-map-preview-node.is-completed .reward-map-preview-node-art {
+  border-color: #bdebd1;
+  background: #f0fff6;
+}
+
+.reward-map-preview-node.is-pending .reward-map-preview-node-art {
+  border-color: #f2d59b;
+  background: #fffaf0;
+}
+
+.reward-map-preview-node.is-claimable .reward-map-preview-node-art {
+  border-color: #f0d291;
+  background: #fff8e5;
+}
+
+.reward-map-preview-connector {
+  position: absolute;
+  top: 61px;
+  left: 34px;
+  height: 12px;
+  border-left: 2px dashed #d4c9ef;
+}
+
+.reward-map-preview-footer {
+  flex-wrap: wrap;
+  margin-top: 15px;
+  padding-top: 16px;
+  border-top: 1px solid #e9e2f6;
+}
+
+.reward-map-preview-footer p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.reward-map-preview-footer p img {
+  width: 48px;
+  height: 30px;
+  object-fit: contain;
+}
+
+.reward-map-primary-button,
+.reward-map-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 13px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.reward-map-primary-button {
+  color: white;
+  background: linear-gradient(115deg, #5b3bb5, #7953d5);
+  box-shadow: 0 6px 16px rgb(103 71 184 / 18%);
+}
+
+.reward-map-primary-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 22px rgb(103 71 184 / 25%);
+}
+
+.reward-map-primary-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.reward-map-secondary-button {
+  color: #51416e;
+  border: 1px solid #e4ddf2;
+  background: white;
+}
+
+.reward-map-secondary-button:hover {
+  background: #f7f3ff;
+}
+
+/* Full-screen map modal */
+
+.reward-map-modal-backdrop,
+.reward-details-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgb(22 20 42 / 55%);
+  backdrop-filter: blur(8px);
+  animation: reward-fade-in 180ms ease both;
+}
+
+.reward-map-modal {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 1080px);
+  height: min(92dvh, 950px);
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #e6dff4;
+  border-radius: 25px;
+  background: #fff;
+  box-shadow: 0 28px 100px rgb(17 13 44 / 25%);
+  animation: reward-modal-enter 220ms ease both;
+}
+
+.reward-map-header {
+  flex-wrap: wrap;
+  padding: 17px 20px;
+  border-bottom: 1px solid #eee9f5;
+  background: linear-gradient(120deg, #f7f2ff, white 58%, #eef7ff);
+}
+
+.reward-map-header-title {
+  flex: 1;
+}
+
+.reward-map-header-actions {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reward-map-progress-summary {
+  display: grid;
+  gap: 2px;
+  margin-right: 4px;
+  text-align: right;
+}
+
+.reward-map-progress-summary strong {
+  color: #6746b8;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.reward-map-progress-summary span {
+  color: #77758a;
+  font-size: 10px;
+}
+
+.reward-map-icon-button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 1px solid #e7e2ef;
+  border-radius: 12px;
+  color: #554b6d;
+  background: white;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.reward-map-icon-button:hover {
+  transform: translateY(-1px);
+  background: #f5f0ff;
+}
+
+.reward-map-icon-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reward-spin {
+  animation: reward-spin 1s linear infinite;
+}
+
+.reward-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid #eee9f5;
+  background: #fff;
+}
+
+.reward-map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #ece8f2;
+  border-radius: 99px;
+  color: #666579;
+  background: #fff;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.reward-map-legend-item.is-completed {
+  color: #13774b;
+  background: #f0fff6;
+  border-color: #d5f1e1;
+}
+
+.reward-map-legend-item.is-pending {
+  color: #9b680c;
+  background: #fff9ec;
+  border-color: #f6e5bf;
+}
+
+.reward-map-legend-item.is-claimable {
+  color: #93600c;
+  background: #fff8e7;
+  border-color: #f4e0ae;
+}
+
+.reward-map-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  color: #87541a;
+  background: #fff8e8;
+  font-size: 12px;
+}
+
+.reward-map-error button {
+  padding: 5px 9px;
+  border: 1px solid #ecd6a9;
+  border-radius: 8px;
+  color: #785018;
+  background: white;
+  cursor: pointer;
+}
+
+.reward-map-scroll-area {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: linear-gradient(#eaf8f4, #f6f5ff);
+  scrollbar-color: #c5b6e6 transparent;
+  scrollbar-width: thin;
+}
+
+.reward-map-world {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #e7f8ef, #f4f5ff);
+}
+
+.reward-map-world-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  user-select: none;
+  pointer-events: none;
+}
+
+.reward-map-world-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.reward-checkpoint {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: clamp(94px, 18%, 160px);
+  min-height: 105px;
+  padding: 5px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  animation: reward-checkpoint-enter 420ms ease both;
+  animation-delay: var(--checkpoint-delay, 0ms);
+  transition:
+    filter 180ms ease,
+    transform 180ms ease;
+}
+
+.reward-checkpoint:hover,
+.reward-checkpoint:focus-visible {
+  z-index: 5;
+  filter: drop-shadow(0 8px 10px rgb(55 35 105 / 20%));
+  transform: translate(-50%, -52%) scale(1.035);
+  outline: none;
+}
+
+.reward-checkpoint:focus-visible {
+  box-shadow: 0 0 0 3px #a78bfa;
+}
+
+.reward-checkpoint-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: clamp(56px, 8vw, 88px);
+  height: clamp(56px, 8vw, 88px);
+  overflow: visible;
+  border: 2px solid rgb(255 255 255 / 90%);
+  border-radius: 23px;
+  background: linear-gradient(145deg, #fff, #f7f1ff);
+  box-shadow: 0 7px 18px rgb(48 34 92 / 16%);
+}
+
+.reward-checkpoint-art img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+}
+
+.reward-checkpoint-fallback {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #6e4bb7;
+  pointer-events: none;
+}
+
+.reward-checkpoint-label {
+  max-width: 100%;
+  margin-top: 7px;
+  padding: 5px 8px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 9px;
+  color: #332747;
+  background: rgb(255 255 255 / 94%);
+  box-shadow: 0 3px 9px rgb(46 35 80 / 9%);
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.35;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reward-checkpoint-amount {
+  margin-top: 4px;
+  color: #147649;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.reward-checkpoint-badge {
+  position: absolute;
+  top: 0;
+  right: -5px;
+  padding: 4px 6px;
+  border: 1px solid #ffe6a3;
+  border-radius: 7px;
+  color: #8c5900;
+  background: #fff2c9;
+  box-shadow: 0 3px 8px rgb(70 45 0 / 10%);
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+}
+
+.reward-checkpoint.is-completed .reward-checkpoint-art {
+  border-color: #b9e8cb;
+  box-shadow:
+    0 0 0 4px rgb(71 190 125 / 12%),
+    0 8px 20px rgb(25 100 65 / 12%);
+}
+
+.reward-checkpoint.is-pending .reward-checkpoint-art {
+  border-color: #f4d394;
+  box-shadow:
+    0 0 0 4px rgb(238 176 55 / 12%),
+    0 8px 20px rgb(128 83 17 / 10%);
+}
+
+.reward-checkpoint.is-claimable .reward-checkpoint-art {
+  border-color: #efcf7f;
+  box-shadow:
+    0 0 0 5px rgb(255 204 77 / 20%),
+    0 8px 22px rgb(125 85 0 / 14%);
+  animation: reward-claim-pulse 2.8s ease-in-out infinite;
+}
+
+.reward-checkpoint.is-locked {
+  filter: saturate(0.82);
+}
+
+.reward-checkpoint.is-selected .reward-checkpoint-label {
+  border-color: #9c82df;
+  color: #5835a0;
+  box-shadow: 0 0 0 2px rgb(142 105 214 / 18%);
+}
+
+.reward-map-cloud {
+  position: absolute;
+  z-index: 4;
+  width: clamp(140px, 25%, 260px);
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+  opacity: 0.92;
+  animation: reward-cloud-float 5s ease-in-out infinite alternate;
+}
+
+.cloud-variant-1 {
+  animation-delay: -2s;
+}
+
+.cloud-variant-2 {
+  animation-delay: -3.5s;
+}
+
+.reward-map-empty,
+.reward-map-no-milestones,
+.reward-map-preview-loading {
+  display: grid;
+  place-items: center;
+  padding: 35px 15px;
+  color: #777187;
+  font-size: 13px;
+  text-align: center;
+}
+
+.reward-map-loading-spinner {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 10px;
+  border: 3px solid #e9e0fb;
+  border-top-color: #7b56c7;
+  border-radius: 50%;
+  animation: reward-spin 800ms linear infinite;
+}
+
+.reward-map-modal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid #ece7f4;
+  color: #79758a;
+  background: white;
+  font-size: 11px;
+}
+
+/* Reward details panel */
+
+.reward-details-backdrop {
+  z-index: 1010;
+}
+
+.reward-details-sheet {
+  position: relative;
+  width: min(100%, 480px);
+  max-height: min(88dvh, 820px);
+  overflow: auto;
+  border: 1px solid #e6ddf4;
+  border-radius: 25px;
+  background: #fff;
+  box-shadow: 0 28px 100px rgb(17 13 44 / 28%);
+  animation: reward-modal-enter 220ms ease both;
+}
+
+.reward-details-top {
+  position: relative;
+  overflow: hidden;
+  padding: 25px 22px 20px;
+  border-bottom: 1px solid #eee8f7;
+  background: linear-gradient(135deg, #f7f2ff, #fff 62%, #eff8ff);
+}
+
+.reward-details-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.reward-details-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+}
+
+.reward-details-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  margin-bottom: 14px;
+  border: 1px solid #e9dffb;
+  border-radius: 22px;
+  background: white;
+  box-shadow: 0 8px 24px rgb(64 42 110 / 9%);
+}
+
+.reward-details-art img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.reward-details-state {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 9px;
+  border: 1px solid #e9e2f4;
+  border-radius: 99px;
+  color: #6e6090;
+  background: white;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.reward-details-state.is-completed {
+  color: #147449;
+  background: #effcf4;
+  border-color: #d0eedc;
+}
+
+.reward-details-state.is-pending {
+  color: #95620b;
+  background: #fff9eb;
+  border-color: #f4e2bb;
+}
+
+.reward-details-state.is-claimable {
+  color: #94600a;
+  background: #fff8e4;
+  border-color: #f1dfa9;
+}
+
+.reward-details-top h3 {
+  position: relative;
+  margin: 12px 0 5px;
+  color: #241d39;
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.reward-details-top p {
+  position: relative;
+  margin: 0;
+  color: #777286;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.reward-details-content {
+  display: grid;
+  gap: 17px;
+  padding: 20px 22px 24px;
+}
+
+.reward-details-amount {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  border: 1px solid #e7defa;
+  border-radius: 17px;
+  background: linear-gradient(120deg, #f8f4ff, #fff 65%, #f2f8ff);
+}
+
+.reward-details-amount > span {
+  color: #777286;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.reward-details-amount strong {
+  color: #5e3bb0;
+  font-size: 25px;
+  font-weight: 950;
+}
+
+.reward-details-amount small {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  color: #747084;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.reward-details-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777286;
+  font-size: 12px;
+}
+
+.reward-details-content h4 {
+  margin: 0;
+  color: #28213b;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.reward-details-requirements {
+  display: grid;
+  gap: 12px;
+  margin: -7px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reward-details-requirements li {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  color: #5d5a6c;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.reward-requirement-bullet {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  color: #6747b2;
+  background: #f2edff;
+}
+
+.reward-details-reference,
+.reward-details-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #e7e2f2;
+  border-radius: 12px;
+  color: #676178;
+  background: #faf9fd;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.reward-details-notice.is-pending {
+  border-color: #f3e1b7;
+  color: #8c6117;
+  background: #fffaf0;
+}
+
+.reward-details-reference svg,
+.reward-details-notice svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.reward-details-muted {
+  color: #777286;
+  font-size: 12px;
+}
+
+/* Reward celebration */
+
+.reward-celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgb(25 18 52 / 30%);
+  backdrop-filter: blur(4px);
+  animation: reward-fade-in 150ms ease both;
+}
+
+.reward-celebration-confetti,
+.reward-celebration-sparkles {
+  position: absolute;
+  width: min(90vw, 560px);
+  height: min(90vw, 560px);
+  object-fit: contain;
+  pointer-events: none;
+  animation: reward-celebration-burst 900ms ease-out both;
+}
+
+.reward-celebration-sparkles {
+  animation-delay: 100ms;
+  animation-duration: 1200ms;
+}
+
+.reward-celebration-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: min(88vw, 330px);
+  padding: 28px 22px;
+  border: 1px solid #f1d9a1;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #fff9e9, #fff 60%, #f5f0ff);
+  box-shadow: 0 22px 65px rgb(25 18 52 / 25%);
+  text-align: center;
+  animation: reward-modal-enter 250ms ease both;
+}
+
+.reward-celebration-card img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.reward-celebration-card p {
+  margin: 0;
+  color: #2a203c;
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.reward-celebration-card strong {
+  color: #98620a;
+  font-size: 25px;
+  font-weight: 950;
+}
+
+/* Motion */
+
+@keyframes reward-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes reward-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reward-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes reward-checkpoint-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes reward-cloud-float {
+  from {
+    translate: -3px 0;
+  }
+  to {
+    translate: 4px -7px;
+  }
+}
+
+@keyframes reward-claim-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 4px rgb(255 204 77 / 15%),
+      0 8px 22px rgb(125 85 0 / 12%);
+  }
+  50% {
+    box-shadow:
+      0 0 0 8px rgb(255 204 77 / 7%),
+      0 10px 26px rgb(125 85 0 / 18%);
+  }
+}
+
+@keyframes reward-sparkle-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(8deg);
+  }
+}
+
+@keyframes reward-celebration-burst {
+  from {
+    opacity: 0;
+    transform: scale(0.65);
+  }
+  45% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 640px) {
+  .reward-map-modal-backdrop {
+    padding: 0;
+  }
+
+  .reward-map-modal {
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .reward-map-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .reward-map-header-icon {
+    width: 39px;
+    height: 39px;
+  }
+
+  .reward-map-header h2 {
+    font-size: 16px;
+  }
+
+  .reward-map-header p {
+    font-size: 11px;
+  }
+
+  .reward-map-header-actions {
+    gap: 5px;
+  }
+
+  .reward-map-progress-summary strong {
+    font-size: 16px;
+  }
+
+  .reward-map-progress-summary span {
+    max-width: 88px;
+    font-size: 9px;
+  }
+
+  .reward-map-legend {
+    gap: 5px;
+    padding: 9px 10px;
+  }
+
+  .reward-map-legend-item {
+    padding: 5px 7px;
+    font-size: 9px;
+  }
+
+  .reward-map-world {
+    min-width: 320px;
+  }
+
+  .reward-checkpoint {
+    width: 104px;
+  }
+
+  .reward-checkpoint-art {
+    width: 58px;
+    height: 58px;
+    border-radius: 18px;
+  }
+
+  .reward-checkpoint-label {
+    max-width: 100px;
+    font-size: 9px;
+  }
+
+  .reward-map-modal-footer {
+    padding: 10px 12px;
+  }
+
+  .reward-map-preview {
+    padding: 16px;
+    border-radius: 21px;
+  }
+
+  .reward-map-preview-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .reward-map-preview-footer .reward-map-primary-button {
+    width: 100%;
+  }
+
+  .reward-details-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .reward-details-sheet {
+    width: 100%;
+    max-height: 90dvh;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .reward-details-top {
+    padding: 20px 18px 17px;
+  }
+
+  .reward-details-content {
+    padding: 17px 18px 25px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reward-map-preview-sparkle,
+  .reward-spin,
+  .reward-map-cloud,
+  .reward-checkpoint,
+  .reward-checkpoint.is-claimable .reward-checkpoint-art,
+  .reward-celebration-confetti,
+  .reward-celebration-sparkles,
+  .reward-celebration-card,
+  .reward-map-modal,
+  .reward-details-sheet {
+    animation: none !important;
+  }
+
+  .reward-map-preview-node,
+  .reward-map-primary-button,
+  .reward-map-secondary-button,
+  .reward-checkpoint,
+  .reward-map-icon-button {
+    transition: none !important;
+  }
+}

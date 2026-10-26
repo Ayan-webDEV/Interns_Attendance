@@ -1,0 +1,949 @@
+/* ==========================================================
+   VELoop InternCash — Reward Map Modal
+   Class names intentionally match RewardMapModal.jsx
+   ========================================================== */
+
+.reward-map-modal,
+.reward-map-modal * {
+  box-sizing: border-box;
+}
+
+.reward-map-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100% !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px;
+
+  overflow: auto;
+  overscroll-behavior: contain;
+
+  background: rgba(15, 23, 42, 0.58);
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+
+  animation: reward-modal-fade-in 180ms ease-out;
+}
+
+.reward-map-modal button {
+  font: inherit;
+}
+
+.reward-map-modal button:focus-visible {
+  outline: 3px solid #e9b64b;
+  outline-offset: 3px;
+}
+
+/* Centered dialog */
+.reward-map-modal__window {
+  position: relative;
+  isolation: isolate;
+
+  display: flex;
+  flex-direction: column;
+
+  width: min(1120px, 100%);
+  max-width: 1120px;
+  height: min(760px, calc(100dvh - 48px));
+  min-height: 0;
+  max-height: calc(100dvh - 48px);
+
+  margin: auto;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+
+  background: #ffffff;
+  color: #26384c;
+
+  box-shadow:
+    0 28px 90px rgba(10, 20, 35, 0.3),
+    0 5px 20px rgba(10, 20, 35, 0.08);
+
+  animation: reward-modal-enter 220ms ease-out;
+}
+
+/* Header */
+.reward-map-modal__topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+
+  flex: 0 0 auto;
+  padding: 15px 20px;
+
+  border-bottom: 1px solid #e8edf1;
+  background: linear-gradient(110deg, #f2fff9, #ffffff 52%, #fff9e9);
+}
+
+.reward-map-modal__back,
+.reward-map-modal__top-actions button,
+.reward-map-modal__navigation button,
+.reward-map-modal__explore,
+.reward-map-modal__footer button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  min-height: 39px;
+  border: 1px solid #dce6e1;
+  border-radius: 12px;
+
+  background: #ffffff;
+  color: #42576d;
+
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.reward-map-modal__back {
+  justify-self: start;
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.reward-map-modal__back:hover,
+.reward-map-modal__top-actions button:hover:not(:disabled),
+.reward-map-modal__navigation button:hover:not(:disabled) {
+  border-color: #a8d8bb;
+  background: #f2fbf5;
+  color: #21794f;
+}
+
+.reward-map-modal__title {
+  min-width: 0;
+  text-align: center;
+}
+
+.reward-map-modal__title > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  color: #b47b19;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.reward-map-modal__title h2 {
+  margin: 4px 0;
+  color: #24384d;
+  font-size: clamp(20px, 2.1vw, 27px);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.reward-map-modal__title p {
+  margin: 0;
+  color: #77869a;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.reward-map-modal__top-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.reward-map-modal__top-actions button {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+}
+
+.reward-map-modal__top-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reward-map-modal__spin {
+  animation: reward-modal-spin 1s linear infinite;
+}
+
+/* Progress */
+.reward-map-modal__progress {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  flex: 0 0 auto;
+  padding: 11px 22px 12px;
+
+  border-bottom: 1px solid #edf0f2;
+  background: #ffffff;
+}
+
+.reward-map-modal__progress-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  color: #718096;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.reward-map-modal__progress-top strong {
+  color: #21875b;
+  font-size: 13px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.reward-map-modal__progress-track {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8efeb;
+}
+
+.reward-map-modal__progress-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #35a66f, #a6d957 68%, #efc14d);
+  transition: width 350ms ease;
+}
+
+.reward-map-modal__progress small {
+  color: #8a97a7;
+  font-size: 9px;
+}
+
+/* Notice */
+.reward-map-modal__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+
+  flex: 0 0 auto;
+  margin: 10px 16px 0;
+  padding: 10px 12px;
+
+  border: 1px solid #f0dfb7;
+  border-radius: 12px;
+  background: #fff9ec;
+  color: #89601b;
+
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.reward-map-modal__notice svg {
+  flex: 0 0 auto;
+}
+
+/* Main body — this area scrolls inside the dialog */
+.reward-map-modal__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, 0.9fr);
+  align-items: stretch;
+  gap: 14px;
+
+  flex: 1 1 auto;
+  min-height: 0;
+
+  padding: 14px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+
+  background: #f7f9f8;
+}
+
+.reward-map-modal__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reward-map-modal__content::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: #edf1ee;
+}
+
+.reward-map-modal__content::-webkit-scrollbar-thumb {
+  border: 2px solid #edf1ee;
+  border-radius: 999px;
+  background: #bac8bf;
+}
+
+.reward-map-modal__content::-webkit-scrollbar-thumb:hover {
+  background: #8ea698;
+}
+
+/* Map panel — inner map styling remains controlled by RewardMapScene.css */
+.reward-map-modal__map-panel {
+  position: relative;
+  align-self: stretch;
+
+  min-width: 0;
+  min-height: 360px;
+
+  overflow: hidden;
+  border: 1px solid #dce8df;
+  border-radius: 18px;
+
+  background: #eaf5ec;
+  box-shadow: 0 5px 16px rgba(37, 69, 53, 0.06);
+}
+
+.reward-map-modal__map-panel > * {
+  min-width: 0;
+}
+
+/* Details panel */
+.reward-map-modal__details {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+
+  min-width: 0;
+  padding: 17px;
+
+  border: 1px solid #e3ebe6;
+  border-radius: 18px;
+
+  background: linear-gradient(155deg, #ffffff 0%, #fbfdfb 72%, #fffaf0 100%);
+  box-shadow: 0 5px 16px rgba(37, 69, 53, 0.035);
+}
+
+.reward-map-modal__step {
+  color: #b7862b;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.reward-map-modal__reward-art {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 11px 0;
+}
+
+.reward-map-modal__reward-art > img {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 7px rgba(43, 55, 63, 0.1));
+}
+
+.reward-map-modal__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  max-width: 100%;
+  padding: 6px 9px;
+
+  border: 1px solid #dce6e0;
+  border-radius: 999px;
+  background: #f4f8f5;
+  color: #627589;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.reward-map-modal__status--completed,
+.reward-map-modal__status--approved,
+.reward-map-modal__status--credited {
+  border-color: #c9ead7;
+  background: #f0fff5;
+  color: #218257;
+}
+
+.reward-map-modal__status--pending {
+  border-color: #f0dfb7;
+  background: #fff9ec;
+  color: #a16f19;
+}
+
+.reward-map-modal__status--claimable {
+  border-color: #e3d6ff;
+  background: #f7f2ff;
+  color: #7653bb;
+}
+
+.reward-map-modal__status--rejected {
+  border-color: #f2d1d1;
+  background: #fff4f4;
+  color: #b44343;
+}
+
+.reward-map-modal__details h3 {
+  margin: 0 0 7px;
+  color: #22384b;
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.reward-map-modal__description {
+  margin: 0;
+  color: #6d7c8e;
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+/* Reward summary */
+.reward-map-modal__reward-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  margin-top: 14px;
+  padding: 12px;
+
+  border: 1px solid #f0dfb0;
+  border-radius: 14px;
+  background: linear-gradient(115deg, #fff9e8, #fffdf5);
+}
+
+.reward-map-modal__reward-box > span {
+  display: grid;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+
+  border: 1px solid #f3dfa0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #ffedac, #fff8dc);
+  color: #b47b14;
+}
+
+.reward-map-modal__reward-box > div {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reward-map-modal__reward-box small {
+  color: #9a7b3c;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.reward-map-modal__reward-box strong {
+  color: #785319;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.reward-map-modal__date {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 11px;
+
+  color: #748397;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.reward-map-modal__date svg {
+  flex: 0 0 auto;
+}
+
+/* Requirements */
+.reward-map-modal__requirements {
+  margin-top: 15px;
+  padding-top: 13px;
+  border-top: 1px solid #e8efeb;
+}
+
+.reward-map-modal__requirements h4 {
+  margin: 0 0 9px;
+  color: #344b60;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.reward-map-modal__requirements ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reward-map-modal__requirements li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  color: #66778a;
+  font-size: 10px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.reward-map-modal__requirements li svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+  color: #25875c;
+}
+
+.reward-map-modal__requirements > p {
+  margin: 0;
+  color: #738296;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+/* Checkpoint navigation */
+.reward-map-modal__navigation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.reward-map-modal__navigation button {
+  min-width: 0;
+  min-height: 39px;
+  padding: 8px;
+  font-size: 10px;
+}
+
+.reward-map-modal__navigation button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.reward-map-modal__navigation > span {
+  color: #738397;
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* First checkpoint / empty selection */
+.reward-map-modal__first-step {
+  display: flex;
+  flex: 1;
+  min-height: 230px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.reward-map-modal__first-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+
+  border: 1px solid #f1dfb4;
+  border-radius: 18px;
+  background: #fff7e2;
+  color: #b78122;
+}
+
+.reward-map-modal__first-step h3 {
+  margin: 14px 0 7px;
+  font-size: 18px;
+}
+
+.reward-map-modal__first-step > p {
+  max-width: 270px;
+  margin: 0;
+  color: #738296;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.reward-map-modal__explore {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 18px;
+  padding: 11px 13px;
+
+  border-color: #238a61;
+  background: linear-gradient(110deg, #238a61, #36a873);
+  color: #ffffff;
+
+  box-shadow: 0 5px 13px rgba(35, 138, 97, 0.18);
+  font-size: 11px;
+}
+
+.reward-map-modal__explore span {
+  flex: 1;
+  text-align: left;
+}
+
+.reward-map-modal__explore:hover {
+  border-color: #176f4b;
+  background: linear-gradient(110deg, #176f4b, #238a61);
+  box-shadow: 0 7px 17px rgba(35, 138, 97, 0.24);
+}
+
+/* Loading / empty map */
+.reward-map-modal__empty {
+  display: flex;
+  min-height: 360px;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+
+  color: #60748a;
+  text-align: center;
+}
+
+.reward-map-modal__empty svg {
+  color: #c49738;
+}
+
+.reward-map-modal__empty strong {
+  color: #31475a;
+  font-size: 15px;
+}
+
+.reward-map-modal__empty p {
+  max-width: 300px;
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.reward-map-modal__loader {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #d9eee0;
+  border-top-color: #278b60;
+  border-radius: 50%;
+  animation: reward-modal-spin 0.8s linear infinite;
+}
+
+/* Disclaimer */
+.reward-map-modal__disclaimer {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  margin-top: auto;
+  padding-top: 15px;
+
+  color: #8290a0;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.reward-map-modal__disclaimer p {
+  margin: 0;
+}
+
+.reward-map-modal__shield {
+  display: grid;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+
+  border-radius: 6px;
+  background: #eaf8ef;
+  color: #25875c;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+/* Footer */
+.reward-map-modal__footer {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+
+  padding: 10px 20px;
+  border-top: 1px solid #e5ece8;
+  background: #ffffff;
+}
+
+.reward-map-modal__footer > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  color: #718194;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.reward-map-modal__footer > span svg {
+  flex: 0 0 auto;
+  color: #c49738;
+}
+
+.reward-map-modal__footer button {
+  flex: 0 0 auto;
+  padding: 9px 13px;
+
+  border-color: #d7e5dc;
+  background: #f4faf6;
+  color: #26734f;
+
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.reward-map-modal__footer button:hover {
+  border-color: #9ed0b2;
+  background: #e8f7ee;
+  color: #17663f;
+}
+
+/* Animations */
+@keyframes reward-modal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes reward-modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reward-modal-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .reward-map-modal {
+    padding: 16px;
+  }
+
+  .reward-map-modal__window {
+    width: min(720px, 100%);
+    height: auto;
+    max-height: calc(100dvh - 32px);
+  }
+
+  .reward-map-modal__topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 13px;
+  }
+
+  .reward-map-modal__back {
+    padding: 9px;
+  }
+
+  .reward-map-modal__back span {
+    display: none;
+  }
+
+  .reward-map-modal__title {
+    text-align: left;
+  }
+
+  .reward-map-modal__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .reward-map-modal__map-panel {
+    min-height: 340px;
+  }
+
+  .reward-map-modal__details {
+    padding: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 560px) {
+  .reward-map-modal {
+    align-items: center;
+    padding: 10px;
+  }
+
+  .reward-map-modal__window {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100dvh - 20px);
+    border-radius: 19px;
+  }
+
+  .reward-map-modal__topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 7px;
+    padding: 11px 9px;
+  }
+
+  .reward-map-modal__title h2 {
+    font-size: 17px;
+  }
+
+  .reward-map-modal__title p {
+    font-size: 9px;
+  }
+
+  .reward-map-modal__title > span {
+    gap: 4px;
+    font-size: 7px;
+    letter-spacing: 0.05em;
+  }
+
+  .reward-map-modal__top-actions {
+    gap: 4px;
+  }
+
+  .reward-map-modal__top-actions button {
+    flex-basis: 31px;
+    width: 31px;
+    height: 31px;
+    min-height: 31px;
+    border-radius: 9px;
+  }
+
+  .reward-map-modal__progress {
+    padding: 9px 12px;
+  }
+
+  .reward-map-modal__content {
+    gap: 9px;
+    padding: 9px;
+  }
+
+  .reward-map-modal__map-panel {
+    min-height: 300px;
+    border-radius: 15px;
+  }
+
+  .reward-map-modal__details {
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .reward-map-modal__reward-art > img {
+    flex-basis: 49px;
+    width: 49px;
+    height: 49px;
+  }
+
+  .reward-map-modal__details h3 {
+    font-size: 20px;
+  }
+
+  .reward-map-modal__footer {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .reward-map-modal__footer > span {
+    font-size: 9px;
+  }
+
+  .reward-map-modal__footer button {
+    width: 100%;
+    min-height: 39px;
+  }
+}
+
+/* Short desktop screens */
+@media (min-width: 901px) and (max-height: 700px) {
+  .reward-map-modal {
+    padding: 12px;
+  }
+
+  .reward-map-modal__window {
+    height: calc(100dvh - 24px);
+    max-height: calc(100dvh - 24px);
+  }
+
+  .reward-map-modal__topbar {
+    padding-top: 9px;
+    padding-bottom: 9px;
+  }
+
+  .reward-map-modal__progress {
+    padding-top: 8px;
+    padding-bottom: 9px;
+  }
+
+  .reward-map-modal__content {
+    padding: 10px;
+  }
+
+  .reward-map-modal__map-panel {
+    min-height: 280px;
+  }
+
+  .reward-map-modal__details {
+    padding: 13px;
+  }
+
+  .reward-map-modal__footer {
+    padding-top: 7px;
+    padding-bottom: 7px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reward-map-modal *,
+  .reward-map-modal *::before,
+  .reward-map-modal *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
