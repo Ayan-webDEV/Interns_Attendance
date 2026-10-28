@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
+import styles from "./Primitives.module.css";
 
 /* -----------------------------------------
    ICON WRAPPER
@@ -133,16 +134,53 @@ export function ErrorText({ message }) {
 /* -----------------------------------------
    TOAST NOTIFICATION
 ----------------------------------------- */
-export function Toast({ message, onClose }) {
-  useEffect(() => {
-    if (!message) return;
 
-    const t = setTimeout(() => {
-      onClose?.();
+export function Toast({ message, onClose }) {
+  const [phase, setPhase] = useState("entering");
+
+  const closeTimerRef = useRef(null);
+  const exitTimerRef = useRef(null);
+  const latestOnCloseRef = useRef(onClose);
+
+  // Keep the latest callback available to the exit timer.
+  useEffect(() => {
+    latestOnCloseRef.current = onClose;
+  }, [onClose]);
+
+  // Reset the animation and start the automatic dismissal timer.
+  useEffect(() => {
+    clearTimeout(closeTimerRef.current);
+    clearTimeout(exitTimerRef.current);
+
+    if (!message) {
+      setPhase("entering");
+      return;
+    }
+
+    setPhase("entering");
+
+    closeTimerRef.current = setTimeout(() => {
+      setPhase("exiting");
     }, 4200);
 
-    return () => clearTimeout(t);
-  }, [message, onClose]);
+    return () => {
+      clearTimeout(closeTimerRef.current);
+      clearTimeout(exitTimerRef.current);
+    };
+  }, [message]);
+
+  // Remove the toast only after its exit animation finishes.
+  useEffect(() => {
+    if (phase !== "exiting" || !message) return;
+
+    exitTimerRef.current = setTimeout(() => {
+      latestOnCloseRef.current?.();
+    }, 300);
+
+    return () => {
+      clearTimeout(exitTimerRef.current);
+    };
+  }, [phase, message]);
 
   const safeMessage =
     message instanceof Error
@@ -155,38 +193,43 @@ export function Toast({ message, onClose }) {
 
   if (!safeMessage) return null;
 
+  const dismissToast = () => {
+    clearTimeout(closeTimerRef.current);
+    setPhase("exiting");
+  };
+
   return (
     <div
       role="status"
       aria-live="polite"
-      className="fixed right-4 top-4 z-[9999] flex w-[calc(100%-2rem)] max-w-[390px] items-start gap-3 overflow-hidden rounded-2xl border border-[#e6d9ec] bg-white/95 p-4 shadow-[0_18px_55px_rgba(42,26,54,0.18)] backdrop-blur-xl animate-in slide-in-from-top-2 duration-300 sm:right-6 sm:top-6"
+      className={`${styles.toast} ${
+        phase === "exiting" ? styles.toastExit : styles.toastEnter
+      }`}
     >
-      <div className="grid size-10 shrink-0 place-items-center rounded-xl border border-emerald-100 bg-emerald-50 text-emerald-700">
+      <div className={styles.iconWrapper}>
         <CheckCircle2 size={19} />
       </div>
 
-      <div className="min-w-0 flex-1 pt-0.5">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#8b7b96]">
-          VELoop Rewards
-        </p>
+      <div className={styles.content}>
+        <p className={styles.brand}>VELoop Rewards</p>
 
-        <p className="mt-1 break-words text-sm font-semibold leading-6 text-[#392b45]">
-          {safeMessage}
-        </p>
+        <p className={styles.message}>{safeMessage}</p>
       </div>
 
       <button
         type="button"
-        onClick={() => onClose?.()}
+        onClick={dismissToast}
         aria-label="Dismiss notification"
-        className="grid size-8 shrink-0 place-items-center rounded-lg text-[#95879e] transition-colors hover:bg-[#f4eef6] hover:text-[#493354] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#b89ac9]"
+        className={styles.closeButton}
       >
-        <span aria-hidden="true" className="text-xl leading-none">
-          ×
-        </span>
+        ×
       </button>
 
-      <div className="pointer-events-none absolute bottom-0 left-0 h-[3px] w-full origin-left bg-gradient-to-r from-[#b89ac9] via-[#d8b879] to-[#b89ac9]" />
+      <div
+        className={`${styles.progressBar} ${
+          phase === "entering" ? styles.progressActive : ""
+        }`}
+      />
     </div>
   );
 }

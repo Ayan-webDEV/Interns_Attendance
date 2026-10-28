@@ -497,7 +497,7 @@
    ACTION BUTTONS
 ========================================= */
 
-.sessionButton {
+/* .sessionButton {
   min-height: 47px;
 
   border: 1px solid transparent;
@@ -585,6 +585,119 @@
 
 .sessionButton:not(:disabled):hover .buttonArrow {
   transform: translateX(3px);
+} */
+
+.sessionButton {
+  min-height: 47px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 1;
+  filter: none;
+  -webkit-tap-highlight-color: transparent;
+
+  box-shadow:
+    0 3px 7px rgba(15, 23, 42, 0.045),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease,
+    color 200ms ease,
+    filter 200ms ease;
+}
+
+.sessionButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.sessionButton:active {
+  transform: translateY(0) scale(0.99);
+  filter: brightness(0.98);
+}
+
+.sessionButton:focus-visible {
+  outline: 3px solid rgba(14, 165, 233, 0.3);
+  outline-offset: 3px;
+}
+
+/* Primary action: blue gradient */
+.buttonPrimary {
+  color: #ffffff;
+  border-color: #0284c7;
+
+  background: linear-gradient(110deg, #0284c7 0%, #0ea5e9 55%, #0284c7 100%);
+
+  box-shadow:
+    0 5px 13px rgba(2, 132, 199, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.buttonPrimary:hover {
+  border-color: #0369a1;
+
+  background: linear-gradient(110deg, #0369a1, #0284c7 55%, #0369a1);
+
+  box-shadow: 0 8px 18px rgba(2, 132, 199, 0.23);
+}
+
+/* Secondary action: premium violet gradient */
+.buttonSecondary {
+  color: #ffffff;
+  border-color: #7c3aed;
+
+  background: linear-gradient(120deg, #7c3aed 0%, #8b5cf6 55%, #6d28d9 100%);
+
+  box-shadow:
+    0 5px 13px rgba(124, 58, 237, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.buttonSecondary:hover {
+  border-color: #6d28d9;
+
+  background: linear-gradient(120deg, #6d28d9, #7c3aed 55%, #5b21b6);
+
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.24);
+}
+
+/* Keep the button colorful even if another rule disables it */
+.sessionButton:disabled {
+  color: #ffffff;
+  opacity: 1;
+  filter: none;
+  cursor: pointer;
+}
+
+/* Arrow animation */
+.buttonArrow {
+  flex-shrink: 0;
+  transition: transform 200ms ease;
+}
+
+.sessionButton:hover .buttonArrow {
+  transform: translateX(3px);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .sessionButton,
+  .buttonArrow {
+    transition: none;
+  }
+
+  .sessionButton:hover,
+  .sessionButton:active {
+    transform: none;
+  }
+
+  .sessionButton:hover .buttonArrow {
+    transform: none;
+  }
 }
 
 /* =========================================

@@ -64,6 +64,7 @@ a {
   min-height: 100vh;
 }
 .app-shell {
+  display: none;
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
@@ -2310,5 +2311,11 @@ a {
     left: 12px;
     max-width: calc(100vw - 24px);
     padding: 12px 15px;
+  }
+}
+
+@media (min-width: 1300px) {
+  .app-shell {
+    display: block;
   }
 }

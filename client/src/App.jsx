@@ -189,18 +189,6 @@ export default function App() {
 
           <span className="muted small user-name">{session.user.name}</span>
 
-          <button
-            className="btn btn-secondary"
-            onClick={toggleTheme}
-            title="Toggle theme"
-            type="button"
-          >
-            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
-            <span className="theme-label">
-              {theme === "dark" ? "Light" : "Dark"}
-            </span>
-          </button>
-
           <button className="btn btn-ghost" onClick={logout} type="button">
             <LogOut size={15} />
             Sign out
