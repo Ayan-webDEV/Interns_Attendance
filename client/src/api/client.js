@@ -1,5 +1,5 @@
 const API_URL = (
-  import.meta.env.API_URL || "https://interns-attendance.onrender.com"
+  import.meta.env.API_URL || "https://interns-attendance.onrender.com/api"
 ).replace(/\/$/, "");
 export const tokenStore = {
   get: () => localStorage.getItem("vlr_token"),
