@@ -1,0 +1,924 @@
+/* =========================================================
+   VELOOP REWARDS — REWARD WORLD SCENE
+   Component-scoped CSS Module
+========================================================= */
+
+.scene {
+  --map-ink: #25364b;
+
+  position: relative;
+  isolation: isolate;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 650px;
+
+  overflow: hidden;
+
+  border-radius: 22px;
+
+  color: var(--map-ink);
+
+  background:
+    radial-gradient(ellipse at 18% 12%, #f9fff0 0%, transparent 35%),
+    radial-gradient(ellipse at 85% 76%, #c6e6b9 0%, transparent 45%),
+    linear-gradient(145deg, #d5eed9 0%, #edf4d7 45%, #c7e6cf 100%);
+}
+
+.scene *,
+.scene *::before,
+.scene *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   BASE LANDSCAPE FALLBACK
+========================================================= */
+
+.baseLandscape {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+
+  overflow: hidden;
+
+  pointer-events: none;
+}
+
+.hillOne,
+.hillTwo,
+.hillThree {
+  position: absolute;
+
+  display: block;
+
+  width: 135%;
+  height: 30%;
+
+  border-radius: 50%;
+
+  filter: blur(1px);
+}
+
+.hillOne {
+  top: 8%;
+  left: -55%;
+
+  background: linear-gradient(
+    145deg,
+    rgb(155 208 152 / 55%),
+    rgb(206 233 177 / 28%)
+  );
+
+  transform: rotate(-7deg);
+}
+
+.hillTwo {
+  top: 38%;
+  right: -55%;
+
+  background: linear-gradient(
+    135deg,
+    rgb(173 213 148 / 43%),
+    rgb(225 241 183 / 26%)
+  );
+
+  transform: rotate(9deg);
+}
+
+.hillThree {
+  bottom: -12%;
+  left: -15%;
+
+  width: 150%;
+  height: 33%;
+
+  background: linear-gradient(
+    145deg,
+    rgb(114 179 127 / 32%),
+    rgb(203 230 178 / 42%)
+  );
+}
+
+/* =========================================================
+   BACKGROUND IMAGE
+========================================================= */
+
+.background {
+  position: absolute;
+  z-index: 0;
+
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+
+  pointer-events: none;
+
+  user-select: none;
+}
+
+/* =========================================================
+   BACKGROUND WASH
+========================================================= */
+
+.wash {
+  position: absolute;
+  z-index: 1;
+
+  inset: 0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgb(251 255 248 / 20%) 0%,
+      transparent 30%,
+      rgb(241 255 231 / 12%) 65%,
+      rgb(231 248 224 / 28%) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgb(246 255 239 / 8%),
+      transparent 48%,
+      rgb(246 255 239 / 8%)
+    );
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   TOP BRAND CHIP
+========================================================= */
+
+.topChip {
+  position: absolute;
+  z-index: 8;
+
+  top: 15px;
+  left: 15px;
+
+  display: inline-flex;
+
+  max-width: calc(100% - 200px);
+
+  align-items: center;
+  gap: 7px;
+
+  padding: 9px 13px;
+
+  border: 1px solid rgb(255 255 255 / 95%);
+  border-radius: 99px;
+
+  color: #36546a;
+
+  background: rgb(255 255 255 / 94%);
+
+  box-shadow:
+    0 6px 18px rgb(40 72 74 / 9%),
+    inset 0 1px 0 #ffffff;
+
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.055em;
+
+  white-space: nowrap;
+
+  pointer-events: none;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.topChipIcon {
+  display: grid;
+
+  width: 20px;
+  height: 20px;
+
+  flex: 0 0 20px;
+
+  place-items: center;
+
+  border-radius: 7px;
+
+  color: #bd8424;
+  background: #fff5db;
+}
+
+.topChipDivider {
+  width: 1px;
+  height: 13px;
+
+  margin: 0 2px;
+
+  background: #e3e8dc;
+}
+
+.topChip > span:last-child {
+  overflow: hidden;
+
+  color: #9b792c;
+
+  text-overflow: ellipsis;
+}
+
+/* =========================================================
+   MAP PROGRESS CHIP
+========================================================= */
+
+.progressChip {
+  position: absolute;
+  z-index: 8;
+
+  top: 13px;
+  right: 13px;
+
+  display: flex;
+
+  align-items: center;
+  gap: 8px;
+
+  padding: 8px 11px;
+
+  border: 1px solid rgb(255 255 255 / 95%);
+  border-radius: 13px;
+
+  color: #365b46;
+
+  background: rgb(255 255 255 / 94%);
+
+  box-shadow: 0 5px 18px rgb(40 72 74 / 8%);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.progressIcon {
+  display: grid;
+
+  width: 29px;
+  height: 29px;
+
+  flex: 0 0 29px;
+
+  place-items: center;
+
+  border: 1px solid #f1e4c5;
+  border-radius: 9px;
+
+  color: #b58128;
+
+  background: #fff9e9;
+}
+
+.progressChip > span:nth-child(2) {
+  display: grid;
+
+  gap: 2px;
+}
+
+.progressChip strong {
+  color: #346f4d;
+
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.progressChip small {
+  color: #829084;
+
+  font-size: 8px;
+  font-weight: 750;
+}
+
+.progressPercent {
+  padding-left: 8px;
+
+  border-left: 1px solid #e6eade;
+
+  color: #b17c25;
+
+  font-size: 10px;
+  font-weight: 950;
+}
+
+/* =========================================================
+   CLOUDS
+========================================================= */
+
+.cloud {
+  position: absolute;
+  z-index: 2;
+
+  display: block;
+
+  width: 155px;
+  height: 100px;
+
+  object-fit: contain;
+
+  opacity: 0.55;
+
+  pointer-events: none;
+
+  user-select: none;
+
+  animation: cloudFloat 7s ease-in-out infinite alternate;
+}
+
+.cloudA {
+  top: 5%;
+  right: 8%;
+}
+
+.cloudB {
+  top: 40%;
+  left: -3%;
+
+  width: 125px;
+  height: 85px;
+
+  animation-delay: -3.5s;
+}
+
+/* =========================================================
+   MAGICAL PORTAL
+========================================================= */
+
+.portal {
+  position: absolute;
+  z-index: 2;
+
+  top: 42%;
+  right: 1%;
+
+  width: 78px;
+  height: 105px;
+
+  object-fit: contain;
+
+  opacity: 0.72;
+
+  pointer-events: none;
+
+  filter: drop-shadow(0 8px 12px rgb(87 53 157 / 12%));
+}
+
+/* =========================================================
+   SCENERY / FLORA
+========================================================= */
+
+.flora {
+  position: absolute;
+  z-index: 2;
+
+  display: block;
+
+  width: 110px;
+  height: 110px;
+
+  object-fit: contain;
+
+  opacity: 0.9;
+
+  pointer-events: none;
+
+  user-select: none;
+}
+
+.floraLeft {
+  bottom: 13%;
+  left: -2%;
+}
+
+.floraRight {
+  right: -2%;
+  bottom: 18%;
+}
+
+.floraBottom {
+  bottom: 2%;
+  left: 38%;
+
+  width: 95px;
+  height: 100px;
+
+  opacity: 0.6;
+}
+
+/* =========================================================
+   ROUTE SVG
+========================================================= */
+
+.route {
+  position: absolute;
+  z-index: 3;
+
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: visible;
+
+  pointer-events: none;
+}
+
+.routeShadow,
+.routeHalo,
+.routeLine {
+  fill: none;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  vector-effect: non-scaling-stroke;
+}
+
+.routeShadow {
+  stroke: rgb(83 104 71 / 18%);
+  stroke-width: 11px;
+
+  filter: blur(5px);
+}
+
+.routeHalo {
+  stroke: rgb(255 255 255 / 92%);
+  stroke-width: 8px;
+}
+
+.routeLine {
+  stroke: url("#reward-route-gradient");
+  stroke-width: 3.5px;
+
+  stroke-dasharray: 3 9;
+
+  filter: drop-shadow(0 2px 2px rgb(114 80 28 / 32%));
+
+  animation: routeDash 28s linear infinite;
+}
+
+.routeDot {
+  fill: #f5c54f;
+
+  stroke: #ffffff;
+  stroke-width: 1.7px;
+
+  filter: drop-shadow(0 2px 3px rgb(91 67 26 / 22%));
+
+  vector-effect: non-scaling-stroke;
+}
+
+/* =========================================================
+   CHECKPOINT NUMBER
+========================================================= */
+
+.checkpointNumber {
+  position: absolute;
+  z-index: 3;
+
+  display: grid;
+
+  width: 25px;
+  height: 25px;
+
+  place-items: center;
+
+  transform: translateY(-50%);
+
+  border: 1px solid rgb(255 255 255 / 95%);
+  border-radius: 50%;
+
+  color: #8c6b30;
+
+  background: rgb(255 252 239 / 96%);
+
+  box-shadow:
+    0 3px 9px rgb(61 68 44 / 10%),
+    inset 0 1px 0 #ffffff;
+
+  font-size: 8px;
+  font-weight: 950;
+
+  font-variant-numeric: tabular-nums;
+
+  pointer-events: none;
+
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease;
+}
+
+.numberLeft {
+  left: 40%;
+}
+
+.numberRight {
+  right: 40%;
+}
+
+.numberSelected {
+  color: #ffffff;
+
+  background: #7353b8;
+
+  box-shadow:
+    0 0 0 4px rgb(115 83 184 / 15%),
+    0 5px 12px rgb(62 40 113 / 18%);
+}
+
+.numberCompleted {
+  color: #16734a;
+  background: #e7f8ec;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.empty {
+  position: absolute;
+  z-index: 8;
+
+  top: 50%;
+  left: 50%;
+
+  display: grid;
+
+  width: min(88%, 360px);
+
+  justify-items: center;
+
+  gap: 12px;
+
+  padding: 27px 24px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 22px;
+
+  color: #536c56;
+
+  background: rgb(255 255 255 / 92%);
+
+  box-shadow: 0 16px 40px rgb(39 70 42 / 10%);
+
+  text-align: center;
+
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.emptyIcon {
+  display: grid;
+
+  width: 55px;
+  height: 55px;
+
+  place-items: center;
+
+  border: 1px solid #dbead7;
+  border-radius: 18px;
+
+  color: #3d9564;
+
+  background: #f0faee;
+}
+
+.empty strong {
+  color: #263b30;
+
+  font-size: 15px;
+  font-weight: 950;
+}
+
+.empty p {
+  max-width: 290px;
+
+  margin: 0;
+
+  color: #64756a;
+
+  font-size: 11px;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   LEGEND
+========================================================= */
+
+.legend {
+  position: absolute;
+  z-index: 9;
+
+  right: 12px;
+  bottom: 15px;
+  left: 12px;
+
+  display: flex;
+
+  justify-content: center;
+
+  pointer-events: none;
+}
+
+.legend > * {
+  max-width: 100%;
+
+  overflow: hidden;
+
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 15px;
+
+  background: rgb(255 255 255 / 93%);
+
+  box-shadow: 0 6px 19px rgb(20 48 35 / 10%);
+
+  pointer-events: auto;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* =========================================================
+   COMPACT MODE
+========================================================= */
+
+.compact {
+  min-height: 280px;
+
+  border-radius: 17px;
+}
+
+.compact .cloud,
+.compact .portal,
+.compact .flora {
+  opacity: 0.38;
+}
+
+.compact .topChip {
+  top: 10px;
+  left: 10px;
+
+  padding: 6px 9px;
+
+  font-size: 8px;
+}
+
+.compact .checkpointNumber {
+  display: none;
+}
+
+/* =========================================================
+   COMPACT FOOTER
+========================================================= */
+
+.compactFooter {
+  position: absolute;
+  z-index: 9;
+
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 8px 10px;
+
+  border: 1px solid rgb(255 255 255 / 90%);
+  border-radius: 99px;
+
+  color: #48634f;
+
+  background: rgb(255 255 255 / 92%);
+
+  box-shadow: 0 4px 13px rgb(32 52 73 / 8%);
+
+  font-size: 9px;
+  font-weight: 850;
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes routeDash {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+@keyframes cloudFloat {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, -10px, 0);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .cloud {
+    width: 125px;
+  }
+
+  .flora {
+    width: 85px;
+    height: 85px;
+  }
+
+  .portal {
+    width: 65px;
+    height: 90px;
+  }
+
+  .checkpointNumber {
+    width: 22px;
+    height: 22px;
+
+    font-size: 7px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .scene:not(.compact) {
+    min-height: 560px;
+  }
+
+  .topChip {
+    top: 10px;
+    left: 9px;
+
+    max-width: calc(100% - 155px);
+
+    gap: 5px;
+
+    padding: 7px 9px;
+
+    font-size: 8px;
+  }
+
+  .progressChip {
+    top: 9px;
+    right: 9px;
+
+    gap: 6px;
+
+    padding: 6px 8px;
+  }
+
+  .progressIcon {
+    width: 25px;
+    height: 25px;
+    flex-basis: 25px;
+  }
+
+  .progressChip strong {
+    font-size: 11px;
+  }
+
+  .progressChip small {
+    font-size: 7px;
+  }
+
+  .progressPercent {
+    padding-left: 6px;
+    font-size: 9px;
+  }
+
+  .cloud {
+    width: 100px;
+    height: 70px;
+  }
+
+  .flora {
+    width: 69px;
+    height: 69px;
+  }
+
+  .floraBottom {
+    width: 65px;
+    height: 70px;
+  }
+
+  .portal {
+    width: 51px;
+    height: 72px;
+  }
+
+  .checkpointNumber {
+    width: 20px;
+    height: 20px;
+  }
+
+  .numberLeft {
+    left: 39%;
+  }
+
+  .numberRight {
+    right: 39%;
+  }
+
+  .legend {
+    right: 6px;
+    bottom: 10px;
+    left: 6px;
+  }
+
+  .legend > * {
+    border-radius: 12px;
+  }
+
+  .empty {
+    padding: 22px 17px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+  .topChip {
+    max-width: calc(100% - 142px);
+
+    gap: 4px;
+
+    padding: 6px 7px;
+
+    font-size: 7px;
+  }
+
+  .topChipIcon {
+    width: 17px;
+    height: 17px;
+    flex-basis: 17px;
+  }
+
+  .progressChip {
+    gap: 5px;
+    padding: 5px 6px;
+  }
+
+  .progressIcon {
+    width: 22px;
+    height: 22px;
+    flex-basis: 22px;
+  }
+
+  .progressChip small {
+    display: none;
+  }
+
+  .progressPercent {
+    padding-left: 5px;
+    font-size: 8px;
+  }
+
+  .checkpointNumber {
+    display: none;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud,
+  .routeLine {
+    animation: none !important;
+  }
+
+  .checkpointNumber {
+    transition: none;
+  }
+}

@@ -1,0 +1,565 @@
+/* =========================================================
+   VELOOP REWARDS — REWARD CELEBRATION
+   Component-scoped CSS Module
+========================================================= */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483500;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  padding: 20px;
+
+  background: rgb(18 14 35 / 72%);
+
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+
+  animation: celebrationFade 200ms ease both;
+}
+
+/* =========================================================
+   BACKGROUND ARTWORK
+========================================================= */
+
+.confetti,
+.sparkles {
+  position: absolute;
+
+  display: block;
+
+  width: min(92vw, 620px);
+  height: min(92vw, 620px);
+
+  object-fit: contain;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+.confetti {
+  z-index: 0;
+
+  animation: celebrationPop 650ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.sparkles {
+  z-index: 0;
+
+  opacity: 0.72;
+
+  animation: sparkleTurn 24s linear infinite;
+}
+
+/* =========================================================
+   CELEBRATION CARD
+========================================================= */
+
+.card {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+
+  width: min(100%, 390px);
+  max-height: min(90dvh, 660px);
+
+  align-items: center;
+  flex-direction: column;
+
+  overflow-y: auto;
+
+  padding: 28px 25px 23px;
+
+  border: 1px solid #f0dcae;
+  border-radius: 27px;
+
+  color: #392c58;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgb(255 238 184 / 55%), transparent 37%),
+    linear-gradient(145deg, #fffdf6 0%, #ffffff 58%, #f5efff 100%);
+
+  box-shadow:
+    0 30px 90px rgb(0 0 0 / 28%),
+    0 7px 25px rgb(0 0 0 / 10%);
+
+  animation: cardPop 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d5c6e9 transparent;
+
+  text-align: center;
+}
+
+.card::-webkit-scrollbar {
+  width: 5px;
+}
+
+.card::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: #d5c6e9;
+}
+
+/* =========================================================
+   DISMISS BUTTON
+========================================================= */
+
+.dismiss {
+  position: absolute;
+  top: 13px;
+  right: 13px;
+
+  display: grid;
+
+  width: 35px;
+  height: 35px;
+
+  place-items: center;
+
+  border: 1px solid #ece4f1;
+  border-radius: 11px;
+
+  color: #80728f;
+  background: rgb(255 255 255 / 90%);
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.dismiss:hover {
+  transform: rotate(5deg);
+
+  border-color: #f0c7cc;
+  color: #b63b4b;
+  background: #fff1f2;
+}
+
+.dismiss:active {
+  transform: scale(0.94);
+}
+
+/* =========================================================
+   TOP ICON
+========================================================= */
+
+.topIcon {
+  display: grid;
+
+  width: 43px;
+  height: 43px;
+
+  place-items: center;
+
+  margin-bottom: 13px;
+
+  border: 1px solid #f1dfb7;
+  border-radius: 14px;
+
+  color: #a77823;
+
+  background: linear-gradient(145deg, #fff8e5, #ffffff);
+
+  box-shadow:
+    0 6px 16px rgb(164 116 34 / 9%),
+    inset 0 1px 0 #ffffff;
+}
+
+/* =========================================================
+   EYEBROW
+========================================================= */
+
+.eyebrow {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 7px 11px;
+
+  border: 1px solid #f0e1bc;
+  border-radius: 99px;
+
+  color: #9a6c20;
+
+  background: #fffaf0;
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+}
+
+/* =========================================================
+   TREASURE CHEST
+========================================================= */
+
+.chestWrap {
+  position: relative;
+
+  display: grid;
+
+  width: 155px;
+  height: 133px;
+
+  place-items: center;
+
+  margin: 17px 0 8px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    rgb(255 226 145 / 45%),
+    rgb(255 241 207 / 17%) 47%,
+    transparent 72%
+  );
+}
+
+.chest {
+  display: block;
+
+  width: 145px;
+  height: 125px;
+
+  object-fit: contain;
+
+  filter: drop-shadow(0 12px 12px rgb(106 69 14 / 18%));
+
+  animation: chestFloat 3.5s ease-in-out infinite;
+}
+
+.chestFallback {
+  display: grid;
+
+  width: 82px;
+  height: 82px;
+
+  place-items: center;
+
+  border: 1px solid #efdba8;
+  border-radius: 25px;
+
+  color: #a7792c;
+
+  background: linear-gradient(145deg, #fff0bd, #ffffff);
+
+  box-shadow: 0 9px 22px rgb(126 91 35 / 12%);
+}
+
+/* =========================================================
+   HEADLINE
+========================================================= */
+
+.card h2 {
+  margin: 5px 0 0;
+
+  color: #302344;
+
+  font-size: clamp(22px, 5vw, 29px);
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1.2;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   DESCRIPTION
+========================================================= */
+
+.description {
+  max-width: 290px;
+
+  margin: 9px 0 0;
+
+  color: #81758f;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   CONFIRMED REWARD AMOUNT
+========================================================= */
+
+.amount {
+  display: grid;
+
+  width: 100%;
+
+  justify-items: center;
+  gap: 7px;
+
+  margin-top: 19px;
+  padding: 15px 13px;
+
+  border: 1px solid #f0dfb3;
+  border-radius: 16px;
+
+  background: linear-gradient(135deg, #fff9e8, #ffffff);
+
+  box-shadow:
+    0 5px 15px rgb(160 121 40 / 5%),
+    inset 0 1px 0 #ffffff;
+}
+
+.amount > span {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 6px;
+
+  color: #8d763f;
+
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.amount > span svg {
+  color: #27925d;
+}
+
+.amount > strong {
+  overflow-wrap: anywhere;
+
+  color: #996b1f;
+
+  font-size: clamp(25px, 6vw, 32px);
+  font-weight: 950;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   FOOTER MESSAGE
+========================================================= */
+
+.footerMessage {
+  max-width: 290px;
+
+  margin: 16px 0 0;
+
+  color: #8a8292;
+
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   CONTINUE BUTTON
+========================================================= */
+
+.continueButton {
+  display: inline-flex;
+
+  width: 100%;
+  min-height: 47px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  margin-top: 18px;
+  padding: 12px 16px;
+
+  border: 1px solid #6242a9;
+  border-radius: 13px;
+
+  color: #ffffff;
+
+  background: linear-gradient(110deg, #6745ae, #7653c1);
+
+  box-shadow: 0 7px 17px rgb(88 57 155 / 20%);
+
+  font-size: 12px;
+  font-weight: 950;
+
+  cursor: pointer;
+
+  transition:
+    transform 170ms ease,
+    box-shadow 170ms ease,
+    filter 170ms ease;
+}
+
+.continueButton:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 11px 22px rgb(88 57 155 / 25%);
+
+  filter: brightness(1.05);
+}
+
+.continueButton:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+========================================================= */
+
+.card button:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes celebrationFade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes celebrationPop {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes sparkleTurn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes cardPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.93);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes chestFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 600px) {
+  .overlay {
+    padding: 15px;
+  }
+
+  .card {
+    width: min(100%, 370px);
+    padding: 25px 21px 20px;
+    border-radius: 23px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .card {
+    width: 100%;
+    max-height: 92dvh;
+
+    padding: 24px 18px 18px;
+  }
+
+  .chestWrap {
+    width: 140px;
+    height: 120px;
+  }
+
+  .chest {
+    width: 130px;
+    height: 112px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 340px) {
+  .overlay {
+    padding: 8px;
+  }
+
+  .card {
+    padding: 21px 14px 15px;
+    border-radius: 19px;
+  }
+
+  .description {
+    font-size: 11px;
+  }
+
+  .amount {
+    padding: 12px 10px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .confetti,
+  .sparkles,
+  .card,
+  .chest {
+    animation: none !important;
+  }
+
+  .dismiss,
+  .continueButton {
+    transition: none !important;
+  }
+
+  .dismiss:hover,
+  .continueButton:hover {
+    transform: none;
+  }
+}

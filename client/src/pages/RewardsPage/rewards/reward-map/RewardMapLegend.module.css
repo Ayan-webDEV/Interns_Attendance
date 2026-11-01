@@ -1,0 +1,222 @@
+/* =========================================================
+   VELOOP REWARDS — MAP LEGEND
+   Component-scoped CSS Module
+========================================================= */
+
+.legend {
+  display: flex;
+
+  width: fit-content;
+  max-width: 100%;
+
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 11px 13px;
+
+  border-radius: 15px;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* =========================================================
+   LEGEND ITEM
+========================================================= */
+
+.item {
+  display: inline-flex;
+
+  min-height: 27px;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 5px 9px;
+
+  border: 1px solid #e6e8ed;
+  border-radius: 99px;
+
+  color: #647084;
+
+  background: #f8fafc;
+
+  font-size: 9px;
+  font-weight: 850;
+  line-height: 1;
+
+  white-space: nowrap;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.item svg {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   COMPLETED
+========================================================= */
+
+.completed {
+  border-color: #ccebd8;
+  color: #197449;
+  background: #effaf3;
+}
+
+/* =========================================================
+   ATTENDANCE APPROVED
+========================================================= */
+
+.approved {
+  border-color: #c9e9da;
+  color: #217b57;
+  background: #f0faf5;
+}
+
+/* =========================================================
+   REWARD CREDITED
+========================================================= */
+
+.credited {
+  border-color: #bfe9ce;
+  color: #127346;
+  background: #e9f9ef;
+}
+
+/* =========================================================
+   PENDING
+========================================================= */
+
+.pending {
+  border-color: #f2dfb4;
+  color: #986711;
+  background: #fff8e9;
+}
+
+/* =========================================================
+   REJECTED
+========================================================= */
+
+.rejected {
+  border-color: #f0cbd0;
+  color: #b33e4d;
+  background: #fff1f2;
+}
+
+/* =========================================================
+   MISSED
+========================================================= */
+
+.missed {
+  border-color: #eccfd0;
+  color: #aa454c;
+  background: #fff3f3;
+}
+
+/* =========================================================
+   HOLIDAY
+========================================================= */
+
+.holiday {
+  border-color: #c9e4f1;
+  color: #24749c;
+  background: #eff8fd;
+}
+
+/* =========================================================
+   LOCKED / UPCOMING
+========================================================= */
+
+.locked {
+  border-color: #e2e1e9;
+  color: #706d80;
+  background: #f8f7fa;
+}
+
+/* =========================================================
+   CLAIMABLE
+========================================================= */
+
+.claimable {
+  border-color: #f1dfb2;
+  color: #91600e;
+  background: #fff8e7;
+}
+
+/* =========================================================
+   COMPACT MODE
+========================================================= */
+
+.compact {
+  gap: 5px;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.compact .item {
+  min-height: 24px;
+  gap: 4px;
+  padding: 4px 7px;
+  font-size: 8px;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .legend {
+    gap: 5px;
+    padding: 8px;
+    border-radius: 12px;
+  }
+
+  .item {
+    min-height: 25px;
+    gap: 4px;
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .item svg {
+    width: 11px;
+    height: 11px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 360px) {
+  .legend {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .item {
+    min-height: 23px;
+    padding: 4px 6px;
+    font-size: 7px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .item {
+    transition: none;
+  }
+}

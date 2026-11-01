@@ -1,0 +1,1154 @@
+/* -------------------------------------------------------------------------- */
+/* Dashboard page                                                             */
+/* -------------------------------------------------------------------------- */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  width: 100%;
+  min-width: 0;
+  color: #192f22;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Welcome                                                                    */
+/* -------------------------------------------------------------------------- */
+
+.welcome {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 22px;
+  min-width: 0;
+}
+
+.welcomeCopy {
+  min-width: 0;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+  color: #52765a;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+}
+
+.kicker > span {
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38a15b;
+  box-shadow: 0 0 0 4px rgba(56, 161, 91, 0.15);
+}
+
+.welcome h1 {
+  margin: 0 0 9px;
+  color: #183823;
+  font-size: clamp(27px, 3vw, 38px);
+  font-weight: 900;
+  line-height: 1.13;
+  letter-spacing: -0.055em;
+  overflow-wrap: anywhere;
+}
+
+.welcome h1 span {
+  color: #267044;
+}
+
+.welcome p {
+  max-width: 620px;
+  margin: 0;
+  color: #68796d;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.welcomeActions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.date {
+  min-height: 41px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 13px;
+  border: 1px solid #d4e3d3;
+  border-radius: 11px;
+  color: #28633d;
+  background: #ffffff;
+  box-shadow: 0 3px 10px rgba(28, 63, 39, 0.035);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.date svg {
+  flex: 0 0 auto;
+  color: #328650;
+}
+
+.refreshButton {
+  min-height: 41px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid #c9dfcb;
+  border-radius: 11px;
+  color: #24633d;
+  background: #f1f8ec;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 850;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  border-color: #91bf95;
+  background: #e6f4df;
+  transform: translateY(-1px);
+}
+
+.refreshButton:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.refreshButton:focus-visible,
+.cta:focus-visible,
+.rewardFoot a:focus-visible {
+  outline: 3px solid rgba(70, 126, 241, 0.32);
+  outline-offset: 3px;
+}
+
+.refreshing {
+  animation: refreshSpin 850ms linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Error notice                                                               */
+/* -------------------------------------------------------------------------- */
+
+.errorNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid #f0c8bd;
+  border-radius: 12px;
+  color: #9c3e30;
+  background: #fff0eb;
+  font-size: 11px;
+  line-height: 1.6;
+  font-weight: 650;
+}
+
+.errorNotice svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Group banner                                                               */
+/* -------------------------------------------------------------------------- */
+
+.groupBanner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+  padding: 17px 19px;
+  border: 1px solid #d4e5d0;
+  border-radius: 16px;
+  background: linear-gradient(110deg, #ffffff 0%, #f7fbf2 100%);
+  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+}
+
+.groupIcon {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d7e9c9;
+  border-radius: 13px;
+  color: #287445;
+  background: #e7f5d9;
+}
+
+.groupText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.groupText small {
+  color: #63806a;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.groupText b {
+  overflow: hidden;
+  color: #1e402a;
+  font-family: Manrope, sans-serif;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupText span {
+  color: #64776a;
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 600;
+}
+
+.status {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 180px;
+  padding: 7px 11px;
+  border: 1px solid #e2e8df;
+  border-radius: 999px;
+  color: #68776b;
+  background: #f4f6f2;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.035em;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.status.green {
+  color: #176a39;
+  border-color: #c5e5bf;
+  background: #e5f5dc;
+}
+
+.status.completedStatus {
+  color: #355f9b;
+  border-color: #d0def4;
+  background: #eaf1ff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Statistics                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 13px;
+  min-width: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main grid                                                                  */
+/* -------------------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 1.15fr)
+    minmax(290px, 0.85fr);
+  gap: 17px;
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+  padding: 21px;
+  border: 1px solid #dce7da;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+}
+
+.panelHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 13px;
+  margin-bottom: 18px;
+}
+
+.panelHead > div:first-child {
+  min-width: 0;
+}
+
+.panelKicker {
+  display: block;
+  margin-bottom: 6px;
+  color: #56815a;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+}
+
+.panelHead h2 {
+  margin: 0 0 6px;
+  color: #1d3b28;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.panelHead p {
+  margin: 0;
+  color: #718075;
+  font-size: 10px;
+  line-height: 1.65;
+  font-weight: 550;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Live indicator                                                             */
+/* -------------------------------------------------------------------------- */
+
+.live {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid #cce6c5;
+  border-radius: 7px;
+  color: #23703c;
+  background: #eaf8e3;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+}
+
+.live > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #35a45b;
+  box-shadow: 0 0 0 3px rgba(53, 164, 91, 0.12);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Holiday and inactive notice                                                */
+/* -------------------------------------------------------------------------- */
+
+.holiday {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  min-height: 102px;
+  margin-bottom: 14px;
+  padding: 18px 16px;
+  border: 1px solid #dcebc8;
+  border-radius: 13px;
+  background: #f3f9e9;
+}
+
+.holidayIcon {
+  flex: 0 0 28px;
+  width: 28px;
+  color: #86a938;
+  font-size: 23px;
+  line-height: 1;
+  text-align: center;
+}
+
+.holiday b {
+  color: #315b31;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.holiday p {
+  margin: 6px 0 0;
+  color: #657b60;
+  font-size: 10px;
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Attendance session list                                                   */
+/* -------------------------------------------------------------------------- */
+
+.sessions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.session {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #dfe9dc;
+  border-radius: 13px;
+  background: #fbfdf9;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
+}
+
+.session:hover {
+  border-color: #c2ddbd;
+  background: #f6fbf2;
+}
+
+.sessionIcon {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e0e7dd;
+  border-radius: 11px;
+  color: #728173;
+  background: #edf1eb;
+}
+
+.sessionIcon.approved {
+  color: #16733c;
+  border-color: #cce6c9;
+  background: #e3f5df;
+}
+
+.sessionIcon.pending {
+  color: #a36a0b;
+  border-color: #f0dfb4;
+  background: #fff2d5;
+}
+
+.sessionIcon.rejected,
+.sessionIcon.missed {
+  color: #ad4036;
+  border-color: #f0d0ca;
+  background: #fff0ec;
+}
+
+.sessionIcon.review {
+  color: #536eaa;
+  border-color: #d4def2;
+  background: #edf2ff;
+}
+
+.sessionInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.sessionInfo b {
+  color: #213e2c;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.sessionInfo span {
+  color: #687a6d;
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Session badges                                                             */
+/* -------------------------------------------------------------------------- */
+
+.badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 140px;
+  padding: 6px 9px;
+  border: 1px solid #e3e9e0;
+  border-radius: 999px;
+  color: #647269;
+  background: #f0f3ee;
+  font-size: 8px;
+  font-weight: 850;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.badge.approved {
+  color: #176a39;
+  border-color: #c8e6c4;
+  background: #e4f6df;
+}
+
+.badge.pending {
+  color: #94600a;
+  border-color: #f0dfb6;
+  background: #fff3d8;
+}
+
+.badge.rejected {
+  color: #a13b31;
+  border-color: #efc9c2;
+  background: #fff0ec;
+}
+
+.badge.missed {
+  color: #8c3f30;
+  border-color: #ecc8bd;
+  background: #fce9e2;
+}
+
+.badge.review {
+  color: #4f669f;
+  border-color: #d4def2;
+  background: #edf2ff;
+}
+
+.badge.notMarked {
+  color: #647269;
+  border-color: #e3e9e0;
+  background: #f0f3ee;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Attendance button                                                          */
+/* -------------------------------------------------------------------------- */
+
+.cta {
+  width: 100%;
+  min-height: 43px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 17px;
+  border: 1px solid #194b2c;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(110deg, #1d6038, #267444);
+  box-shadow: 0 4px 10px rgba(27, 94, 54, 0.12);
+  font-size: 11px;
+  font-weight: 850;
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.cta:hover {
+  background: linear-gradient(110deg, #164b2b, #1c6036);
+  box-shadow: 0 6px 15px rgba(27, 94, 54, 0.19);
+  transform: translateY(-1px);
+}
+
+.cta:active {
+  transform: translateY(0);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Rewards panel                                                              */
+/* -------------------------------------------------------------------------- */
+
+.rewardIcon {
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d4e9c6;
+  border-radius: 11px;
+  color: #287344;
+  background: #e8f6dc;
+}
+
+.rewardBalance {
+  position: relative;
+  min-height: 148px;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid #17472b;
+  border-radius: 14px;
+  color: #ecf9eb;
+  background: linear-gradient(125deg, #17452b 0%, #1f663d 58%, #2a7847 100%);
+  box-shadow: 0 7px 18px rgba(22, 77, 43, 0.17);
+}
+
+.rewardBalance::before,
+.rewardBalance::after {
+  position: absolute;
+  content: "";
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.rewardBalance::before {
+  top: -65px;
+  right: -35px;
+  width: 155px;
+  height: 155px;
+  box-shadow:
+    0 0 0 18px rgba(255, 255, 255, 0.035),
+    0 0 0 38px rgba(255, 255, 255, 0.025);
+}
+
+.rewardBalance::after {
+  right: 48px;
+  bottom: -92px;
+  width: 135px;
+  height: 135px;
+}
+
+.rewardBalance > span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-bottom: 9px;
+  color: #c5e3c8;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.09em;
+}
+
+.rewardBalance strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  color: #ffffff;
+  font-family: Manrope, sans-serif;
+  font-size: clamp(29px, 3vw, 35px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.065em;
+  font-variant-numeric: tabular-nums;
+}
+
+.rewardBalance strong small {
+  margin-left: 4px;
+  color: #d5f59c;
+  font-size: 13px;
+  font-weight: 850;
+  letter-spacing: 0;
+}
+
+.rewardBalance p {
+  position: relative;
+  z-index: 1;
+  max-width: 280px;
+  margin: 11px 0 0;
+  color: #d0e5d0;
+  font-size: 9px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+
+.rewardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+  padding: 13px 2px 0;
+  color: #486b50;
+  font-size: 10px;
+}
+
+.rewardFoot > div,
+.rewardFoot a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.rewardFoot > div {
+  color: #57715c;
+  font-weight: 650;
+}
+
+.rewardFoot svg {
+  flex: 0 0 auto;
+  color: #36834b;
+}
+
+.rewardFoot a {
+  flex: 0 0 auto;
+  color: #21683a;
+  font-size: 9px;
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.rewardFoot a:hover {
+  color: #123f25;
+  text-decoration: underline;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Certificate panel                                                          */
+/* -------------------------------------------------------------------------- */
+
+.certPanel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  padding: 16px 19px;
+  border: 1px solid #dce7da;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+}
+
+.certIcon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e3e9df;
+  border-radius: 12px;
+  color: #728173;
+  background: #f0f3ed;
+}
+
+.certCopy {
+  flex: 1;
+  min-width: 0;
+}
+
+.certCopy h2 {
+  margin: 0 0 5px;
+  color: #25432e;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.certCopy p {
+  margin: 0;
+  color: #66776b;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.certStatus {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border: 1px solid #e4e9e1;
+  border-radius: 999px;
+  color: #68766c;
+  background: #f1f3ef;
+  font-size: 9px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.certUnlocked {
+  color: #176a39;
+  border-color: #c9e5c4;
+  background: #e5f5df;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Bottom trust panel                                                         */
+/* -------------------------------------------------------------------------- */
+
+.bottomPanel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-width: 0;
+  padding: 16px 19px;
+  border: 1px solid #d4e5d0;
+  border-radius: 15px;
+  background: linear-gradient(110deg, #f2f9eb, #ffffff);
+}
+
+.bottomMessage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.bottomIcon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d5e8c9;
+  border-radius: 11px;
+  color: #287545;
+  background: #e6f4da;
+}
+
+.bottomMessage > div:last-child {
+  min-width: 0;
+}
+
+.bottomMessage b {
+  display: block;
+  margin-bottom: 5px;
+  color: #254a2e;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.bottomMessage p {
+  max-width: 650px;
+  margin: 0;
+  color: #647867;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+.bottomTrust {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border: 1px solid #d7e8d1;
+  border-radius: 999px;
+  color: #347047;
+  background: #ffffff;
+  font-size: 9px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.bottomTrust svg {
+  color: #328450;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animations                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@keyframes refreshSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+}
+
+@media (max-width: 850px) {
+  .welcome {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .welcomeActions {
+    justify-content: flex-start;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page {
+    gap: 16px;
+  }
+
+  .welcome h1 {
+    font-size: 28px;
+  }
+
+  .welcome p {
+    font-size: 11px;
+  }
+
+  .kicker {
+    margin-bottom: 10px;
+    font-size: 8px;
+  }
+
+  .welcomeActions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .date {
+    min-height: 39px;
+    font-size: 9px;
+  }
+
+  .refreshButton {
+    min-height: 39px;
+  }
+
+  .groupBanner {
+    gap: 10px;
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .groupIcon {
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .groupText {
+    min-width: 0;
+  }
+
+  .groupText b {
+    font-size: 11px;
+  }
+
+  .groupText small {
+    font-size: 7px;
+  }
+
+  .groupText span {
+    font-size: 9px;
+  }
+
+  .status {
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+
+  .stats {
+    gap: 9px;
+  }
+
+  .grid {
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .panelHead {
+    margin-bottom: 14px;
+  }
+
+  .panelHead h2 {
+    font-size: 15px;
+  }
+
+  .panelHead p {
+    font-size: 9px;
+  }
+
+  .holiday {
+    padding: 14px 12px;
+  }
+
+  .session {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .sessionIcon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .sessionInfo b {
+    font-size: 10px;
+  }
+
+  .sessionInfo span {
+    font-size: 8px;
+  }
+
+  .badge {
+    max-width: 115px;
+    padding: 5px 7px;
+    font-size: 7px;
+  }
+
+  .rewardBalance {
+    min-height: 138px;
+    padding: 16px;
+  }
+
+  .certPanel {
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .certIcon {
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .certCopy h2 {
+    font-size: 11px;
+  }
+
+  .certCopy p {
+    font-size: 9px;
+  }
+
+  .certStatus {
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+
+  .bottomPanel {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 13px;
+    padding: 14px;
+  }
+
+  .bottomMessage {
+    align-items: flex-start;
+  }
+
+  .bottomTrust {
+    margin-left: 50px;
+  }
+}
+
+@media (max-width: 440px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .welcome h1 {
+    font-size: 26px;
+  }
+
+  .date {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .groupBanner {
+    flex-wrap: wrap;
+  }
+
+  .groupText {
+    flex: 1 1 calc(100% - 52px);
+  }
+
+  .status {
+    margin-left: 48px;
+  }
+
+  .session {
+    align-items: center;
+  }
+
+  .sessionInfo {
+    flex-basis: calc(100% - 150px);
+  }
+
+  .badge {
+    white-space: normal;
+  }
+
+  .certPanel {
+    flex-wrap: wrap;
+  }
+
+  .certStatus {
+    margin-left: 44px;
+  }
+
+  .rewardFoot {
+    align-items: flex-start;
+  }
+
+  .rewardFoot > div {
+    font-size: 9px;
+  }
+
+  .rewardFoot a {
+    font-size: 8px;
+  }
+}
+
+@media (max-width: 350px) {
+  .date {
+    width: 100%;
+  }
+
+  .refreshButton {
+    width: 100%;
+  }
+
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .badge {
+    margin-left: 41px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .refreshing {
+    animation: none;
+  }
+
+  .refreshButton,
+  .session,
+  .cta {
+    transition: none;
+  }
+}

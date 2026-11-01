@@ -33,6 +33,13 @@ const buildCsv = (archives) => {
   }
   return rows.map(row=>row.map(csvEscape).join(',')).join('\r\n');
 };
+router.post('/invite/validate', asyncHandler(async(req,res)=>{
+  const token=String(req.body.inviteToken||'');
+  if(token.length<20) throw new HttpError(400,'A valid group invitation link is required.');
+  const group=await InternshipGroup.findOne({inviteTokenHash:hash(token),inviteActive:true}).select('name description whatsappGroupCode plannedStartDate durationDays status');
+  if(!group||['completed','completion_pending'].includes(group.status)) throw new HttpError(400,'This group invitation is invalid or no longer accepting registrations.');
+  res.json({group:{name:group.name,description:group.description,whatsappGroupCode:group.whatsappGroupCode,plannedStartDate:group.plannedStartDate,durationDays:group.durationDays,status:group.status}});
+}));
 router.get('/', requireAuth, asyncHandler(async(req,res)=>{
   if(req.user.role==='admin') {
     const groups=await InternshipGroup.find().sort({createdAt:-1}).lean();

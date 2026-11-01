@@ -1,0 +1,450 @@
+/* =========================================================
+   VELOOP REWARDS — REWARD MAP HEADER
+   Component-scoped CSS Module
+========================================================= */
+
+.header {
+  position: relative;
+  z-index: 10;
+
+  display: flex;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  min-width: 0;
+
+  padding: 16px 22px;
+
+  border-bottom: 1px solid #e5eee7;
+
+  background:
+    radial-gradient(circle at 0% 0%, rgb(198 235 205 / 30%), transparent 38%),
+    linear-gradient(110deg, #f2fff9 0%, #ffffff 52%, #fff9e9 100%);
+}
+
+/* =========================================================
+   TITLE AREA
+========================================================= */
+
+.title {
+  display: flex;
+
+  min-width: 0;
+  flex: 1;
+
+  align-items: center;
+  gap: 13px;
+}
+
+.icon {
+  display: grid;
+
+  width: 48px;
+  height: 48px;
+
+  flex: 0 0 48px;
+
+  place-items: center;
+
+  border: 1px solid #d8eadc;
+  border-radius: 16px;
+
+  color: #24855c;
+
+  background: linear-gradient(145deg, #ffffff, #effaf0);
+
+  box-shadow:
+    0 5px 15px rgb(36 133 92 / 8%),
+    inset 0 1px 0 #ffffff;
+}
+
+.headingContent {
+  min-width: 0;
+}
+
+.kicker {
+  display: flex;
+
+  align-items: center;
+  gap: 6px;
+
+  color: #b48125;
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+
+  text-transform: uppercase;
+}
+
+.headingContent h2 {
+  margin: 6px 0 0;
+
+  color: #203449;
+
+  font-size: clamp(17px, 2vw, 21px);
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.headingContent p {
+  margin: 4px 0 0;
+
+  color: #728194;
+
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+/* =========================================================
+   ACTION AREA
+========================================================= */
+
+.actions {
+  display: flex;
+
+  min-width: 0;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: flex-end;
+
+  gap: 8px;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress {
+  display: flex;
+
+  min-width: 145px;
+  align-items: center;
+  gap: 9px;
+
+  margin-right: 5px;
+  padding: 8px 11px;
+
+  border: 1px solid #e8dfc8;
+  border-radius: 13px;
+
+  background: rgb(255 255 255 / 80%);
+
+  box-shadow: 0 3px 10px rgb(80 63 27 / 3%);
+}
+
+.progressIcon {
+  display: grid;
+
+  width: 32px;
+  height: 32px;
+
+  flex: 0 0 32px;
+
+  place-items: center;
+
+  border: 1px solid #efdfb6;
+  border-radius: 10px;
+
+  color: #b48125;
+
+  background: #fff8e6;
+}
+
+.progressContent {
+  display: grid;
+
+  min-width: 0;
+
+  gap: 3px;
+}
+
+.progressContent > strong {
+  color: #6849aa;
+
+  font-size: 19px;
+  font-weight: 950;
+  line-height: 1;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.progressContent > span {
+  display: flex;
+
+  align-items: center;
+  gap: 4px;
+
+  color: #818496;
+
+  font-size: 8px;
+  font-weight: 750;
+
+  white-space: nowrap;
+}
+
+.progressContent > span svg {
+  flex: 0 0 auto;
+  color: #31936a;
+}
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.actionButton {
+  display: inline-flex;
+
+  min-width: 41px;
+  min-height: 41px;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  padding: 9px 11px;
+
+  border: 1px solid #e4e6eb;
+  border-radius: 12px;
+
+  color: #554b6d;
+
+  background: #ffffff;
+
+  cursor: pointer;
+
+  box-shadow: 0 3px 10px rgb(42 32 62 / 3%);
+
+  transition:
+    color 170ms ease,
+    background 170ms ease,
+    border-color 170ms ease,
+    transform 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  border-color: #d8caec;
+
+  color: #6946a9;
+
+  background: #f7f3ff;
+
+  box-shadow: 0 6px 15px rgb(90 62 139 / 9%);
+}
+
+.actionButton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.actionButton:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.actionLabel,
+.closeLabel {
+  font-size: 10px;
+  font-weight: 850;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.closeButton:hover:not(:disabled) {
+  border-color: #f0c7cc;
+
+  color: #b63b4b;
+
+  background: #fff1f2;
+
+  box-shadow: 0 6px 15px rgb(182 59 75 / 8%);
+}
+
+/* =========================================================
+   SPIN ANIMATION
+========================================================= */
+
+.spin {
+  animation: headerSpin 850ms linear infinite;
+}
+
+@keyframes headerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .header {
+    gap: 12px;
+    padding: 14px 17px;
+  }
+
+  .progress {
+    min-width: 125px;
+    padding: 7px 9px;
+  }
+
+  .progressContent > strong {
+    font-size: 17px;
+  }
+}
+
+/* =========================================================
+   SMALL TABLET
+========================================================= */
+
+@media (max-width: 650px) {
+  .header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .progress {
+    flex: 1;
+    margin-right: auto;
+  }
+
+  .actionButton {
+    min-height: 39px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+  .header {
+    gap: 12px;
+    padding: 13px;
+  }
+
+  .title {
+    gap: 10px;
+  }
+
+  .icon {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+
+    border-radius: 13px;
+  }
+
+  .headingContent h2 {
+    font-size: 17px;
+  }
+
+  .headingContent p {
+    font-size: 10px;
+  }
+
+  .kicker {
+    font-size: 8px;
+  }
+
+  .actions {
+    gap: 7px;
+  }
+
+  .progress {
+    min-width: 0;
+    padding: 7px 9px;
+  }
+
+  .progressIcon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .progressContent > span {
+    font-size: 8px;
+  }
+
+  .actionButton {
+    min-width: 39px;
+    min-height: 39px;
+
+    padding: 8px;
+  }
+
+  .actionLabel,
+  .closeLabel {
+    display: none;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 340px) {
+  .header {
+    padding: 11px;
+  }
+
+  .headingContent h2 {
+    font-size: 15px;
+  }
+
+  .headingContent p {
+    max-width: 200px;
+    font-size: 9px;
+  }
+
+  .progress {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .progressContent > strong {
+    font-size: 16px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation: none;
+  }
+
+  .actionButton {
+    transition: none;
+  }
+
+  .actionButton:hover,
+  .actionButton:active {
+    transform: none;
+  }
+}

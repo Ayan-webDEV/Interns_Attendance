@@ -1,0 +1,635 @@
+/* =========================================================
+   VELOOP REWARDS — REWARD CHECKPOINT
+   Component-scoped CSS Module
+========================================================= */
+
+.checkpoint {
+  position: absolute;
+  z-index: 4;
+
+  display: flex;
+
+  width: clamp(92px, 18%, 155px);
+  min-width: 0;
+  min-height: 108px;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 3px;
+
+  padding: 6px 5px 7px;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid transparent;
+  border-radius: 18px;
+
+  color: #26394b;
+  background: rgb(255 255 255 / 5%);
+
+  text-align: center;
+
+  cursor: pointer;
+
+  animation: checkpointEnter 420ms ease both;
+  animation-delay: var(--checkpoint-delay, 0ms);
+
+  transition:
+    filter 180ms ease,
+    transform 180ms ease,
+    background 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+/* =========================================================
+   HOVER AND FOCUS
+========================================================= */
+
+.checkpoint:hover,
+.checkpoint:focus-visible {
+  z-index: 12;
+
+  transform: translate(-50%, -53%) scale(1.045);
+
+  border-color: rgb(255 255 255 / 95%);
+
+  background: rgb(255 255 255 / 90%);
+
+  filter: drop-shadow(0 8px 12px rgb(55 35 105 / 18%));
+
+  box-shadow:
+    0 9px 24px rgb(46 69 47 / 10%),
+    inset 0 1px 0 #ffffff;
+
+  outline: none;
+}
+
+.checkpoint:focus-visible {
+  box-shadow:
+    0 0 0 3px #a78bfa,
+    0 9px 24px rgb(46 69 47 / 10%);
+}
+
+.checkpoint:active {
+  transform: translate(-50%, -50%) scale(0.97);
+}
+
+/* =========================================================
+   ARTWORK FRAME
+========================================================= */
+
+.art {
+  position: relative;
+
+  display: grid;
+
+  width: clamp(56px, 7vw, 84px);
+  height: clamp(56px, 7vw, 84px);
+
+  flex: 0 0 auto;
+
+  place-items: center;
+
+  overflow: visible;
+
+  border: 2px solid rgb(255 255 255 / 96%);
+  border-radius: 23px;
+
+  background: linear-gradient(145deg, #ffffff, #f3f1fa);
+
+  box-shadow:
+    0 7px 18px rgb(48 34 92 / 15%),
+    0 2px 5px rgb(40 45 55 / 5%);
+
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+/* Actual checkpoint illustration */
+
+.art img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  padding: 3px;
+
+  object-fit: contain;
+  object-position: center;
+
+  border-radius: inherit;
+
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* =========================================================
+   IMAGE FALLBACK
+========================================================= */
+
+.artFallbackMode {
+  border-color: #d9c9f0;
+
+  background: linear-gradient(145deg, #ffffff, #f3edff);
+}
+
+.fallback {
+  display: grid;
+
+  position: absolute;
+  inset: 0;
+
+  place-items: center;
+
+  border-radius: inherit;
+
+  color: #704bb8;
+
+  background: linear-gradient(145deg, #ffffff, #f1eaff);
+
+  pointer-events: none;
+}
+
+/* =========================================================
+   STATUS INDICATOR
+========================================================= */
+
+.statusIndicator {
+  position: absolute;
+
+  right: -5px;
+  bottom: -5px;
+
+  display: grid;
+
+  width: 23px;
+  height: 23px;
+
+  place-items: center;
+
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+
+  color: #ffffff;
+
+  background: #8995a4;
+
+  box-shadow: 0 3px 8px rgb(35 40 45 / 16%);
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.checkpoint:hover .statusIndicator,
+.checkpoint:focus-visible .statusIndicator {
+  transform: scale(1.1);
+}
+
+/* Approved / credited */
+
+.indicator_approved,
+.indicator_completed,
+.indicator_credited {
+  color: #ffffff;
+  background: #299764;
+
+  box-shadow: 0 3px 9px rgb(36 145 91 / 27%);
+}
+
+/* Pending */
+
+.indicator_pending {
+  color: #60400e;
+  background: #f4c45f;
+
+  box-shadow: 0 3px 9px rgb(186 135 44 / 25%);
+}
+
+/* Claimable */
+
+.indicator_claimable {
+  color: #5c3b0b;
+  background: #f4d16e;
+}
+
+/* Rejected / missed */
+
+.indicator_rejected,
+.indicator_missed {
+  color: #ffffff;
+  background: #d85662;
+}
+
+/* Holiday */
+
+.indicator_holiday {
+  color: #ffffff;
+  background: #3688bf;
+}
+
+/* =========================================================
+   CHECKPOINT TITLE
+========================================================= */
+
+.label {
+  display: block;
+
+  width: 100%;
+  max-width: 100%;
+
+  overflow: hidden;
+
+  margin-top: 5px;
+  padding: 5px 8px;
+
+  border: 1px solid rgb(255 255 255 / 97%);
+  border-radius: 9px;
+
+  color: #334b3b;
+
+  background: rgb(255 255 255 / 95%);
+
+  box-shadow: 0 3px 9px rgb(46 35 80 / 8%);
+
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1.4;
+
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease;
+}
+
+/* =========================================================
+   CONFIRMED REWARD AMOUNT
+========================================================= */
+
+.amount {
+  display: block;
+
+  max-width: 100%;
+
+  overflow-wrap: anywhere;
+
+  margin-top: 2px;
+
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1.4;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.amountCredited {
+  color: #147649;
+}
+
+.amountPending {
+  color: #a16a13;
+}
+
+/* =========================================================
+   READY BADGE
+========================================================= */
+
+.claimBadge {
+  position: absolute;
+
+  top: -3px;
+  right: -7px;
+
+  display: inline-flex;
+
+  align-items: center;
+  gap: 3px;
+
+  padding: 4px 6px;
+
+  border: 1px solid #ffe6a3;
+  border-radius: 7px;
+
+  color: #805100;
+
+  background: #fff2c9;
+
+  box-shadow: 0 3px 8px rgb(70 45 0 / 10%);
+
+  font-size: 8px;
+  font-weight: 950;
+
+  animation: claimBadgePulse 2.5s ease-in-out infinite;
+}
+
+/* =========================================================
+   SELECTED CHECKPOINT
+========================================================= */
+
+.selected {
+  z-index: 10;
+
+  border-color: #ac91df;
+
+  background: rgb(255 255 255 / 92%);
+
+  box-shadow:
+    0 0 0 4px rgb(142 105 214 / 17%),
+    0 9px 24px rgb(46 35 80 / 15%);
+}
+
+.selected .art {
+  transform: translateY(-2px);
+
+  border-color: #a58bd3;
+
+  box-shadow:
+    0 0 0 5px rgb(142 105 214 / 12%),
+    0 9px 22px rgb(48 34 92 / 17%);
+}
+
+.selected .label {
+  border-color: #bca8e4;
+
+  color: #5835a0;
+
+  background: #faf7ff;
+
+  box-shadow: 0 0 0 2px rgb(142 105 214 / 13%);
+}
+
+/* =========================================================
+   APPROVED AND COMPLETED
+========================================================= */
+
+.status_completed .art,
+.status_approved .art,
+.status_credited .art {
+  border-color: #b9e8cb;
+
+  box-shadow:
+    0 0 0 4px rgb(71 190 125 / 12%),
+    0 8px 20px rgb(25 100 65 / 12%);
+}
+
+.status_completed .label,
+.status_credited .label {
+  color: #176d45;
+}
+
+/* =========================================================
+   PENDING
+========================================================= */
+
+.status_pending .art {
+  border-color: #f4d394;
+
+  box-shadow:
+    0 0 0 4px rgb(238 176 55 / 12%),
+    0 8px 20px rgb(128 83 17 / 10%);
+}
+
+.status_pending .label {
+  color: #8c631d;
+}
+
+/* =========================================================
+   CLAIMABLE
+========================================================= */
+
+.status_claimable .art {
+  border-color: #efcf7f;
+
+  box-shadow:
+    0 0 0 5px rgb(255 204 77 / 20%),
+    0 8px 22px rgb(125 85 0 / 14%);
+
+  animation: claimPulse 2.8s ease-in-out infinite;
+}
+
+/* =========================================================
+   LOCKED
+========================================================= */
+
+.status_locked {
+  filter: saturate(0.82);
+}
+
+.status_locked .art {
+  border-color: #d4d2dc;
+}
+
+.status_locked .label {
+  color: #5d6270;
+}
+
+/* =========================================================
+   REJECTED / MISSED
+========================================================= */
+
+.status_rejected .art,
+.status_missed .art {
+  border-color: #efc4c9;
+
+  background: #fff1f2;
+}
+
+.status_rejected .label,
+.status_missed .label {
+  color: #a63d49;
+}
+
+/* =========================================================
+   HOLIDAY
+========================================================= */
+
+.status_holiday .art {
+  border-color: #bcdced;
+
+  background: #eff8ff;
+}
+
+.status_holiday .label {
+  color: #24678f;
+}
+
+/* =========================================================
+   UNKNOWN
+========================================================= */
+
+.status_unknown .art {
+  border-color: #d8dce4;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes checkpointEnter {
+  from {
+    opacity: 0;
+    translate: 0 9px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@keyframes claimPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 4px rgb(255 204 77 / 14%),
+      0 8px 22px rgb(125 85 0 / 14%);
+  }
+
+  50% {
+    box-shadow:
+      0 0 0 8px rgb(255 204 77 / 22%),
+      0 8px 22px rgb(125 85 0 / 14%);
+  }
+}
+
+@keyframes claimBadgePulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .checkpoint {
+    width: 20%;
+    min-height: 98px;
+  }
+
+  .art {
+    width: 65px;
+    height: 65px;
+    border-radius: 19px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .checkpoint {
+    width: 29%;
+    min-height: 90px;
+
+    gap: 2px;
+
+    padding: 4px 3px;
+    border-radius: 14px;
+  }
+
+  .art {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 17px;
+  }
+
+  .statusIndicator {
+    width: 20px;
+    height: 20px;
+
+    right: -4px;
+    bottom: -4px;
+  }
+
+  .label {
+    max-width: 110px;
+
+    padding: 4px 6px;
+
+    font-size: 8px;
+  }
+
+  .amount {
+    font-size: 8px;
+  }
+
+  .claimBadge {
+    right: -3px;
+
+    padding: 3px 5px;
+
+    font-size: 7px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+  .checkpoint {
+    width: 31%;
+    min-height: 84px;
+  }
+
+  .art {
+    width: 49px;
+    height: 49px;
+
+    border-radius: 15px;
+  }
+
+  .statusIndicator {
+    width: 18px;
+    height: 18px;
+  }
+
+  .label {
+    max-width: 94px;
+
+    font-size: 7px;
+  }
+}
+
+/* =========================================================
+   HOVER DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .checkpoint:hover {
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .checkpoint,
+  .checkpoint:hover,
+  .claimBadge,
+  .status_claimable .art {
+    animation: none !important;
+    transition: none !important;
+  }
+}

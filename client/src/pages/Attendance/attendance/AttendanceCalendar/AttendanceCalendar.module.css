@@ -1,0 +1,1333 @@
+/* -------------------------------------------------------------------------- */
+/* Premium attendance calendar — VELoop cream, sage and plum palette          */
+/* -------------------------------------------------------------------------- */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Section heading                                                            */
+/* -------------------------------------------------------------------------- */
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.headingGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.headingIcon {
+  display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #684b70;
+  border-radius: 13px;
+  color: #fdf5e4;
+  background: #503559;
+  box-shadow:
+    0 7px 18px rgba(80, 53, 89, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.headingGroup > div {
+  min-width: 0;
+}
+
+.eyebrow {
+  color: #765b7e;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  line-height: 1.5;
+}
+
+.headingGroup h2 {
+  margin: 4px 0 0;
+  color: #29362d;
+  font-size: 20px;
+  line-height: 1.3;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+}
+
+.headingGroup p {
+  margin: 5px 0 0;
+  color: #718078;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.monthInfo {
+  flex: 0 0 auto;
+  padding: 8px 12px;
+  border: 1px solid #e6dfd1;
+  border-radius: 10px;
+  color: #503559;
+  background: #fdf5e4;
+  box-shadow: 0 3px 9px rgba(80, 53, 89, 0.045);
+  font-size: 10px;
+  font-weight: 850;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main calendar card                                                         */
+/* -------------------------------------------------------------------------- */
+
+.calendarCard {
+  width: 100%;
+  min-width: 0;
+  padding: 21px;
+  border: 1px solid #e5e7dc;
+  border-radius: 19px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(234, 244, 232, 0.52),
+      transparent 32%
+    ),
+    #ffffff;
+  box-shadow:
+    0 3px 8px rgba(35, 48, 38, 0.025),
+    0 13px 34px rgba(35, 48, 38, 0.045);
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.calendarCard:hover {
+  border-color: #d6d9cc;
+  box-shadow:
+    0 4px 10px rgba(35, 48, 38, 0.03),
+    0 17px 40px rgba(35, 48, 38, 0.065);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Month toolbar                                                              */
+/* -------------------------------------------------------------------------- */
+
+.calendarToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eceee7;
+}
+
+.monthHeading {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.monthHeading h3 {
+  margin: 0;
+  color: #29362d;
+  font-size: 18px;
+  line-height: 1.3;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.monthHeading > span {
+  color: #8b968d;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.monthControls {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.monthButton,
+.monthDisplay {
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e4e4da;
+  border-radius: 10px;
+  color: #503559;
+  background: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.monthButton {
+  width: 36px;
+}
+
+.monthDisplay {
+  min-width: 112px;
+  padding: 0 12px;
+  border-color: #503559;
+  color: #fdf5e4;
+  background: #503559;
+  box-shadow: 0 4px 10px rgba(80, 53, 89, 0.15);
+  font-size: 10px;
+  font-weight: 900;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.monthButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #bdaac4;
+  background: #f5eff7;
+  box-shadow: 0 4px 10px rgba(80, 53, 89, 0.08);
+}
+
+.monthButton:active:not(:disabled),
+.monthButton:focus-visible,
+.dayCell:focus-visible {
+  outline: 3px solid rgba(80, 53, 89, 0.25);
+  outline-offset: 3px;
+}
+
+.monthButton:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Monthly summary cards                                                      */
+/* -------------------------------------------------------------------------- */
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+  min-width: 0;
+  margin: 17px 0 20px;
+}
+
+.summaryCard {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 83px;
+  padding: 12px;
+  overflow: hidden;
+  border: 1px solid var(--summary-border, #e6e9e1);
+  border-radius: 14px;
+  background: var(--summary-bg, #fafbf8);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.summaryCard::after {
+  position: absolute;
+  right: -24px;
+  bottom: -36px;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: var(--summary-accent, #503559);
+  content: "";
+  opacity: 0.055;
+  pointer-events: none;
+  transition:
+    transform 220ms ease,
+    opacity 220ms ease;
+}
+
+.summaryCard:hover {
+  z-index: 1;
+  transform: translateY(-3px);
+  border-color: var(--summary-accent, #503559);
+  box-shadow: 0 8px 19px rgba(38, 49, 39, 0.075);
+}
+
+.summaryCard:hover::after {
+  transform: scale(1.25);
+  opacity: 0.09;
+}
+
+.approvedSummary {
+  --summary-bg: #edf6e9;
+  --summary-border: #a8c99f;
+  --summary-accent: #14532d;
+}
+
+.missedSummary {
+  --summary-bg: #fff1f0;
+  --summary-border: #fda29b;
+  --summary-accent: #b42318;
+}
+
+.pendingSummary {
+  --summary-bg: #fdf7e9;
+  --summary-border: #eee3c9;
+  --summary-accent: #94702d;
+}
+
+.holidaySummary {
+  --summary-bg: #edf2ff;
+  --summary-border: #cfdaf5;
+  --summary-accent: #294d86;
+}
+
+.summaryIcon {
+  display: inline-grid;
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  transition: transform 180ms ease;
+}
+
+.summaryCard:hover .summaryIcon {
+  transform: translateY(-2px) rotate(-5deg);
+}
+
+.approvedIcon {
+  border-color: #a8c99f;
+  color: #14532d;
+  background: #d6e9d1;
+}
+
+.missedIcon {
+  border-color: #fda29b;
+  color: #912018;
+  background: #fee4e2;
+}
+
+.pendingIcon {
+  border-color: #eddfbf;
+  color: #86621f;
+  background: #f8edcf;
+}
+
+.holidayIcon {
+  border-color: #c3d0f0;
+  color: #294d86;
+  background: #dce6fb;
+}
+
+.summaryCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.summaryLabel {
+  overflow: hidden;
+  color: #67746a;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.summaryValue {
+  color: #28392d;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryNote {
+  overflow: hidden;
+  color: #8b968c;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Calendar grid                                                              */
+/* -------------------------------------------------------------------------- */
+
+.calendarGrid {
+  width: 100%;
+  min-width: 0;
+}
+
+.weekdayRow,
+.dayGrid {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.weekdayRow {
+  gap: 7px;
+  margin-bottom: 9px;
+}
+
+.weekdayRow span {
+  display: flex;
+  min-width: 0;
+  min-height: 29px;
+  align-items: center;
+  justify-content: center;
+  color: #7e8a80;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.045em;
+  text-align: center;
+}
+
+.dayGrid {
+  gap: 7px;
+  grid-auto-rows: minmax(82px, auto);
+}
+
+.emptyDay {
+  min-width: 0;
+  min-height: 82px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Calendar day cell                                                          */
+/* -------------------------------------------------------------------------- */
+
+.dayCell {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 82px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 10px 4px 8px;
+  overflow: hidden;
+  border: 1px solid #e6e9e1;
+  border-radius: 13px;
+  color: #344137;
+  background: #fafbf8;
+  cursor: pointer;
+  text-align: center;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    filter 160ms ease;
+}
+
+.dayCell:hover {
+  z-index: 2;
+  transform: translateY(-2px);
+  border-color: #503559;
+  box-shadow: 0 7px 17px rgba(45, 38, 49, 0.1);
+  filter: saturate(1.08);
+}
+
+.dayCell:active {
+  transform: scale(0.98);
+}
+
+.dayNumber {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  width: 27px;
+  height: 27px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  color: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* Status backgrounds for dates where both sessions match */
+.approved {
+  border-color: #a8c99f;
+  color: #14532d;
+  background: #d6e9d1;
+}
+.pending {
+  border-color: #eadcb8;
+  background: #fdf5e4;
+}
+
+.rejected {
+  border-color: #edc9c1;
+  background: #fceae6;
+}
+
+.missed,
+.adminAbsent {
+  border-color: #d9c7df;
+  background: #f0e7f3;
+}
+
+.missed {
+  border-color: #fda29b;
+  color: #912018;
+  background: #fee4e2;
+}
+
+.holiday {
+  border-color: #aebfe8;
+  color: #294d86;
+  background: #e1eafc;
+}
+
+.upcoming,
+.unknown {
+  border-color: #e5e8e1;
+  background: #f5f6f2;
+}
+
+.open {
+  border-color: #c9e2ca;
+  background: #e8f5ea;
+}
+
+.insufficient {
+  border-color: #eadcb8;
+  background: #fdf5e4;
+}
+
+.outside {
+  border-color: #eaede7;
+  background: #f7f8f5;
+  opacity: 0.55;
+}
+
+.mixedDay {
+  border-color: #d8d7d1;
+  background: #f8f8f4;
+}
+
+/* Today and selected state */
+.todayCell {
+  border: 2px solid #503559;
+  box-shadow:
+    0 0 0 3px rgba(80, 53, 89, 0.09),
+    0 4px 12px rgba(80, 53, 89, 0.08);
+}
+
+.todayMarker {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  left: 4px;
+  z-index: 2;
+  color: #503559;
+  font-size: 7px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+}
+
+.todayCell .dayNumber {
+  margin-top: 9px;
+}
+
+.selectedCell {
+  z-index: 3;
+  outline: 2px solid #503559;
+  outline-offset: 2px;
+  box-shadow:
+    0 0 0 4px rgba(80, 53, 89, 0.1),
+    0 8px 19px rgba(80, 53, 89, 0.14);
+}
+
+.selectedCell .dayNumber {
+  color: #fdf5e4;
+  background: #503559;
+}
+
+.todayCell.selectedCell {
+  border-color: #503559;
+}
+
+/* Two session letters */
+.sessionStatusPair {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.sessionStatusLetter {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(56, 65, 56, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(35, 45, 36, 0.055);
+  font-size: 9px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.sessionStatusDivider {
+  color: #7c877d;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.dayStatus {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  overflow: hidden;
+  color: #47564a;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.045em;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recordedMarker {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  left: 4px;
+  color: #b42318;
+  font-size: 6px;
+  font-weight: 950;
+  letter-spacing: 0.07em;
+  line-height: 1;
+}
+
+.holiday .dayStatus {
+  margin-top: 2px;
+  color: #294d86;
+  font-size: 8px;
+  font-weight: 950;
+  letter-spacing: 0.06em;
+}
+
+.holidayLock {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  color: #294d86;
+  opacity: 0.95;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Legend                                                                     */
+/* -------------------------------------------------------------------------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 11px 18px;
+  margin-top: 19px;
+  padding-top: 16px;
+  border-top: 1px solid #eceee7;
+}
+
+.legendItem {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+  color: #657268;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.legendDot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border: 1px solid rgba(44, 55, 45, 0.08);
+  border-radius: 3px;
+  box-shadow: 0 1px 2px rgba(35, 45, 36, 0.08);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Backend tracker note                                                       */
+/* -------------------------------------------------------------------------- */
+
+.trustNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid #e1d6e5;
+  border-radius: 12px;
+  color: #503559;
+  background: linear-gradient(110deg, #f6f0f7, #fbf8f2);
+}
+
+.trustIcon {
+  flex: 0 0 17px;
+  margin-top: 1px;
+  color: #503559;
+}
+
+.trustNote p {
+  margin: 0;
+  color: #66576b;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Selected day detail panel                                                  */
+/* -------------------------------------------------------------------------- */
+
+.selectedDayPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 19px;
+  border: 1px solid #e5e1d7;
+  border-radius: 17px;
+  background: #ffffff;
+  box-shadow:
+    0 3px 8px rgba(35, 48, 38, 0.025),
+    0 10px 27px rgba(35, 48, 38, 0.04);
+  animation: revealDetails 180ms ease-out;
+}
+
+.selectedDayHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #eceee7;
+}
+
+.selectedEyebrow {
+  color: #765b7e;
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+}
+
+.selectedDayHeader h3 {
+  margin: 5px 0 0;
+  color: #29362d;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 900;
+}
+
+.currentDayBadge {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border: 1px solid #684b70;
+  border-radius: 999px;
+  color: #fdf5e4;
+  background: #503559;
+  box-shadow: 0 3px 9px rgba(80, 53, 89, 0.13);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+/* Selected sessions */
+.selectedSessions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.selectedSession {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid #e7eae2;
+  border-radius: 13px;
+  background: #fafbf8;
+}
+
+.selected_approved {
+  border-color: #a8c99f;
+  background: #f2f8ef;
+}
+
+.selected_pending {
+  border-color: #eee2c6;
+  background: #fffcf5;
+}
+
+.selected_rejected {
+  border-color: #efd1ca;
+  background: #fff9f7;
+}
+
+.selected_missed,
+.selected_adminAbsent {
+  border-color: #e2d5e7;
+  background: #faf6fb;
+}
+
+.selected_missed {
+  border-color: #fda29b;
+  background: #fff1f0;
+}
+
+.selectedSessionTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.selectedSessionInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.sessionNumber {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #dfd3e3;
+  border-radius: 10px;
+  color: #fdf5e4;
+  background: #503559;
+  box-shadow: 0 3px 8px rgba(80, 53, 89, 0.12);
+  font-size: 10px;
+  font-weight: 950;
+  font-variant-numeric: tabular-nums;
+}
+
+.selectedSessionInfo > div {
+  min-width: 0;
+}
+
+.selectedSessionInfo strong {
+  display: block;
+  color: #29362d;
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 900;
+}
+
+.selectedSessionInfo p {
+  max-width: 240px;
+  margin: 4px 0 0;
+  color: #758178;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.sessionStatus {
+  display: inline-flex;
+  flex: 0 0 auto;
+  max-width: 150px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 9px;
+  line-height: 1.35;
+  font-weight: 850;
+  text-align: center;
+}
+
+.sessionStatus svg {
+  flex: 0 0 auto;
+}
+
+.sessionStatus.approved {
+  border-color: #a8c99f;
+  color: #14532d;
+  background: #d6e9d1;
+}
+
+.sessionStatus.pending {
+  border-color: #eadcb8;
+  color: #86621f;
+  background: #fdf5e4;
+}
+
+.sessionStatus.rejected {
+  border-color: #edc9c1;
+  color: #a63d32;
+  background: #fceae6;
+}
+
+.sessionStatus.missed,
+.sessionStatus.adminAbsent {
+  border-color: #d2bddb;
+  color: #503559;
+  background: #e9dded;
+}
+
+.sessionStatus.missed {
+  border-color: #fda29b;
+  color: #912018;
+  background: #fee4e2;
+}
+
+.sessionStatus.holiday {
+  border-color: #aebfe8;
+  color: #294d86;
+  background: #e1eafc;
+}
+
+.sessionStatus.outside,
+.sessionStatus.upcoming,
+.sessionStatus.unknown {
+  border-color: #dfe5dc;
+  color: #4b5c51;
+  background: #eff2ec;
+}
+
+.sessionStatus.open {
+  border-color: #c9e2ca;
+  color: #24633d;
+  background: #e8f5ea;
+}
+
+.sessionStatus.insufficient {
+  border-color: #eadcb8;
+  color: #86621f;
+  background: #fdf5e4;
+}
+
+.sessionDescription {
+  margin: 0;
+  color: #66746a;
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.recordMeta {
+  margin: -3px 0 0;
+  color: #503559;
+  font-size: 9px;
+  font-weight: 750;
+  line-height: 1.5;
+}
+
+.reasonNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 9px 10px;
+  border: 1px solid #e6dce9;
+  border-radius: 9px;
+  color: #66576b;
+  background: #f8f3f9;
+  font-size: 9px;
+  line-height: 1.55;
+}
+
+.reasonNote svg {
+  flex: 0 0 13px;
+  margin-top: 1px;
+  color: #503559;
+}
+
+.holidayNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -3px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #c7d4f2;
+  border-radius: 10px;
+  color: #294d86;
+  background: #eef3ff;
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 800;
+}
+
+.holidayNote svg {
+  flex: 0 0 auto;
+}
+
+.selectedFootnote {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid #eceee7;
+  color: #7d887f;
+  font-size: 9px;
+  line-height: 1.65;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Calendar footer                                                             */
+/* -------------------------------------------------------------------------- */
+
+.calendarFootnote {
+  margin: -2px 0 0;
+  color: #89948b;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+@keyframes revealDetails {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1050px) {
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .selectedSessions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .section {
+    gap: 13px;
+  }
+
+  .sectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .headingGroup {
+    gap: 9px;
+  }
+
+  .headingIcon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .headingGroup h2 {
+    font-size: 17px;
+  }
+
+  .headingGroup p {
+    font-size: 10px;
+  }
+
+  .monthInfo {
+    margin-left: 45px;
+    padding: 6px 9px;
+    font-size: 9px;
+  }
+
+  .calendarCard {
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .calendarToolbar {
+    gap: 9px;
+    padding-bottom: 13px;
+  }
+
+  .monthHeading h3 {
+    font-size: 15px;
+  }
+
+  .monthHeading > span {
+    font-size: 9px;
+  }
+
+  .monthControls {
+    gap: 4px;
+  }
+
+  .monthButton {
+    width: 30px;
+    height: 31px;
+  }
+
+  .monthDisplay {
+    min-width: 104px;
+    height: 31px;
+    padding: 0 8px;
+    font-size: 9px;
+  }
+
+  .summaryGrid {
+    gap: 8px;
+    margin: 13px 0 16px;
+  }
+
+  .summaryCard {
+    min-height: 72px;
+    gap: 8px;
+    padding: 9px;
+    border-radius: 11px;
+  }
+
+  .summaryIcon {
+    flex-basis: 31px;
+    width: 31px;
+    height: 31px;
+    border-radius: 9px;
+  }
+
+  .summaryIcon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .summaryLabel {
+    font-size: 8px;
+  }
+
+  .summaryValue {
+    font-size: 20px;
+  }
+
+  .summaryNote {
+    font-size: 7px;
+  }
+
+  .weekdayRow,
+  .dayGrid {
+    gap: 4px;
+  }
+
+  .weekdayRow {
+    margin-bottom: 6px;
+  }
+
+  .weekdayRow span {
+    min-height: 23px;
+    font-size: 8px;
+  }
+
+  .dayGrid {
+    grid-auto-rows: minmax(62px, auto);
+  }
+
+  .emptyDay,
+  .dayCell {
+    min-height: 62px;
+  }
+
+  .dayCell {
+    gap: 6px;
+    padding: 7px 2px 5px;
+    border-radius: 9px;
+  }
+
+  .dayNumber {
+    width: 23px;
+    height: 23px;
+    border-radius: 7px;
+    font-size: 10px;
+  }
+
+  .sessionStatusPair {
+    gap: 2px;
+  }
+
+  .sessionStatusLetter {
+    width: 17px;
+    height: 17px;
+    border-radius: 5px;
+    font-size: 8px;
+  }
+
+  .sessionStatusDivider {
+    font-size: 8px;
+  }
+
+  .dayStatus {
+    font-size: 7px;
+  }
+
+  .todayMarker {
+    top: 3px;
+    font-size: 6px;
+  }
+
+  .todayCell .dayNumber {
+    margin-top: 8px;
+  }
+
+  .recordedMarker {
+    display: none;
+  }
+
+  .legend {
+    gap: 9px 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+  }
+
+  .legendItem {
+    gap: 5px;
+    font-size: 9px;
+  }
+
+  .legendDot {
+    flex-basis: 7px;
+    width: 7px;
+    height: 7px;
+  }
+
+  .trustNote {
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px;
+  }
+
+  .trustNote p {
+    font-size: 9px;
+  }
+
+  .selectedDayPanel {
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .selectedSession {
+    padding: 11px;
+  }
+
+  .selectedSessionTop {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sessionStatus {
+    margin-left: 44px;
+  }
+
+  .calendarFootnote {
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 390px) {
+  .calendarCard {
+    padding: 10px;
+  }
+
+  .weekdayRow,
+  .dayGrid {
+    gap: 3px;
+  }
+
+  .dayGrid {
+    grid-auto-rows: minmax(54px, auto);
+  }
+
+  .emptyDay,
+  .dayCell {
+    min-height: 54px;
+  }
+
+  .dayCell {
+    gap: 5px;
+    padding: 5px 1px 4px;
+  }
+
+  .dayNumber {
+    width: 21px;
+    height: 21px;
+    font-size: 9px;
+  }
+
+  .sessionStatusLetter {
+    width: 15px;
+    height: 15px;
+    font-size: 7px;
+  }
+
+  .todayMarker {
+    display: none;
+  }
+
+  .todayCell .dayNumber {
+    margin-top: 0;
+  }
+
+  .dayStatus {
+    font-size: 6.5px;
+  }
+
+  .legend {
+    gap: 8px 10px;
+  }
+
+  .selectedDayHeader h3 {
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calendarCard,
+  .monthButton,
+  .summaryCard,
+  .summaryCard::after,
+  .summaryIcon,
+  .dayCell {
+    animation: none !important;
+    transition: none !important;
+  }
+}

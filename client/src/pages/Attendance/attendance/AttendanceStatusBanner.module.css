@@ -1,0 +1,293 @@
+/* -------------------------------------------------------------------------- */
+/* Banner container                                                           */
+/* -------------------------------------------------------------------------- */
+
+.banner {
+  --banner-accent: #22664b;
+  --banner-border: rgba(34, 102, 75, 0.16);
+  --banner-bg: #f0f8e9;
+  --banner-icon-bg: #e1f1d5;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+  padding: 19px 22px;
+  border: 1px solid var(--banner-border);
+  border-radius: 18px;
+  background: var(--banner-bg);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Tone variations                                                            */
+/* -------------------------------------------------------------------------- */
+
+.success {
+  --banner-accent: #176340;
+  --banner-border: rgba(34, 125, 76, 0.17);
+  --banner-bg: #eff8ef;
+  --banner-icon-bg: #dff1df;
+}
+
+.warning {
+  --banner-accent: #946513;
+  --banner-border: rgba(197, 145, 39, 0.2);
+  --banner-bg: #fff9e9;
+  --banner-icon-bg: #f8ebc8;
+}
+
+.error {
+  --banner-accent: #a53c32;
+  --banner-border: rgba(213, 91, 73, 0.2);
+  --banner-bg: #fff3f0;
+  --banner-icon-bg: #fbe1dc;
+}
+
+.info {
+  --banner-accent: #5365a2;
+  --banner-border: rgba(89, 125, 255, 0.17);
+  --banner-bg: #f2f4ff;
+  --banner-icon-bg: #e5eaff;
+}
+
+.default {
+  --banner-accent: #22664b;
+  --banner-border: rgba(34, 102, 75, 0.13);
+  --banner-bg: #f5f8f1;
+  --banner-icon-bg: #e8f1df;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Main status content                                                        */
+/* -------------------------------------------------------------------------- */
+
+.bannerMain {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  flex: 1 1 55%;
+  min-width: 0;
+}
+
+.statusIcon {
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--banner-border);
+  border-radius: 13px;
+  color: var(--banner-accent);
+  background: var(--banner-icon-bg);
+}
+
+.statusContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.titleRow h2 {
+  margin: 0;
+  color: var(--banner-accent);
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 850;
+  letter-spacing: -0.015em;
+}
+
+.statusContent > p {
+  max-width: 620px;
+  margin: 6px 0 0;
+  color: #66736a;
+  font-size: 12px;
+  line-height: 1.65;
+  font-weight: 550;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Group status pill                                                          */
+/* -------------------------------------------------------------------------- */
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 4px 8px;
+  border: 1px solid var(--banner-border);
+  border-radius: 999px;
+  color: var(--banner-accent);
+  background: rgba(255, 255, 255, 0.67);
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Banner details                                                             */
+/* -------------------------------------------------------------------------- */
+
+.bannerDetails {
+  flex: 0 1 45%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 17px;
+  min-width: 0;
+  padding-left: 19px;
+  border-left: 1px solid var(--banner-border);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.detailIcon {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  color: var(--banner-accent);
+  background: var(--banner-icon-bg);
+}
+
+.detailText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.detailLabel {
+  color: #8c998f;
+  font-size: 8px;
+  line-height: 1.2;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detailText strong {
+  max-width: 180px;
+  overflow: hidden;
+  color: #34463a;
+  font-size: 10px;
+  line-height: 1.45;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 1050px) {
+  .banner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .bannerMain,
+  .bannerDetails {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .bannerDetails {
+    justify-content: flex-start;
+    padding: 13px 0 0;
+    border-top: 1px solid var(--banner-border);
+    border-left: 0;
+  }
+
+  .detailText strong {
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 680px) {
+  .banner {
+    gap: 14px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .bannerMain {
+    gap: 10px;
+  }
+
+  .statusIcon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+
+  .statusIcon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .titleRow h2 {
+    font-size: 13px;
+  }
+
+  .statusContent > p {
+    font-size: 11px;
+  }
+
+  .bannerDetails {
+    gap: 13px;
+  }
+
+  .detail {
+    flex: 1 1 180px;
+  }
+
+  .detailText strong {
+    max-width: 100%;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 390px) {
+  .banner {
+    padding: 13px;
+  }
+
+  .statusPill {
+    font-size: 8px;
+  }
+
+  .bannerDetails {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 11px;
+  }
+
+  .detail {
+    width: 100%;
+  }
+
+  .detailText strong {
+    max-width: 240px;
+  }
+}

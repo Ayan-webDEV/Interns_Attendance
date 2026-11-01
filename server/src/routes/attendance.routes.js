@@ -1,48 +1,63 @@
 import { Router } from "express";
 import mongoose from "mongoose";
+
 import Attendance from "../models/Attendance.js";
 import AttendanceSession from "../models/AttendanceSession.js";
 import InternshipGroup from "../models/InternshipGroup.js";
 import User from "../models/User.js";
 import WalletTransaction from "../models/WalletTransaction.js";
 import AppSettings from "../models/AppSettings.js";
+
 import {
   requireAuth,
   requireRegisteredIntern,
   requireAdmin,
 } from "../middleware/auth.js";
+
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { HttpError } from "../utils/httpError.js";
 
+import { syncMissedAttendanceForIntern } from "../services/attendanceMissedTracker.js";
+
 const router = Router();
 
-const dateKey = (d = new Date()) =>
+/* -------------------------------------------------------------------------- */
+/* Constants and date/time helpers                                            */
+/* -------------------------------------------------------------------------- */
+
+const IST = "Asia/Kolkata";
+
+const dateKey = (date = new Date()) =>
   new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
+    timeZone: IST,
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(d);
+  }).format(date);
 
-const isSunday = (key) => new Date(`${key}T12:00:00+05:30`).getDay() === 0;
+const isSunday = (key) => {
+  const date = new Date(`${key}T12:00:00+05:30`);
+
+  return !Number.isNaN(date.getTime()) && date.getDay() === 0;
+};
 
 const istSeconds = (date = new Date()) => {
-  const p = new Intl.DateTimeFormat("en-GB", {
-    timeZone: "Asia/Kolkata",
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: IST,
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
     hourCycle: "h23",
   }).formatToParts(date);
 
+  const values = Object.fromEntries(
+    parts.map((part) => [part.type, Number(part.value)]),
+  );
+
   return (
-    Number(p.find((x) => x.type === "hour")?.value || 0) * 3600 +
-    Number(p.find((x) => x.type === "minute")?.value || 0) * 60 +
-    Number(p.find((x) => x.type === "second")?.value || 0)
+    (values.hour || 0) * 3600 + (values.minute || 0) * 60 + (values.second || 0)
   );
 };
-
-const istMinutes = (date = new Date()) => Math.floor(istSeconds(date) / 60);
 
 const defaultSchedule = {
   firstStart: "09:30",
@@ -52,57 +67,109 @@ const defaultSchedule = {
   minimumSeconds: Number(process.env.ATTENDANCE_MIN_SECONDS || 50),
 };
 
-const toMinutes = (v) => {
-  const [h, m] = String(v || "00:00")
-    .split(":")
-    .map(Number);
+const toMinutes = (value) => {
+  const match = String(value || "")
+    .trim()
+    .match(/^(\d{1,2}):(\d{2})$/);
 
-  return h * 60 + m;
+  if (!match) return NaN;
+
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+
+  if (hours > 23 || minutes > 59) return NaN;
+
+  return hours * 60 + minutes;
 };
 
-const prettyTime = (v) => {
-  const [h, m] = String(v || "00:00")
-    .split(":")
-    .map(Number);
+const prettyTime = (value) => {
+  const minutes = toMinutes(value);
 
-  const d = new Date();
-  d.setHours(h, m, 0, 0);
+  if (!Number.isFinite(minutes)) {
+    return "Time unavailable";
+  }
 
-  return d.toLocaleTimeString("en-IN", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  const hours = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 || 12;
+
+  return `${displayHour}:${String(minute).padStart(2, "0")} ${period}`;
 };
 
-const getSchedule = async () => ({
-  ...defaultSchedule,
-  ...((await AppSettings.findOne({ key: "attendance-schedule" }).lean())
-    ?.value || {}),
-});
-
-const buildWindows = (schedule, secondsNow) => {
-  const wait = Number(
-    schedule.minimumSeconds || process.env.ATTENDANCE_MIN_SECONDS || 50,
-  );
+const getSchedule = async () => {
+  const saved = await AppSettings.findOne({
+    key: "attendance-schedule",
+  }).lean();
 
   return {
-    1: {
-      start: toMinutes(schedule.firstStart),
-      end: toMinutes(schedule.firstEnd),
-      label: `${prettyTime(schedule.firstStart)} – ${prettyTime(schedule.firstEnd)}`,
-      open:
-        secondsNow >= toMinutes(schedule.firstStart) * 60 &&
-        secondsNow + wait <= toMinutes(schedule.firstEnd) * 60,
-    },
-    2: {
-      start: toMinutes(schedule.secondStart),
-      end: toMinutes(schedule.secondEnd),
-      label: `${prettyTime(schedule.secondStart)} – ${prettyTime(schedule.secondEnd)}`,
-      open:
-        secondsNow >= toMinutes(schedule.secondStart) * 60 &&
-        secondsNow + wait <= toMinutes(schedule.secondEnd) * 60,
-    },
+    ...defaultSchedule,
+    ...(saved?.value || {}),
+  };
+};
+
+const getMinimumSeconds = (schedule) => {
+  const seconds = Number(
+    schedule?.minimumSeconds ||
+      process.env.ATTENDANCE_MIN_SECONDS ||
+      defaultSchedule.minimumSeconds,
+  );
+
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : 50;
+};
+
+const validateSchedule = (schedule) => {
+  const values = [
+    toMinutes(schedule.firstStart),
+    toMinutes(schedule.firstEnd),
+    toMinutes(schedule.secondStart),
+    toMinutes(schedule.secondEnd),
+  ];
+
+  const [firstStart, firstEnd, secondStart, secondEnd] = values;
+
+  if (
+    values.some((value) => !Number.isFinite(value)) ||
+    firstStart >= firstEnd ||
+    secondStart >= secondEnd ||
+    firstEnd > secondStart
+  ) {
+    throw new HttpError(
+      500,
+      "The attendance schedule is invalid. Please contact the administrator.",
+    );
+  }
+
+  return {
+    firstStart,
+    firstEnd,
+    secondStart,
+    secondEnd,
+  };
+};
+
+const buildWindows = (schedule, secondsNow) => {
+  const validated = validateSchedule(schedule);
+  const minimumSeconds = getMinimumSeconds(schedule);
+
+  const makeWindow = (start, end) => {
+    const startTime = `${Math.floor(start / 60)}:${String(start % 60).padStart(2, "0")}`;
+
+    const endTime = `${Math.floor(end / 60)}:${String(end % 60).padStart(2, "0")}`;
+
+    return {
+      start,
+      end,
+      label: `${prettyTime(startTime)} – ${prettyTime(endTime)}`,
+      open: secondsNow >= start * 60 && secondsNow + minimumSeconds <= end * 60,
+    };
+  };
+
+  return {
+    1: makeWindow(validated.firstStart, validated.firstEnd),
+
+    2: makeWindow(validated.secondStart, validated.secondEnd),
   };
 };
 
@@ -110,6 +177,7 @@ const activeDate = (group, key) => {
   if (!group?.actualStartDate) return false;
 
   const start = dateKey(group.actualStartDate);
+
   const fallbackEnd = new Date(group.actualStartDate);
 
   fallbackEnd.setDate(fallbackEnd.getDate() + Number(group.durationDays || 28));
@@ -121,13 +189,118 @@ const activeDate = (group, key) => {
 
 const eligibleStatus = ["approved", "admin_corrected_present"];
 
+/* -------------------------------------------------------------------------- */
+/* Attendance summary                                                         */
+/* -------------------------------------------------------------------------- */
+
+const recordSummary = (records) => {
+  const safeRecords = Array.isArray(records) ? records : [];
+
+  const approved = safeRecords.filter((record) =>
+    eligibleStatus.includes(record.status),
+  );
+
+  return {
+    approvedSessions: approved.length,
+
+    approvedDays: new Set(approved.map((record) => record.dateKey)).size,
+
+    pending: safeRecords.filter((record) => record.status === "pending").length,
+
+    rejected: safeRecords.filter((record) => record.status === "rejected")
+      .length,
+
+    missed: safeRecords.filter((record) => record.status === "missed").length,
+
+    adminCorrectedAbsent: safeRecords.filter(
+      (record) => record.status === "admin_corrected_absent",
+    ).length,
+  };
+};
+
+/* -------------------------------------------------------------------------- */
+/* Missed attendance reconciliation                                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Reconcile the current day's sessions before returning attendance data.
+ *
+ * The background tracker is the primary missed-session mechanism.
+ * This request-time check handles the small gap between a session window
+ * closing and the next background scan.
+ *
+ * A reconciliation failure is logged but does not make the existing
+ * attendance history inaccessible.
+ */
+
+const reconcileCurrentIntern = async (req) => {
+  if (!req.user?.group) {
+    return {
+      synced: false,
+      created: 0,
+    };
+  }
+
+  try {
+    const group = await InternshipGroup.findById(req.user.group).lean();
+
+    if (!group) {
+      return {
+        synced: false,
+        created: 0,
+      };
+    }
+
+    const result = await syncMissedAttendanceForIntern({
+      internId: req.user._id,
+      group,
+      now: new Date(),
+    });
+
+    return {
+      synced: true,
+      created: result.created || 0,
+    };
+  } catch (error) {
+    console.error("[Attendance] Current-user missed reconciliation failed:", {
+      internId: String(req.user._id),
+      message: error?.message || String(error),
+    });
+
+    return {
+      synced: false,
+      created: 0,
+    };
+  }
+};
+
+/**
+ * Read the latest count because req.user was loaded before the
+ * reconciliation updated its missedAttendanceCount.
+ */
+
+const getLatestMissedCount = async (internId) => {
+  const user = await User.findById(internId)
+    .select("missedAttendanceCount")
+    .lean();
+
+  return Number(user?.missedAttendanceCount || 0);
+};
+
+/* -------------------------------------------------------------------------- */
+/* Intern: today's attendance                                                 */
+/* -------------------------------------------------------------------------- */
+
 router.get(
   "/today",
   requireAuth,
   requireRegisteredIntern,
   asyncHandler(async (req, res) => {
-    const group = await InternshipGroup.findById(req.user.group).lean();
     const key = dateKey();
+
+    const reconciliation = await reconcileCurrentIntern(req);
+
+    const group = await InternshipGroup.findById(req.user.group).lean();
 
     const records = await Attendance.find({
       intern: req.user._id,
@@ -138,16 +311,19 @@ router.get(
 
     const schedule = await getSchedule();
 
-    const min = Number(
-      schedule.minimumSeconds || process.env.ATTENDANCE_MIN_SECONDS || 50,
-    );
+    const minimumSeconds = getMinimumSeconds(schedule);
 
-    const secondsNow = istSeconds();
-    const windows = buildWindows(schedule, secondsNow);
+    const windows = buildWindows(schedule, istSeconds());
+
+    const summary = recordSummary(records);
+
+    const missedAttendanceCount = await getLatestMissedCount(req.user._id);
 
     res.json({
       dateKey: key,
+
       isSunday: isSunday(key),
+
       groupStatus: group?.status || "registration",
 
       group: group
@@ -163,17 +339,32 @@ router.get(
         : null,
 
       records,
-      minimumSeconds: min,
-      windows: { first: windows[1], second: windows[2] },
+
+      summary,
+
+      missedAttendanceCount,
+
+      missedTrackingSynced: reconciliation.synced,
+
+      minimumSeconds,
+
+      windows: {
+        first: windows[1],
+        second: windows[2],
+      },
 
       serverTimeIST: new Intl.DateTimeFormat("en-IN", {
-        timeZone: "Asia/Kolkata",
+        timeZone: IST,
         dateStyle: "medium",
         timeStyle: "short",
       }).format(new Date()),
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Intern: start an individual attendance session                              */
+/* -------------------------------------------------------------------------- */
 
 router.post(
   "/session/start",
@@ -184,6 +375,13 @@ router.post(
 
     if (![1, 2].includes(sessionNumber)) {
       throw new HttpError(400, "Choose a valid attendance session.");
+    }
+
+    if (!req.user.gender) {
+      throw new HttpError(
+        403,
+        "Please select your gender in My account before marking attendance.",
+      );
     }
 
     const group = await InternshipGroup.findById(req.user.group);
@@ -214,17 +412,17 @@ router.post(
 
     const schedule = await getSchedule();
 
+    const minimumSeconds = getMinimumSeconds(schedule);
+
     const secondsNow = istSeconds(now);
+
     const windows = buildWindows(schedule, secondsNow);
+
     const window = windows[sessionNumber];
 
     if (
       secondsNow < window.start * 60 ||
-      secondsNow +
-        Number(
-          schedule.minimumSeconds || process.env.ATTENDANCE_MIN_SECONDS || 50,
-        ) >
-        window.end * 60
+      secondsNow + minimumSeconds > window.end * 60
     ) {
       throw new HttpError(
         403,
@@ -232,19 +430,48 @@ router.post(
       );
     }
 
-    // Session 2 is allowed even if Session 1 was missed or is not approved.
+    /*
+     * IMPORTANT:
+     *
+     * Session 1 and Session 2 are completely independent.
+     *
+     * There is deliberately NO query checking whether Session 1
+     * has been approved before allowing Session 2 to start.
+     *
+     * Each session has its own time window and attendance record.
+     */
+
     const existing = await Attendance.findOne({
       intern: req.user._id,
       dateKey: key,
       sessionNumber,
     });
 
+    /*
+     * Only a rejected record may be resubmitted.
+     *
+     * A missed record is not eligible for a new submission after
+     * its attendance window has closed.
+     */
+
     if (existing && existing.status !== "rejected") {
+      if (existing.status === "pending") {
+        throw new HttpError(
+          409,
+          "Your attendance request is waiting for admin approval.",
+        );
+      }
+
+      if (existing.status === "missed") {
+        throw new HttpError(
+          409,
+          "This attendance window has already been recorded as missed.",
+        );
+      }
+
       throw new HttpError(
         409,
-        existing.status === "pending"
-          ? "Your attendance request is waiting for admin approval."
-          : "This attendance session has already been recorded.",
+        "This attendance session has already been recorded.",
       );
     }
 
@@ -261,14 +488,17 @@ router.post(
       sessionId: session._id,
       sessionNumber,
       startedAt: session.startedAt,
-      minimumSeconds: Number(
-        schedule.minimumSeconds || process.env.ATTENDANCE_MIN_SECONDS || 50,
-      ),
+      minimumSeconds,
+
       message:
         "Keep this page open until the timer completes, then submit your attendance request.",
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Intern: submit an individual attendance session                             */
+/* -------------------------------------------------------------------------- */
 
 router.post(
   "/session/:id/mark",
@@ -279,7 +509,9 @@ router.post(
       _id: req.params.id,
       intern: req.user._id,
       consumedAt: null,
-      expiresAt: { $gt: new Date() },
+      expiresAt: {
+        $gt: new Date(),
+      },
     });
 
     if (!session) {
@@ -291,17 +523,18 @@ router.post(
 
     const schedule = await getSchedule();
 
-    const minMs =
-      Number(
-        schedule.minimumSeconds || process.env.ATTENDANCE_MIN_SECONDS || 50,
-      ) * 1000;
+    const minimumSeconds = getMinimumSeconds(schedule);
+
+    const minimumMs = minimumSeconds * 1000;
 
     const elapsed = Date.now() - session.startedAt.getTime();
 
-    if (elapsed < minMs) {
+    if (elapsed < minimumMs) {
       throw new HttpError(
         400,
-        `Please wait ${Math.ceil((minMs - elapsed) / 1000)} more seconds before submitting.`,
+        `Please wait ${Math.ceil(
+          (minimumMs - elapsed) / 1000,
+        )} more seconds before submitting.`,
       );
     }
 
@@ -345,8 +578,13 @@ router.post(
       );
     }
 
-    // No first-attendance approval prerequisite for Session 2.
+    /*
+     * No first-session approval prerequisite.
+     * Either session can be submitted independently.
+     */
+
     session.consumedAt = new Date();
+
     await session.save();
 
     let attendance;
@@ -367,24 +605,40 @@ router.post(
         });
 
         existing.status = "pending";
+
         existing.sessionStartedAt = session.startedAt;
         existing.markedAt = new Date();
+
         existing.rejectedAt = undefined;
         existing.rejectedBy = undefined;
-        existing.rejectionReason = "";
+        existing.rejectionReason = undefined;
+
         existing.rewardIssued = false;
         existing.rewardAmount = 0;
 
+        // Defensive cleanup of any stale missed metadata.
+        existing.missedAt = undefined;
+        existing.missedReason = undefined;
+        existing.missedSource = undefined;
+
         attendance = await existing.save();
+      } else if (existing) {
+        throw new HttpError(
+          409,
+          "This attendance session has already been recorded.",
+        );
       } else {
         attendance = await Attendance.create({
           intern: req.user._id,
           group: group._id,
           dateKey: session.dateKey,
           sessionNumber: session.sessionNumber,
+
           status: "pending",
+
           sessionStartedAt: session.startedAt,
           markedAt: new Date(),
+
           rewardIssued: false,
           rewardAmount: 0,
 
@@ -398,33 +652,47 @@ router.post(
           ],
         });
       }
-    } catch (e) {
-      if (e.code === 11000) {
+    } catch (error) {
+      if (error instanceof HttpError) {
+        throw error;
+      }
+
+      if (error?.code === 11000) {
         throw new HttpError(
           409,
           "This attendance request has already been submitted.",
         );
       }
 
-      throw e;
+      throw error;
     }
 
     res.status(201).json({
       message: `Session ${session.sessionNumber} attendance request sent. It will count only after admin approval.`,
+
       attendance,
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Intern: all attendance records                                             */
+/* -------------------------------------------------------------------------- */
 
 router.get(
   "/mine",
   requireAuth,
   requireRegisteredIntern,
   asyncHandler(async (req, res) => {
+    const reconciliation = await reconcileCurrentIntern(req);
+
     const from = String(req.query.from || "").slice(0, 10);
+
     const to = String(req.query.to || "").slice(0, 10);
 
-    const filter = { intern: req.user._id };
+    const filter = {
+      intern: req.user._id,
+    };
 
     if (from || to) {
       filter.dateKey = {
@@ -434,23 +702,82 @@ router.get(
     }
 
     const records = await Attendance.find(filter)
-      .sort({ dateKey: 1, sessionNumber: 1 })
+      .sort({
+        dateKey: 1,
+        sessionNumber: 1,
+      })
       .lean();
 
-    const approved = records.filter((x) => eligibleStatus.includes(x.status));
+    const missedAttendanceCount = await getLatestMissedCount(req.user._id);
 
     res.json({
       records,
 
-      summary: {
-        approvedSessions: approved.length,
-        approvedDays: new Set(approved.map((x) => x.dateKey)).size,
-        pending: records.filter((x) => x.status === "pending").length,
-        rejected: records.filter((x) => x.status === "rejected").length,
-      },
+      summary: recordSummary(records),
+
+      missedAttendanceCount,
+
+      missedTrackingSynced: reconciliation.synced,
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Intern: attendance history                                                 */
+/* -------------------------------------------------------------------------- */
+
+router.get(
+  "/history",
+  requireAuth,
+  requireRegisteredIntern,
+  asyncHandler(async (req, res) => {
+    const reconciliation = await reconcileCurrentIntern(req);
+
+    const filter = {
+      intern: req.user._id,
+    };
+
+    if (req.query.from || req.query.to) {
+      filter.dateKey = {
+        ...(req.query.from
+          ? {
+              $gte: String(req.query.from).slice(0, 10),
+            }
+          : {}),
+
+        ...(req.query.to
+          ? {
+              $lte: String(req.query.to).slice(0, 10),
+            }
+          : {}),
+      };
+    }
+
+    const records = await Attendance.find(filter)
+      .sort({
+        dateKey: -1,
+        sessionNumber: 1,
+      })
+      .limit(500)
+      .lean();
+
+    const missedAttendanceCount = await getLatestMissedCount(req.user._id);
+
+    res.json({
+      records,
+
+      summary: recordSummary(records),
+
+      missedAttendanceCount,
+
+      missedTrackingSynced: reconciliation.synced,
+    });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: attendance report                                                   */
+/* -------------------------------------------------------------------------- */
 
 router.get(
   "/admin/report",
@@ -466,9 +793,16 @@ router.get(
     if (req.query.from || req.query.to) {
       filter.dateKey = {
         ...(req.query.from
-          ? { $gte: String(req.query.from).slice(0, 10) }
+          ? {
+              $gte: String(req.query.from).slice(0, 10),
+            }
           : {}),
-        ...(req.query.to ? { $lte: String(req.query.to).slice(0, 10) } : {}),
+
+        ...(req.query.to
+          ? {
+              $lte: String(req.query.to).slice(0, 10),
+            }
+          : {}),
       };
     }
 
@@ -477,49 +811,86 @@ router.get(
     }
 
     if (req.query.sessionNumber) {
-      filter.sessionNumber = Number(req.query.sessionNumber);
+      const sessionNumber = Number(req.query.sessionNumber);
+
+      if (![1, 2].includes(sessionNumber)) {
+        throw new HttpError(400, "Choose a valid attendance session.");
+      }
+
+      filter.sessionNumber = sessionNumber;
     }
 
     const records = await Attendance.find(filter)
       .populate({
         path: "intern",
-        select: "name email internId domain group",
-        populate: { path: "group", select: "name" },
+        select: "name email internId domain group missedAttendanceCount",
+
+        populate: {
+          path: "group",
+          select: "name",
+        },
       })
       .populate("approvedBy rejectedBy correctedBy", "name email")
-      .sort({ dateKey: -1, sessionNumber: 1 })
+      .sort({
+        dateKey: -1,
+        sessionNumber: 1,
+      })
       .limit(5000)
       .lean();
 
-    res.json({ records });
+    res.json({
+      records,
+    });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Admin: pending approvals                                                   */
+/* -------------------------------------------------------------------------- */
 
 router.get(
   "/admin/approvals",
   requireAuth,
   requireAdmin,
   asyncHandler(async (req, res) => {
-    const filter = { status: "pending" };
+    const filter = {
+      status: "pending",
+    };
 
     if (req.query.groupId) {
       filter.group = req.query.groupId;
     }
 
     if (req.query.sessionNumber) {
-      filter.sessionNumber = Number(req.query.sessionNumber);
+      const sessionNumber = Number(req.query.sessionNumber);
+
+      if (![1, 2].includes(sessionNumber)) {
+        throw new HttpError(400, "Choose a valid attendance session.");
+      }
+
+      filter.sessionNumber = sessionNumber;
     }
 
     const records = await Attendance.find(filter)
       .populate("intern", "name email internId domain whatsappNumber")
       .populate("group", "name status")
-      .sort({ dateKey: 1, sessionNumber: 1, markedAt: 1 })
+      .sort({
+        dateKey: 1,
+        sessionNumber: 1,
+        markedAt: 1,
+      })
       .limit(3000)
       .lean();
 
-    res.json({ records });
+    res.json({
+      records,
+    });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Admin: approve attendance and credit rewards                               */
+/* -------------------------------------------------------------------------- */
 
 router.post(
   "/admin/approvals/approve",
@@ -533,7 +904,9 @@ router.post(
       approveAll = false,
     } = req.body;
 
-    const filter = { status: "pending" };
+    const filter = {
+      status: "pending",
+    };
 
     if (approveAll) {
       if (!groupId) {
@@ -546,7 +919,13 @@ router.post(
       filter.group = groupId;
 
       if (sessionNumber) {
-        filter.sessionNumber = Number(sessionNumber);
+        const parsedSession = Number(sessionNumber);
+
+        if (![1, 2].includes(parsedSession)) {
+          throw new HttpError(400, "Choose a valid attendance session.");
+        }
+
+        filter.sessionNumber = parsedSession;
       }
     } else {
       if (
@@ -557,23 +936,29 @@ router.post(
         throw new HttpError(400, "Select one or more attendance requests.");
       }
 
-      filter._id = { $in: attendanceIds };
+      filter._id = {
+        $in: attendanceIds,
+      };
     }
 
-    const session = await mongoose.startSession();
+    const txSession = await mongoose.startSession();
+
     let approvedCount = 0;
 
     try {
-      await session.withTransaction(async () => {
+      await txSession.withTransaction(async () => {
         approvedCount = 0;
 
-        const pending = await Attendance.find(filter).session(session);
+        const pendingRecords = await Attendance.find(filter).session(txSession);
 
-        for (const record of pending) {
+        for (const record of pendingRecords) {
           const reward = record.sessionNumber === 1 ? 1 : 3;
 
           const changed = await Attendance.findOneAndUpdate(
-            { _id: record._id, status: "pending" },
+            {
+              _id: record._id,
+              status: "pending",
+            },
             {
               $set: {
                 status: "approved",
@@ -592,15 +977,25 @@ router.post(
                 },
               },
             },
-            { new: true, session },
+            {
+              new: true,
+              session: txSession,
+            },
           );
 
           if (!changed) continue;
 
           const user = await User.findByIdAndUpdate(
             record.intern,
-            { $inc: { internCashBalance: reward } },
-            { new: true, session },
+            {
+              $inc: {
+                internCashBalance: reward,
+              },
+            },
+            {
+              new: true,
+              session: txSession,
+            },
           );
 
           if (!user) {
@@ -627,22 +1022,29 @@ router.post(
                 createdBy: req.user._id,
               },
             ],
-            { session },
+            {
+              session: txSession,
+            },
           );
 
           approvedCount++;
         }
       });
     } finally {
-      await session.endSession();
+      await txSession.endSession();
     }
 
     res.json({
       message: `${approvedCount} attendance request(s) approved and rewards credited.`,
+
       approvedCount,
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Admin: reject pending attendance                                           */
+/* -------------------------------------------------------------------------- */
 
 router.post(
   "/admin/approvals/reject",
@@ -650,6 +1052,7 @@ router.post(
   requireAdmin,
   asyncHandler(async (req, res) => {
     const ids = req.body.attendanceIds;
+
     const reason = String(req.body.reason || "").trim();
 
     if (!Array.isArray(ids) || !ids.length || !reason) {
@@ -660,7 +1063,12 @@ router.post(
     }
 
     const result = await Attendance.updateMany(
-      { _id: { $in: ids }, status: "pending" },
+      {
+        _id: {
+          $in: ids,
+        },
+        status: "pending",
+      },
       {
         $set: {
           status: "rejected",
@@ -682,10 +1090,15 @@ router.post(
 
     res.json({
       message: `${result.modifiedCount} request(s) rejected. Interns can submit a new request during the same session window.`,
+
       rejectedCount: result.modifiedCount,
     });
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Admin: correct an existing attendance record                               */
+/* -------------------------------------------------------------------------- */
 
 router.post(
   "/admin/correct",
@@ -709,13 +1122,25 @@ router.post(
       );
     }
 
+    const parsedSession = Number(sessionNumber);
+
+    if (![1, 2].includes(parsedSession)) {
+      throw new HttpError(400, "Choose a valid attendance session.");
+    }
+
     const lookup = String(internId || "")
       .trim()
       .toUpperCase();
 
     const criteria = mongoose.Types.ObjectId.isValid(String(internId || ""))
-      ? { _id: internId, role: "intern" }
-      : { internId: lookup, role: "intern" };
+      ? {
+          _id: internId,
+          role: "intern",
+        }
+      : {
+          internId: lookup,
+          role: "intern",
+        };
 
     const intern = await User.findOne(criteria);
 
@@ -725,8 +1150,8 @@ router.post(
 
     const recordId = await Attendance.findOne({
       intern: intern._id,
-      dateKey: String(date).slice(0, 10),
-      sessionNumber: Number(sessionNumber),
+      dateKey: String(date || "").slice(0, 10),
+      sessionNumber: parsedSession,
     }).select("_id");
 
     if (!recordId) {
@@ -734,6 +1159,7 @@ router.post(
     }
 
     const txSession = await mongoose.startSession();
+
     let updatedRecord;
 
     try {
@@ -748,15 +1174,24 @@ router.post(
           throw new HttpError(404, "Attendance or intern record not found.");
         }
 
+        const wasMissed = record.status === "missed";
+
         const wantsPresent = ["approved", "admin_corrected_present"].includes(
           status,
         );
 
         const reward = record.sessionNumber === 1 ? 1 : 3;
 
+        /* ------------------------------------------------------------------ */
+        /* Reward credit                                                       */
+        /* ------------------------------------------------------------------ */
+
         if (wantsPresent && !record.rewardIssued) {
           user.internCashBalance += reward;
-          await user.save({ session: txSession });
+
+          await user.save({
+            session: txSession,
+          });
 
           await WalletTransaction.create(
             [
@@ -778,12 +1213,18 @@ router.post(
                 createdBy: req.user._id,
               },
             ],
-            { session: txSession },
+            {
+              session: txSession,
+            },
           );
 
           record.rewardIssued = true;
           record.rewardAmount = reward;
         }
+
+        /* ------------------------------------------------------------------ */
+        /* Reward reversal                                                     */
+        /* ------------------------------------------------------------------ */
 
         if (!wantsPresent && record.rewardIssued) {
           const amount = Number(record.rewardAmount || reward);
@@ -796,7 +1237,10 @@ router.post(
           }
 
           user.internCashBalance -= amount;
-          await user.save({ session: txSession });
+
+          await user.save({
+            session: txSession,
+          });
 
           await WalletTransaction.create(
             [
@@ -814,20 +1258,58 @@ router.post(
                 createdBy: req.user._id,
               },
             ],
-            { session: txSession },
+            {
+              session: txSession,
+            },
           );
 
           record.rewardIssued = false;
           record.rewardAmount = 0;
         }
 
+        /* ------------------------------------------------------------------ */
+        /* Remove missed reference after administrator correction            */
+        /* ------------------------------------------------------------------ */
+
+        if (wasMissed) {
+          const missedRefs = Array.isArray(user.missedAttendanceRecords)
+            ? user.missedAttendanceRecords
+            : [];
+
+          const hadReference = missedRefs.some(
+            (id) => String(id) === String(record._id),
+          );
+
+          if (hadReference) {
+            user.missedAttendanceRecords = missedRefs.filter(
+              (id) => String(id) !== String(record._id),
+            );
+
+            user.missedAttendanceCount = Math.max(
+              0,
+              Number(user.missedAttendanceCount || 0) - 1,
+            );
+
+            await user.save({
+              session: txSession,
+            });
+          }
+        }
+
+        /* ------------------------------------------------------------------ */
+        /* Save correction                                                     */
+        /* ------------------------------------------------------------------ */
+
         record.status = wantsPresent ? "admin_corrected_present" : status;
+
         record.correctedBy = req.user._id;
+
         record.correctionReason = String(reason).slice(0, 500);
 
         if (status === "rejected" || status === "admin_corrected_absent") {
           record.rejectedAt = new Date();
           record.rejectedBy = req.user._id;
+
           record.rejectionReason = String(reason).slice(0, 500);
         } else {
           record.rejectedAt = undefined;
@@ -845,9 +1327,21 @@ router.post(
         if (wantsPresent) {
           record.approvedAt = new Date();
           record.approvedBy = req.user._id;
+        } else {
+          record.approvedAt = undefined;
+          record.approvedBy = undefined;
         }
 
-        await record.save({ session: txSession });
+        if (wasMissed) {
+          record.missedAt = undefined;
+          record.missedReason = undefined;
+          record.missedSource = undefined;
+        }
+
+        await record.save({
+          session: txSession,
+        });
+
         updatedRecord = record.toObject();
       });
     } finally {
@@ -857,6 +1351,7 @@ router.post(
     res.json({
       message:
         "Attendance correction saved with a wallet ledger adjustment where required.",
+
       record: updatedRecord,
     });
   }),

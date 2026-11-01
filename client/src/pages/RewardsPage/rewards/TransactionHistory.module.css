@@ -1,0 +1,505 @@
+/* =========================================================
+   VELOOP REWARDS — TRANSACTION HISTORY
+========================================================= */
+
+.section {
+  min-width: 0;
+  overflow: hidden;
+
+  box-shadow:
+    0 8px 28px rgb(31 41 55 / 4%),
+    0 2px 6px rgb(31 41 55 / 2%);
+}
+
+/* =========================================================
+   ENTRY COUNT
+========================================================= */
+
+.entryCount {
+  display: inline-flex;
+
+  min-height: 30px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  align-self: flex-start;
+
+  padding: 6px 11px;
+
+  border: 1px solid #e4ddf7;
+  border-radius: 999px;
+
+  color: #6242a7;
+  background: rgb(255 255 255 / 88%);
+
+  font-size: 11px;
+  font-weight: 850;
+
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.entryCount svg {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   SEARCH FIELD
+========================================================= */
+
+.searchBox {
+  display: flex;
+
+  min-width: 0;
+  min-height: 45px;
+
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 12px;
+
+  border: 1px solid #e0e5ec;
+  border-radius: 13px;
+
+  color: #8a94a5;
+  background: #ffffff;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.searchBox:focus-within {
+  border-color: #9a82d5;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 0 0 4px rgb(124 92 190 / 10%),
+    0 2px 7px rgb(31 41 55 / 3%);
+}
+
+.searchBox > svg {
+  flex: 0 0 auto;
+}
+
+.searchBox input {
+  width: 100%;
+  min-width: 0;
+  height: 43px;
+
+  padding: 0;
+
+  border: 0;
+  outline: 0;
+
+  color: #263248;
+  background: transparent;
+
+  font-size: 13px;
+}
+
+.searchBox input::placeholder {
+  color: #9aa3b1;
+  opacity: 1;
+}
+.searchBox input {
+  outline: none !important;
+}
+
+.searchBox input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchBox button {
+  display: grid;
+
+  width: 28px;
+  height: 28px;
+
+  flex: 0 0 28px;
+
+  place-items: center;
+
+  border: 0;
+  border-radius: 8px;
+
+  color: #68758a;
+  background: #f4f5f8;
+
+  cursor: pointer;
+
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+
+.searchBox button:hover {
+  color: #56379a;
+  background: #eee8fa;
+}
+
+.searchBox button:focus-visible {
+  outline: 2px solid #9a82d5;
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   FILTER CONTROLS
+========================================================= */
+
+.filterGroup {
+  display: flex;
+
+  min-width: 0;
+  min-height: 45px;
+
+  align-items: center;
+  justify-content: stretch;
+  gap: 4px;
+
+  padding: 4px;
+
+  border: 1px solid #e0e5ec;
+  border-radius: 13px;
+
+  background: #ffffff;
+}
+
+.filterGroup button {
+  display: inline-flex;
+
+  min-width: 62px;
+  min-height: 35px;
+
+  flex: 1 1 auto;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 11px;
+
+  border: 0;
+  border-radius: 9px;
+
+  color: #647084;
+  background: transparent;
+
+  font-size: 11px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.filterGroup button:hover {
+  color: #51358e;
+  background: #f5f2fb;
+}
+
+.filterGroup button.filterActive {
+  color: #ffffff;
+  background: #21163e;
+
+  box-shadow:
+    0 2px 6px rgb(33 22 62 / 16%),
+    inset 0 1px 0 rgb(255 255 255 / 10%);
+}
+
+.filterGroup button:focus-visible {
+  position: relative;
+  z-index: 1;
+
+  outline: 2px solid #9a82d5;
+  outline-offset: 2px;
+}
+
+/* =========================================================
+   TRANSACTION ROW
+========================================================= */
+
+.transactionRow {
+  display: flex;
+
+  width: 100%;
+  min-width: 0;
+  min-height: 76px;
+
+  align-items: center;
+  gap: 13px;
+
+  padding: 15px 20px;
+
+  border: 0;
+
+  color: inherit;
+  background: #ffffff;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.transactionRow:hover {
+  background: #faf8ff;
+}
+
+.transactionRow:active {
+  background: #f5f0ff;
+}
+
+.transactionRow:focus-visible {
+  position: relative;
+  z-index: 1;
+
+  outline: 3px solid #a78bfa;
+  outline-offset: -3px;
+}
+
+/* Keep row text from forcing horizontal overflow */
+.transactionRow > span {
+  min-width: 0;
+}
+
+.transactionRow > span:nth-child(2) {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.transactionRow > span:nth-child(3) {
+  flex: 0 0 auto;
+  max-width: 42%;
+  text-align: right;
+}
+
+.transactionRow > svg {
+  flex: 0 0 auto;
+
+  transition:
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.transactionRow:hover > svg {
+  transform: translateX(3px);
+  color: #7653c1;
+}
+
+/* =========================================================
+   TRANSACTION ICON
+========================================================= */
+
+.transactionIcon {
+  display: grid;
+
+  width: 43px;
+  height: 43px;
+
+  flex: 0 0 43px;
+
+  place-items: center;
+
+  border: 1px solid;
+  border-radius: 14px;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.transactionRow:hover .transactionIcon {
+  transform: scale(1.045);
+  box-shadow: 0 4px 10px rgb(31 41 55 / 5%);
+}
+
+.creditIcon {
+  border-color: #cdeed9;
+
+  color: #137949;
+  background: #effbf3;
+}
+
+.debitIcon {
+  border-color: #f5d1d3;
+
+  color: #c34453;
+  background: #fff2f2;
+}
+
+.neutralIcon {
+  border-color: #e5e8ed;
+
+  color: #647084;
+  background: #f6f7f9;
+}
+
+/* =========================================================
+   VIEW ALL BUTTON
+========================================================= */
+
+.viewAll {
+  display: inline-flex;
+
+  min-height: 39px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 8px 14px;
+
+  border: 1px solid transparent;
+  border-radius: 11px;
+
+  color: #6946b4;
+  background: transparent;
+
+  font-size: 12px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.viewAll:hover {
+  border-color: #e9defa;
+  color: #52338f;
+  background: #f4f0fc;
+}
+
+.viewAll:focus-visible {
+  outline: 2px solid #9a82d5;
+  outline-offset: 3px;
+}
+
+.viewAll svg {
+  flex: 0 0 auto;
+
+  transition: transform 160ms ease;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 640px) {
+  .entryCount {
+    align-self: flex-start;
+  }
+
+  .transactionRow {
+    min-height: 72px;
+    gap: 10px;
+    padding: 14px 13px;
+  }
+
+  .transactionIcon {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+
+    border-radius: 12px;
+  }
+
+  .transactionRow > span:nth-child(3) {
+    max-width: 39%;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .filterGroup {
+    width: 100%;
+  }
+
+  .filterGroup button {
+    min-width: 0;
+  }
+
+  .transactionRow {
+    gap: 9px;
+    padding: 13px 11px;
+  }
+
+  .transactionIcon {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+
+    border-radius: 11px;
+  }
+
+  .transactionIcon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .transactionRow > span:nth-child(3) {
+    max-width: 40%;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 360px) {
+  .transactionRow {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+
+  .transactionRow > span:nth-child(2) {
+    flex: 1 1 calc(100% - 50px);
+    max-width: calc(100% - 50px);
+  }
+
+  .transactionRow > span:nth-child(3) {
+    margin-left: auto;
+    padding-left: 45px;
+
+    max-width: 100%;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .transactionRow,
+  .transactionIcon,
+  .transactionRow > svg,
+  .viewAll,
+  .viewAll svg,
+  .searchBox,
+  .searchBox button,
+  .filterGroup button {
+    transition: none !important;
+  }
+
+  .transactionRow:hover .transactionIcon,
+  .transactionRow:hover > svg {
+    transform: none;
+  }
+}

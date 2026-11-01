@@ -1,0 +1,436 @@
+/* =========================================================
+   VELOOP REWARDS — TRUST FOOTER
+========================================================= */
+
+.footer {
+  position: relative;
+  isolation: isolate;
+
+  width: 100%;
+  min-width: 0;
+
+  overflow: hidden;
+
+  border: 1px solid #e4dcf5;
+  border-radius: 25px;
+
+  background: linear-gradient(115deg, #faf8ff 0%, #ffffff 52%, #f3f6ff 100%);
+
+  box-shadow:
+    0 10px 35px -20px rgb(79 70 229 / 28%),
+    0 3px 9px rgb(41 33 80 / 3%);
+
+  transition:
+    box-shadow 220ms ease,
+    border-color 220ms ease;
+}
+
+.footer:hover {
+  border-color: #d6c8f2;
+
+  box-shadow:
+    0 16px 42px -18px rgb(79 70 229 / 30%),
+    0 4px 12px rgb(41 33 80 / 4%);
+}
+
+/* =========================================================
+   DECORATIVE GLOWS
+========================================================= */
+
+.glowOne,
+.glowTwo {
+  position: absolute;
+  z-index: -1;
+
+  border-radius: 50%;
+
+  pointer-events: none;
+
+  filter: blur(40px);
+}
+
+.glowOne {
+  top: -75px;
+  right: -55px;
+
+  width: 210px;
+  height: 210px;
+
+  background: rgb(167 139 250 / 25%);
+}
+
+.glowTwo {
+  bottom: -95px;
+  left: 24%;
+
+  width: 180px;
+  height: 180px;
+
+  background: rgb(129 140 248 / 20%);
+}
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.content {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+
+  padding: 26px;
+}
+
+/* =========================================================
+   LEFT MESSAGE
+========================================================= */
+
+.message {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: flex-start;
+  gap: 17px;
+}
+
+/* =========================================================
+   BRAND ICON
+========================================================= */
+
+.brandIcon {
+  position: relative;
+
+  display: grid;
+
+  width: 54px;
+  height: 54px;
+
+  flex: 0 0 54px;
+
+  place-items: center;
+
+  border: 1px solid #e3dcfa;
+  border-radius: 17px;
+
+  color: #6442ae;
+  background: #ffffff;
+
+  box-shadow:
+    0 5px 14px rgb(79 70 229 / 12%),
+    inset 0 1px 0 #ffffff;
+}
+
+.brandIcon > span {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+
+  display: grid;
+
+  width: 20px;
+  height: 20px;
+
+  place-items: center;
+
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+
+  color: #ffffff;
+  background: #18a568;
+
+  box-shadow: 0 2px 5px rgb(24 165 104 / 15%);
+}
+
+/* =========================================================
+   MESSAGE CONTENT
+========================================================= */
+
+.messageContent {
+  min-width: 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 7px;
+
+  padding: 6px 10px;
+
+  border: 1px solid #dfd8f7;
+  border-radius: 99px;
+
+  color: #6442ae;
+  background: rgb(255 255 255 / 90%);
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.11em;
+  line-height: 1.4;
+
+  text-transform: uppercase;
+}
+
+.eyebrow svg {
+  flex: 0 0 auto;
+}
+
+.messageContent h2 {
+  margin: 11px 0 0;
+
+  color: #20243a;
+
+  font-size: clamp(16px, 2.1vw, 20px);
+  font-weight: 950;
+  letter-spacing: -0.035em;
+  line-height: 1.35;
+
+  overflow-wrap: anywhere;
+}
+
+.messageContent p {
+  max-width: 640px;
+
+  margin: 8px 0 0;
+
+  color: #657087;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.8;
+}
+
+/* =========================================================
+   TRUST BADGE
+========================================================= */
+
+.trustBadge {
+  display: flex;
+
+  min-width: 218px;
+  flex: 0 0 auto;
+
+  align-items: center;
+  gap: 11px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #e5e0f2;
+  border-radius: 17px;
+
+  background: rgb(255 255 255 / 92%);
+
+  box-shadow:
+    0 4px 13px rgb(41 33 80 / 5%),
+    inset 0 1px 0 #ffffff;
+}
+
+/* =========================================================
+   TRUST ICON
+========================================================= */
+
+.trustIcon {
+  display: grid;
+
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  place-items: center;
+
+  border: 1px solid #e5ddfa;
+  border-radius: 13px;
+
+  color: #6142a7;
+  background: #f2eeff;
+}
+
+/* =========================================================
+   TRUST TEXT
+========================================================= */
+
+.trustText {
+  display: flex;
+
+  min-width: 0;
+
+  flex-direction: column;
+  gap: 5px;
+}
+
+.trustText strong {
+  color: #273348;
+
+  font-size: 11px;
+  font-weight: 950;
+  line-height: 1.4;
+}
+
+.trustText small {
+  color: #8992a0;
+
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   TRUST CHECK
+========================================================= */
+
+.trustCheck {
+  display: grid;
+
+  width: 25px;
+  height: 25px;
+
+  flex: 0 0 25px;
+
+  place-items: center;
+
+  margin-left: auto;
+
+  border: 1px solid #d7f0df;
+  border-radius: 50%;
+
+  color: #16814d;
+  background: #e9f8ef;
+}
+
+/* =========================================================
+   BOTTOM ACCENT
+========================================================= */
+
+.accent {
+  width: 100%;
+  height: 4px;
+
+  background: linear-gradient(90deg, #9b82df 0%, #818cf8 50%, #7dd3fc 100%);
+
+  opacity: 0.82;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .content {
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .message {
+    gap: 13px;
+  }
+
+  .trustBadge {
+    min-width: 195px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .content {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 18px;
+
+    padding: 19px;
+  }
+
+  .message {
+    gap: 13px;
+  }
+
+  .brandIcon {
+    width: 46px;
+    height: 46px;
+    flex-basis: 46px;
+
+    border-radius: 14px;
+  }
+
+  .messageContent h2 {
+    font-size: 17px;
+  }
+
+  .messageContent p {
+    font-size: 11px;
+    line-height: 1.75;
+  }
+
+  .trustBadge {
+    width: 100%;
+    min-width: 0;
+
+    align-self: stretch;
+
+    padding: 11px 13px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+  .content {
+    padding: 15px;
+  }
+
+  .message {
+    gap: 10px;
+  }
+
+  .brandIcon {
+    width: 41px;
+    height: 41px;
+    flex-basis: 41px;
+
+    border-radius: 12px;
+  }
+
+  .brandIcon > svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .messageContent h2 {
+    font-size: 15px;
+  }
+
+  .messageContent p {
+    font-size: 10px;
+  }
+
+  .eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.08em;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .footer {
+    transition: none;
+  }
+
+  .footer:hover {
+    box-shadow:
+      0 10px 35px -20px rgb(79 70 229 / 28%),
+      0 3px 9px rgb(41 33 80 / 3%);
+  }
+}

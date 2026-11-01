@@ -1,0 +1,234 @@
+/* -------------------------------------------------------------------------- */
+/* Tabs container                                                             */
+/* -------------------------------------------------------------------------- */
+
+.tabsContainer {
+  width: 100%;
+  min-width: 0;
+}
+
+.tabs {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  padding: 6px;
+  border: 1px solid var(--line, #e2e7e0);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 3px 12px rgba(23, 37, 31, 0.025);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Individual tab                                                             */
+/* -------------------------------------------------------------------------- */
+
+.tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 10px 17px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  color: var(--muted, #738079);
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    color 170ms ease,
+    background 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease;
+}
+
+.tab:hover:not(.activeTab) {
+  color: var(--green, #174b38);
+  background: #f6f8f4;
+}
+
+.tab:focus-visible {
+  outline: 3px solid rgba(89, 125, 255, 0.32);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Icon                                                                       */
+/* -------------------------------------------------------------------------- */
+
+.tabIcon {
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e8eee5;
+  border-radius: 11px;
+  color: #75847a;
+  background: #f5f7f3;
+  transition:
+    color 170ms ease,
+    background 170ms ease,
+    border-color 170ms ease;
+}
+
+.tabIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Text                                                                       */
+/* -------------------------------------------------------------------------- */
+
+.tabText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tabLabel {
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 850;
+  letter-spacing: -0.015em;
+}
+
+.tabDescription {
+  color: var(--subtle, #a0aaa4);
+  font-size: 10px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Active tab                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.activeTab {
+  border-color: rgba(34, 102, 75, 0.12);
+  color: var(--green, #174b38);
+  background: linear-gradient(
+    110deg,
+    rgba(223, 247, 167, 0.37),
+    rgba(237, 249, 213, 0.5)
+  );
+  box-shadow: 0 2px 7px rgba(23, 75, 56, 0.035);
+}
+
+.activeTab .tabIcon {
+  border-color: rgba(34, 102, 75, 0.13);
+  color: var(--green, #174b38);
+  background: #ffffff;
+}
+
+.activeTab .tabLabel {
+  color: var(--green, #174b38);
+}
+
+.activeTab .tabDescription {
+  color: #6c8172;
+}
+
+.activeIndicator {
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #71aa43;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 3px rgba(113, 170, 67, 0.12);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 680px) {
+  .tabs {
+    gap: 5px;
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .tab {
+    min-height: 57px;
+    justify-content: center;
+    gap: 8px;
+    padding: 9px 11px;
+    border-radius: 10px;
+  }
+
+  .tabIcon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+
+  .tabIcon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tabLabel {
+    font-size: 12px;
+  }
+
+  .tabDescription {
+    font-size: 9px;
+  }
+
+  .activeIndicator {
+    right: 8px;
+    width: 5px;
+    height: 5px;
+  }
+}
+
+@media (max-width: 420px) {
+  .tabs {
+    gap: 4px;
+  }
+
+  .tab {
+    gap: 6px;
+    padding: 8px 7px;
+  }
+
+  .tabIcon {
+    flex-basis: 29px;
+    width: 29px;
+    height: 29px;
+  }
+
+  .tabLabel {
+    font-size: 11px;
+  }
+
+  .tabDescription {
+    font-size: 8px;
+  }
+
+  .activeIndicator {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab,
+  .tabIcon {
+    transition: none;
+  }
+}

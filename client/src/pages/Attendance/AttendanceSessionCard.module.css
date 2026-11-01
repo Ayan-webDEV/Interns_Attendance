@@ -1,0 +1,628 @@
+/* -------------------------------------------------------------------------- */
+/* Session card                                                               */
+/* -------------------------------------------------------------------------- */
+
+.card {
+  position: relative;
+  min-width: 0;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--line, #e2e7e0);
+  border-radius: 20px;
+  background: var(--paper, #ffffff);
+  box-shadow: 0 5px 18px rgba(23, 37, 31, 0.035);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+.card:hover {
+  border-color: rgba(34, 102, 75, 0.24);
+  box-shadow: 0 9px 25px rgba(23, 37, 31, 0.065);
+  transform: translateY(-1px);
+}
+
+.activeCard {
+  border-color: rgba(34, 102, 75, 0.42);
+  background: linear-gradient(145deg, rgba(223, 247, 167, 0.2), #ffffff 44%);
+}
+
+.approvedCard {
+  border-color: rgba(34, 102, 75, 0.2);
+}
+
+.rejectedCard {
+  border-color: rgba(213, 91, 73, 0.22);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header                                                                     */
+/* -------------------------------------------------------------------------- */
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sessionIdentity {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+
+.sessionNumber {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 102, 75, 0.12);
+  border-radius: 14px;
+  color: var(--green, #174b38);
+  background: var(--mint-2, #edf9d5);
+}
+
+.sessionNumber span {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.sessionHeading {
+  min-width: 0;
+}
+
+.titleLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.titleLine h3 {
+  margin: 0;
+  color: var(--ink, #17251f);
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 850;
+  letter-spacing: -0.025em;
+}
+
+.sessionHeading > p {
+  margin: 5px 0 0;
+  color: var(--muted, #738079);
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Live badge                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.liveBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border: 1px solid rgba(34, 102, 75, 0.16);
+  border-radius: 999px;
+  color: var(--green, #174b38);
+  background: rgba(223, 247, 167, 0.48);
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #24965e;
+  box-shadow: 0 0 0 3px rgba(36, 150, 94, 0.12);
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Status badge                                                               */
+/* -------------------------------------------------------------------------- */
+
+.statusBadge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 160px;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.statusBadge svg {
+  flex: 0 0 auto;
+}
+
+.approved {
+  color: #176340;
+  border-color: rgba(34, 125, 76, 0.15);
+  background: #e9f7ee;
+}
+
+.pending {
+  color: #8b620e;
+  border-color: rgba(197, 145, 39, 0.18);
+  background: #fff6df;
+}
+
+.rejected {
+  color: #a53c32;
+  border-color: rgba(213, 91, 73, 0.18);
+  background: #fff0ed;
+}
+
+.review {
+  color: #5365a2;
+  border-color: rgba(89, 125, 255, 0.18);
+  background: #eff2ff;
+}
+
+.notStarted {
+  color: #64736b;
+  border-color: rgba(115, 128, 121, 0.14);
+  background: #f2f5f2;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Session details                                                            */
+/* -------------------------------------------------------------------------- */
+
+.sessionDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 21px;
+}
+
+.detailItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px 13px;
+  border: 1px solid rgba(226, 231, 224, 0.9);
+  border-radius: 12px;
+  background: #fafbf9;
+}
+
+.detailLabel {
+  color: var(--subtle, #a0aaa4);
+  font-size: 10px;
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.detailValue {
+  max-width: 100%;
+  color: var(--ink, #17251f);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.windowValue {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted, #738079);
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 750;
+}
+
+.windowDot {
+  flex: 0 0 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #9ba59f;
+}
+
+.windowOpen {
+  color: #176340;
+}
+
+.windowOpen .windowDot {
+  background: #26985f;
+  box-shadow: 0 0 0 3px rgba(38, 152, 95, 0.1);
+}
+
+.windowClosed {
+  color: #9a6251;
+}
+
+.windowClosed .windowDot {
+  background: #d47b61;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Status description                                                         */
+/* -------------------------------------------------------------------------- */
+
+.statusDescription {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 15px;
+  padding: 11px 12px;
+  border-radius: 11px;
+  background: #f7f9f6;
+}
+
+.statusDescriptionIcon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+  color: var(--green-2, #22664b);
+}
+
+.statusDescriptionIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.statusDescription p {
+  min-width: 0;
+  margin: 0;
+  color: var(--muted, #738079);
+  font-size: 11px;
+  line-height: 1.65;
+  font-weight: 600;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Footer and action                                                          */
+/* -------------------------------------------------------------------------- */
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.footerHint {
+  max-width: 58%;
+  color: var(--subtle, #a0aaa4);
+  font-size: 10px;
+  line-height: 1.55;
+  font-weight: 650;
+}
+
+.actionButton {
+  flex: 0 0 auto;
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid var(--green, #174b38);
+  border-radius: 11px;
+  color: #ffffff;
+  background: var(--green, #174b38);
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  border-color: var(--green-2, #22664b);
+  background: var(--green-2, #22664b);
+  box-shadow: 0 5px 13px rgba(23, 75, 56, 0.16);
+  transform: translateY(-1px);
+}
+
+.actionButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.actionButton:focus-visible {
+  outline: 3px solid rgba(89, 125, 255, 0.35);
+  outline-offset: 3px;
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.actionButton svg {
+  flex: 0 0 auto;
+}
+
+.approvedButton {
+  border-color: #d8eee0;
+  color: #176340;
+  background: #e9f7ee;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.approvedButton:disabled {
+  color: #176340;
+  background: #e9f7ee;
+  opacity: 1;
+}
+
+.submittedButton {
+  border-color: #f3e2b7;
+  color: #8b620e;
+  background: #fff6df;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.submittedButton:disabled {
+  color: #8b620e;
+  background: #fff6df;
+  opacity: 1;
+}
+
+.activeButton {
+  border-color: #dcebdc;
+  color: var(--green, #174b38);
+  background: #edf5eb;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.retryButton {
+  border-color: #a94a3e;
+  background: #a94a3e;
+}
+
+.retryButton:hover:not(:disabled) {
+  border-color: #913b31;
+  background: #913b31;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Button indicators                                                          */
+/* -------------------------------------------------------------------------- */
+
+.buttonArrow {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: buttonSpin 700ms linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animations                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@keyframes livePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(36, 150, 94, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(36, 150, 94, 0.04);
+  }
+}
+
+@keyframes buttonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 700px) {
+  .card {
+    padding: 17px;
+    border-radius: 17px;
+  }
+
+  .cardHeader {
+    gap: 10px;
+  }
+
+  .sessionIdentity {
+    gap: 10px;
+  }
+
+  .sessionNumber {
+    flex-basis: 39px;
+    width: 39px;
+    height: 39px;
+    border-radius: 12px;
+  }
+
+  .titleLine h3 {
+    font-size: 14px;
+  }
+
+  .statusBadge {
+    gap: 5px;
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .sessionDetails {
+    margin-top: 17px;
+    gap: 9px;
+  }
+
+  .detailItem {
+    padding: 10px;
+  }
+
+  .cardFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footerHint {
+    max-width: 100%;
+  }
+
+  .actionButton {
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 430px) {
+  .card {
+    padding: 14px;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+  }
+
+  .statusBadge {
+    margin-left: 49px;
+  }
+
+  .sessionDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .detailItem {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .detailValue,
+  .windowValue {
+    text-align: right;
+  }
+
+  .statusDescription {
+    padding: 10px;
+  }
+
+  .statusDescription p {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .actionButton,
+  .liveDot,
+  .buttonSpinner {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Missed-session state                                                       */
+/* -------------------------------------------------------------------------- */
+
+.missedCard {
+  border-color: rgba(133, 84, 158, 0.3);
+  background: linear-gradient(145deg, rgba(246, 237, 250, 0.72), #ffffff 48%);
+}
+
+.missedCard:hover {
+  border-color: rgba(133, 84, 158, 0.42);
+}
+
+.missed {
+  color: #77418e;
+  border-color: rgba(133, 84, 158, 0.2);
+  background: #f5eafa;
+}
+
+.statusDescriptionContent {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.missedMeta {
+  display: block;
+  margin-top: 7px;
+  color: #805b8e;
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 750;
+}
+
+.missedReason {
+  display: block;
+  margin-top: 5px;
+  color: #765b7e;
+  font-size: 10px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.missedButton,
+.missedButton:disabled {
+  border-color: #e8d8ee;
+  color: #77418e;
+  background: #f5eafa;
+  box-shadow: none;
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+.missedButton:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 430px) {
+  .missedMeta,
+  .missedReason {
+    font-size: 9px;
+  }
+}

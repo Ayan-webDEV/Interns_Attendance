@@ -1,0 +1,751 @@
+/* =========================================================
+   TRANSACTION DETAILS MODAL
+   VELoop Rewards — InternCash
+========================================================= */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147482000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow-y: auto;
+  padding: 20px;
+
+  background: rgb(9 15 30 / 68%);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+
+  animation: backdropIn 180ms ease both;
+}
+
+/* =========================================================
+   MAIN DIALOG
+========================================================= */
+
+.dialog {
+  position: relative;
+
+  display: flex;
+  width: min(100%, 560px);
+  max-height: min(90dvh, 820px);
+  min-height: 0;
+
+  flex-direction: column;
+
+  overflow: hidden;
+  margin: auto;
+
+  border: 1px solid #e9e5f1;
+  border-radius: 26px;
+
+  color: #1e293b;
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 100px rgb(0 0 0 / 30%),
+    0 5px 20px rgb(0 0 0 / 8%);
+
+  animation: dialogIn 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  outline: none;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header {
+  display: flex;
+  flex: 0 0 auto;
+
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+
+  padding: 23px;
+
+  border-bottom: 1px solid #eeeaf5;
+
+  background:
+    radial-gradient(circle at 0% 0%, rgb(215 194 255 / 35%), transparent 42%),
+    linear-gradient(125deg, #f6f1ff 0%, #ffffff 62%, #eff6ff 100%);
+}
+
+.headerIcon {
+  display: grid;
+
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+
+  place-items: center;
+
+  border: 1px solid #e2d8f6;
+  border-radius: 15px;
+
+  color: #7046c0;
+  background: #ffffff;
+
+  box-shadow: 0 6px 18px rgb(80 55 145 / 9%);
+}
+
+.eyebrow {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 6px;
+
+  color: #7046b5;
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 7px 0 0;
+
+  color: #171d2b;
+
+  font-size: clamp(19px, 4vw, 22px);
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+}
+
+.header p {
+  max-width: 380px;
+
+  margin: 6px 0 0;
+
+  color: #687386;
+
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.closeButton {
+  display: grid;
+
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+
+  place-items: center;
+
+  border: 1px solid #e3e6ed;
+  border-radius: 12px;
+
+  color: #647084;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    color 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.closeButton:hover {
+  transform: rotate(4deg);
+
+  border-color: #f1c9ce;
+
+  color: #b63b4b;
+  background: #fff1f2;
+}
+
+.closeButton:active {
+  transform: scale(0.94);
+}
+
+/* =========================================================
+   AMOUNT PANEL
+========================================================= */
+
+.amountPanel {
+  display: flex;
+  flex: 0 0 auto;
+
+  flex-direction: column;
+
+  padding: 22px 23px;
+
+  border-bottom: 1px solid #edf0f3;
+
+  background: linear-gradient(135deg, #ffffff 0%, #fbfaff 50%, #f9fbff 100%);
+}
+
+.amountLabel {
+  color: #8790a0;
+
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.amountLine {
+  display: flex;
+
+  align-items: center;
+  gap: 13px;
+
+  margin-top: 12px;
+}
+
+.amountIcon {
+  display: grid;
+
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+
+  place-items: center;
+
+  border: 1px solid;
+  border-radius: 15px;
+}
+
+.amountLine strong {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+
+  font-size: clamp(25px, 5vw, 36px);
+  font-weight: 950;
+  letter-spacing: -0.05em;
+  line-height: 1.15;
+
+  font-variant-numeric: tabular-nums;
+
+  /* Prevent amount text from inheriting the icon background. */
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+/* Credit */
+
+.amountCredit {
+  border-color: #c9ead5;
+  color: #13784a;
+  background: #effbf3;
+}
+
+.amountLine strong.amountCredit {
+  border: 0;
+  color: #13804d;
+  background: transparent;
+}
+
+/* Debit */
+
+.amountDebit {
+  border-color: #f2cdd1;
+  color: #bd3d4d;
+  background: #fff1f2;
+}
+
+.amountLine strong.amountDebit {
+  border: 0;
+  color: #c23e50;
+  background: transparent;
+}
+
+/* Neutral / unavailable */
+
+.amountNeutral {
+  border-color: #e3e7ec;
+  color: #647084;
+  background: #f5f7f9;
+}
+
+.amountLine strong.amountNeutral {
+  border: 0;
+  color: #647084;
+  background: transparent;
+}
+
+.amountPanel > p {
+  margin: 12px 0 0;
+
+  color: #687386;
+
+  font-size: 13px;
+  line-height: 1.6;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   DETAILS CONTENT
+========================================================= */
+
+.content {
+  display: grid;
+
+  min-height: 0;
+
+  gap: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+
+  padding: 8px 23px 13px;
+
+  scrollbar-color: #c7bddc transparent;
+  scrollbar-width: thin;
+}
+
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.content::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: #d5cee3;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #a99ac6;
+}
+
+/* =========================================================
+   DETAIL ROW
+========================================================= */
+
+.detailRow {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+  gap: 12px;
+
+  padding: 14px 0;
+
+  border-bottom: 1px solid #eef0f3;
+}
+
+.detailIcon {
+  display: grid;
+
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+
+  place-items: center;
+
+  border: 1px solid #e7e1f4;
+  border-radius: 12px;
+
+  color: #7655b6;
+  background: #f7f4fc;
+}
+
+.detailText,
+.referenceText {
+  display: grid;
+
+  min-width: 0;
+
+  gap: 4px;
+}
+
+.detailLabel {
+  color: #8992a1;
+
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.detailText strong,
+.referenceText strong {
+  overflow-wrap: anywhere;
+
+  color: #293548;
+
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.55;
+
+  text-transform: capitalize;
+}
+
+/* =========================================================
+   REFERENCE ROW
+========================================================= */
+
+.referenceRow {
+  display: flex;
+
+  min-width: 0;
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 15px 0;
+
+  border-bottom: 1px solid #eef0f3;
+}
+
+.referenceText {
+  flex: 1;
+}
+
+.referenceText strong {
+  word-break: break-all;
+}
+
+/* =========================================================
+   COPY BUTTON
+========================================================= */
+
+.copyButton {
+  display: inline-flex;
+
+  min-height: 36px;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  padding: 7px 11px;
+
+  border: 1px solid #e3daf5;
+  border-radius: 10px;
+
+  color: #6944b5;
+  background: #faf8ff;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.copyButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  border-color: #cbb7ed;
+  background: #f1ebff;
+}
+
+.copyButton:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.copyButton:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
+/* =========================================================
+   INFORMATION NOTE
+========================================================= */
+
+.note {
+  display: flex;
+
+  align-items: flex-start;
+  gap: 10px;
+
+  margin: 15px 0 4px;
+  padding: 13px;
+
+  border: 1px solid #e4dcf4;
+  border-radius: 14px;
+
+  color: #62449f;
+  background: linear-gradient(135deg, #faf7ff, #f6f8ff);
+}
+
+.note svg {
+  width: 16px;
+  flex: 0 0 16px;
+
+  margin-top: 1px;
+}
+
+.note p {
+  margin: 0;
+
+  color: #644f8f;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+  display: flex;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 15px 23px;
+
+  border-top: 1px solid #edf0f3;
+
+  background: #fbfcfe;
+}
+
+.footer > span {
+  color: #929bab;
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.footer button {
+  min-height: 40px;
+
+  padding: 9px 17px;
+
+  border: 1px solid #291b4b;
+  border-radius: 11px;
+
+  color: #ffffff;
+  background: #291b4b;
+
+  font-size: 11px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.footer button:hover {
+  transform: translateY(-1px);
+
+  border-color: #432d76;
+  background: #432d76;
+}
+
+.footer button:active {
+  transform: scale(0.97);
+}
+
+/* =========================================================
+   FOCUS ACCESSIBILITY
+========================================================= */
+
+.closeButton:focus-visible,
+.copyButton:focus-visible,
+.footer button:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes backdropIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.975);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 700px) {
+  .backdrop {
+    padding: 14px;
+  }
+
+  .dialog {
+    width: min(100%, 520px);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+  .backdrop {
+    align-items: flex-end;
+
+    padding: 0;
+  }
+
+  .dialog {
+    width: 100%;
+    max-height: 93dvh;
+
+    border-radius: 24px 24px 0 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .header {
+    gap: 10px;
+    padding: 17px;
+  }
+
+  .headerIcon {
+    width: 41px;
+    height: 41px;
+    flex-basis: 41px;
+
+    border-radius: 13px;
+  }
+
+  .header p {
+    font-size: 11px;
+  }
+
+  .closeButton {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .amountPanel {
+    padding: 18px 17px;
+  }
+
+  .amountIcon {
+    width: 41px;
+    height: 41px;
+    flex-basis: 41px;
+
+    border-radius: 13px;
+  }
+
+  .content {
+    padding: 6px 17px 12px;
+  }
+
+  .detailRow {
+    gap: 10px;
+    padding: 12px 0;
+  }
+
+  .detailIcon {
+    width: 33px;
+    height: 33px;
+    flex-basis: 33px;
+  }
+
+  .referenceRow {
+    align-items: flex-start;
+  }
+
+  .copyButton {
+    min-height: 34px;
+    padding: 6px 9px;
+  }
+
+  .footer {
+    padding: 12px 17px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 350px) {
+  .header {
+    padding: 14px;
+  }
+
+  .headerIcon {
+    display: none;
+  }
+
+  .content {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .footer {
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .footer > span {
+    font-size: 9px;
+  }
+
+  .footer button {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .dialog {
+    animation: none;
+  }
+
+  .closeButton,
+  .copyButton,
+  .footer button {
+    transition: none;
+  }
+}

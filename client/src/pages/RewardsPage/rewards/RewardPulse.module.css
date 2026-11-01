@@ -1,0 +1,364 @@
+/* =========================================================
+   VELOOP REWARDS — REWARD PULSE CARDS
+========================================================= */
+
+.pulseCard {
+  position: relative;
+
+  display: flex;
+  min-width: 0;
+  min-height: 116px;
+
+  align-items: center;
+  gap: 13px;
+
+  overflow: hidden;
+
+  padding: 16px;
+
+  border: 1px solid;
+  border-radius: 19px;
+
+  text-align: left;
+
+  box-shadow:
+    0 3px 12px rgb(24 39 75 / 4%),
+    inset 0 1px 0 rgb(255 255 255 / 80%);
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Subtle decorative highlight */
+.pulseCard::after {
+  position: absolute;
+  top: -32px;
+  right: -30px;
+
+  width: 105px;
+  height: 105px;
+
+  border-radius: 50%;
+
+  background: currentColor;
+
+  content: "";
+
+  opacity: 0.035;
+  pointer-events: none;
+}
+
+/* =========================================================
+   INTERACTIVE CARDS
+   Only button cards receive hover / active states.
+========================================================= */
+
+.pulseCard:where(button) {
+  cursor: pointer;
+
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.pulseCard:where(button):hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 12px 25px rgb(24 39 75 / 9%),
+    inset 0 1px 0 rgb(255 255 255 / 90%);
+}
+
+.pulseCard:where(button):active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.pulseCard:where(button):focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.pulseCard:where(div) {
+  cursor: default;
+}
+
+/* =========================================================
+   CARD VARIANTS
+========================================================= */
+
+.pending {
+  border-color: #f2d69a;
+
+  color: #9a650b;
+
+  background:
+    radial-gradient(circle at 100% 0%, rgb(255 224 151 / 32%), transparent 50%),
+    linear-gradient(135deg, #fff8e8, #ffffff);
+}
+
+.approved {
+  border-color: #bce8cc;
+
+  color: #147649;
+
+  background:
+    radial-gradient(circle at 100% 0%, rgb(143 226 173 / 22%), transparent 50%),
+    linear-gradient(135deg, #effcf4, #ffffff);
+}
+
+.journey {
+  border-color: #d6c7f7;
+
+  color: #6843b4;
+
+  background:
+    radial-gradient(circle at 100% 0%, rgb(189 159 255 / 27%), transparent 50%),
+    linear-gradient(135deg, #f5f0ff, #ffffff);
+}
+
+.notifications {
+  border-color: #bfe2f6;
+
+  color: #176b9b;
+
+  background:
+    radial-gradient(circle at 100% 0%, rgb(139 210 246 / 25%), transparent 50%),
+    linear-gradient(135deg, #eff9ff, #ffffff);
+}
+
+/* =========================================================
+   ICON CONTAINER
+========================================================= */
+
+.iconBox {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+
+  width: 45px;
+  height: 45px;
+
+  flex: 0 0 45px;
+
+  place-items: center;
+
+  border: 1px solid color-mix(in srgb, currentColor 20%, white);
+
+  border-radius: 14px;
+
+  background: rgb(255 255 255 / 88%);
+
+  box-shadow:
+    0 3px 9px rgb(30 41 59 / 4%),
+    inset 0 1px 0 #ffffff;
+}
+
+.iconBox svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* =========================================================
+   TEXT CONTENT
+========================================================= */
+
+.kicker,
+.description,
+.value,
+.actionValue {
+  position: relative;
+  z-index: 1;
+
+  display: block;
+
+  min-width: 0;
+}
+
+.kicker {
+  overflow: hidden;
+
+  color: currentColor;
+
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.105em;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  opacity: 0.88;
+}
+
+.value {
+  margin-top: 5px;
+
+  color: #172033;
+
+  font-size: 25px;
+  font-weight: 950;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.actionValue {
+  overflow: hidden;
+
+  margin-top: 7px;
+
+  color: #172033;
+
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description {
+  margin-top: 5px;
+
+  color: #697789;
+
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   NAVIGATION ARROW
+========================================================= */
+
+.arrow {
+  position: relative;
+  z-index: 1;
+
+  flex: 0 0 auto;
+
+  color: currentColor;
+
+  opacity: 0.58;
+
+  transition:
+    transform 180ms ease,
+    opacity 180ms ease;
+}
+
+.pulseCard:where(button):hover .arrow {
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .pulseCard {
+    min-height: 108px;
+    padding: 15px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .pulseCard {
+    min-height: 102px;
+    gap: 12px;
+  }
+
+  .value {
+    font-size: 23px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+  .pulseCard {
+    min-height: 96px;
+    gap: 10px;
+    padding: 13px;
+    border-radius: 16px;
+  }
+
+  .iconBox {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    border-radius: 12px;
+  }
+
+  .iconBox svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .kicker {
+    font-size: 9px;
+  }
+
+  .value {
+    font-size: 22px;
+  }
+
+  .actionValue {
+    font-size: 14px;
+  }
+
+  .description {
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 340px) {
+  .pulseCard {
+    gap: 9px;
+    padding: 11px;
+  }
+
+  .iconBox {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+
+  .value {
+    font-size: 20px;
+  }
+
+  .arrow {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .pulseCard,
+  .arrow {
+    transition: none !important;
+  }
+
+  .pulseCard:where(button):hover,
+  .pulseCard:where(button):active,
+  .pulseCard:where(button):hover .arrow {
+    transform: none;
+  }
+}

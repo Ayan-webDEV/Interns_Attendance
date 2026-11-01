@@ -1,0 +1,225 @@
+/* =========================================================
+   VELOOP REWARDS — MAIN PAGE
+========================================================= */
+
+.page {
+  --reward-ink: #171326;
+  --reward-violet: #6d4ac5;
+  --reward-gold: #e8bd69;
+
+  display: grid;
+  gap: 42px;
+
+  width: 100%;
+  min-width: 0;
+
+  color: #172033;
+}
+
+.page > * {
+  min-width: 0;
+}
+
+/* =========================================================
+   REWARD MAP SECTION
+========================================================= */
+
+.mapSection {
+  min-width: 0;
+  scroll-margin-top: 24px;
+}
+
+/* =========================================================
+   INITIAL LOADING CARD
+========================================================= */
+
+.loadingCard {
+  display: flex;
+
+  width: 100%;
+  min-height: 310px;
+
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  margin-top: 8px;
+  padding: 36px 22px;
+
+  border: 1px solid #e7e1f2;
+  border-radius: 24px;
+
+  background:
+    radial-gradient(circle at 50% 0%, rgb(214 198 255 / 24%), transparent 48%),
+    linear-gradient(145deg, #ffffff, #faf9ff);
+
+  box-shadow:
+    0 8px 28px rgb(31 41 55 / 4%),
+    0 2px 6px rgb(31 41 55 / 2%);
+
+  text-align: center;
+}
+
+.loadingIcon {
+  display: grid;
+
+  width: 57px;
+  height: 57px;
+
+  place-items: center;
+
+  border: 1px solid #e2d8f8;
+  border-radius: 18px;
+
+  color: #704bc1;
+  background: #f5f0ff;
+
+  box-shadow:
+    0 6px 18px rgb(109 74 197 / 10%),
+    inset 0 1px 0 #ffffff;
+}
+
+.loadingCard h2 {
+  margin: 19px 0 0;
+
+  color: #202035;
+
+  font-size: 18px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+}
+
+.loadingCard > p {
+  max-width: 360px;
+
+  margin: 8px 0 0;
+
+  color: #7b8495;
+
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   LOADING PLACEHOLDER BARS
+========================================================= */
+
+.loadingGrid {
+  display: grid;
+
+  width: min(100%, 330px);
+
+  gap: 9px;
+
+  margin-top: 25px;
+}
+
+.loadingGrid span {
+  display: block;
+
+  height: 8px;
+
+  overflow: hidden;
+
+  border-radius: 99px;
+
+  background: #eeeaf7;
+}
+
+.loadingGrid span:first-child {
+  width: 100%;
+}
+
+.loadingGrid span:nth-child(2) {
+  width: 78%;
+}
+
+.loadingGrid span:nth-child(3) {
+  width: 55%;
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1024px) {
+  .page {
+    gap: 21px;
+  }
+
+  .loadingCard {
+    min-height: 290px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 640px) {
+  .page {
+    gap: 18px;
+  }
+
+  .mapSection {
+    scroll-margin-top: 16px;
+  }
+
+  .loadingCard {
+    min-height: 270px;
+    padding: 28px 17px;
+
+    border-radius: 20px;
+  }
+
+  .loadingCard h2 {
+    font-size: 16px;
+  }
+
+  .loadingCard > p {
+    font-size: 11px;
+  }
+
+  .loadingIcon {
+    width: 51px;
+    height: 51px;
+
+    border-radius: 16px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 360px) {
+  .page {
+    gap: 15px;
+  }
+
+  .loadingCard {
+    min-height: 245px;
+    padding: 23px 13px;
+  }
+
+  .loadingCard h2 {
+    font-size: 15px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

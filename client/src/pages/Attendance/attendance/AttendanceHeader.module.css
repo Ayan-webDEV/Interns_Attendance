@@ -1,0 +1,393 @@
+/* -------------------------------------------------------------------------- */
+/* Header container                                                            */
+/* -------------------------------------------------------------------------- */
+
+.header {
+  width: 100%;
+  min-width: 0;
+  padding: 25px 27px 20px;
+  border: 1px solid var(--line, #e2e7e0);
+  border-radius: 21px;
+  background: var(--paper, #ffffff);
+  box-shadow: 0 5px 20px rgba(23, 37, 31, 0.035);
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Welcome section                                                             */
+/* -------------------------------------------------------------------------- */
+
+.welcomeSection {
+  flex: 1;
+  min-width: 0;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 11px;
+  color: var(--green-2, #22664b);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.eyebrowDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7bbd53;
+  box-shadow: 0 0 0 4px rgba(123, 189, 83, 0.12);
+}
+
+.welcomeSection h1 {
+  margin: 0;
+  color: var(--ink, #17251f);
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.welcomeSection h1 span {
+  color: var(--green-2, #22664b);
+}
+
+.subtitle {
+  margin: 9px 0 0;
+  color: var(--muted, #738079);
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header actions                                                              */
+/* -------------------------------------------------------------------------- */
+
+.headerActions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.profile {
+  position: relative;
+  flex: 0 0 47px;
+  width: 47px;
+  height: 47px;
+  overflow: hidden;
+  border: 2px solid #e4efdc;
+  border-radius: 50%;
+  background: var(--mint-2, #edf9d5);
+}
+
+.profileImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.profileFallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--green, #174b38);
+  background: var(--mint-2, #edf9d5);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.profileFallback[hidden] {
+  display: none;
+}
+
+.refreshButton {
+  min-height: 41px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  border: 1px solid var(--line, #e2e7e0);
+  border-radius: 11px;
+  color: var(--green, #174b38);
+  background: #ffffff;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.refreshButton:hover:not(:disabled) {
+  border-color: rgba(34, 102, 75, 0.3);
+  background: #f3f8ef;
+  transform: translateY(-1px);
+}
+
+.refreshButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.refreshButton:focus-visible {
+  outline: 3px solid rgba(89, 125, 255, 0.3);
+  outline-offset: 3px;
+}
+
+.refreshButton:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.spinningIcon {
+  animation: refreshSpin 900ms linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Header metadata                                                             */
+/* -------------------------------------------------------------------------- */
+
+.headerMeta {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  margin-top: 23px;
+  padding-top: 19px;
+  border-top: 1px solid #edf0eb;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.metaIcon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 102, 75, 0.1);
+  border-radius: 11px;
+  color: var(--green-2, #22664b);
+  background: #f2f8eb;
+}
+
+.metaText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.metaLabel {
+  color: var(--subtle, #a0aaa4);
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.metaText strong {
+  max-width: 100%;
+  color: var(--ink, #17251f);
+  font-size: 11px;
+  line-height: 1.4;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.metaDivider {
+  flex: 0 0 1px;
+  width: 1px;
+  height: 35px;
+  background: #e9ede8;
+}
+
+.groupMeta {
+  flex: 1;
+}
+
+.groupMeta .metaText {
+  flex: 1;
+}
+
+.groupMeta .metaText strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.groupCode {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid rgba(34, 102, 75, 0.12);
+  border-radius: 8px;
+  color: var(--green, #174b38);
+  background: var(--mint-2, #edf9d5);
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 850;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animation                                                                   */
+/* -------------------------------------------------------------------------- */
+
+@keyframes refreshSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                  */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .header {
+    padding: 21px;
+  }
+
+  .headerMeta {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 680px) {
+  .header {
+    padding: 18px 16px;
+    border-radius: 17px;
+  }
+
+  .headerMain {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .welcomeSection h1 {
+    font-size: 23px;
+  }
+
+  .subtitle {
+    font-size: 11px;
+  }
+
+  .headerActions {
+    gap: 8px;
+  }
+
+  .profile {
+    flex-basis: 39px;
+    width: 39px;
+    height: 39px;
+  }
+
+  .refreshButton {
+    width: 39px;
+    min-height: 39px;
+    padding: 0;
+  }
+
+  .refreshButton span {
+    display: none;
+  }
+
+  .headerMeta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 15px 12px;
+    margin-top: 18px;
+    padding-top: 16px;
+  }
+
+  .metaDivider {
+    display: none;
+  }
+
+  .metaItem {
+    gap: 8px;
+  }
+
+  .metaIcon {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .metaLabel {
+    font-size: 8px;
+  }
+
+  .metaText strong {
+    font-size: 10px;
+  }
+
+  .groupMeta {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 390px) {
+  .header {
+    padding: 16px 13px;
+  }
+
+  .welcomeSection h1 {
+    font-size: 20px;
+  }
+
+  .eyebrow {
+    margin-bottom: 8px;
+    font-size: 9px;
+  }
+
+  .subtitle {
+    font-size: 10px;
+  }
+
+  .headerMeta {
+    gap: 13px 8px;
+  }
+
+  .metaItem {
+    gap: 6px;
+  }
+
+  .groupCode {
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinningIcon {
+    animation: none;
+  }
+
+  .refreshButton {
+    transition: none;
+  }
+}

@@ -9,6 +9,18 @@ import { requireAuth, requireAdmin } from '../middleware/auth.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 const router=Router();
 
+router.get('/settings/portal-access',requireAuth,requireAdmin,asyncHandler(async(req,res)=>{
+ const envDefault=String(process.env.ONLY_DESKTOP_ACCESS||'true').toLowerCase()!=='false';
+ const saved=await AppSettings.findOne({key:'portal-access'}).lean();
+ res.json({settings:{onlyDesktopAccess:saved?.value?.onlyDesktopAccess??envDefault}});
+}));
+router.patch('/settings/portal-access',requireAuth,requireAdmin,asyncHandler(async(req,res)=>{
+ if(typeof req.body.onlyDesktopAccess!=='boolean') throw new HttpError(400,'Choose whether intern access should be restricted to desktop screens.');
+ const saved=await AppSettings.findOneAndUpdate({key:'portal-access'},{$set:{value:{onlyDesktopAccess:req.body.onlyDesktopAccess},updatedBy:req.user._id}},{upsert:true,new:true,setDefaultsOnInsert:true});
+ res.json({message:'Portal access settings saved.',settings:saved.value});
+}));
+
+
 const defaultSchedule={firstStart:'09:30',firstEnd:'12:30',secondStart:'13:00',secondEnd:'15:30',minimumSeconds:Number(process.env.ATTENDANCE_MIN_SECONDS||50)};
 const toMinutes=(v)=>{const m=String(v||'').match(/^(\d{2}):(\d{2})$/);if(!m)return NaN;const h=Number(m[1]),n=Number(m[2]);return h<=23&&n<=59?h*60+n:NaN};
 router.get('/settings/attendance',requireAuth,requireAdmin,asyncHandler(async(req,res)=>{const saved=await AppSettings.findOne({key:'attendance-schedule'}).lean();res.json({settings:{...defaultSchedule,...(saved?.value||{})}})}));

@@ -1,0 +1,585 @@
+/* -------------------------------------------------------------------------- */
+/* Timer card                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.timerCard {
+  --timer-accent: #22664b;
+  --timer-track: #e8eee5;
+
+  width: 100%;
+  min-width: 0;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(34, 102, 75, 0.2);
+  border-radius: 19px;
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(223, 247, 167, 0.34),
+      transparent 32%
+    ),
+    #ffffff;
+  box-shadow: 0 7px 22px rgba(23, 75, 56, 0.055);
+}
+
+.completedTimer {
+  border-color: rgba(34, 125, 76, 0.25);
+  background:
+    radial-gradient(
+      circle at 88% 10%,
+      rgba(223, 247, 167, 0.43),
+      transparent 32%
+    ),
+    #ffffff;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Timer header                                                               */
+/* -------------------------------------------------------------------------- */
+
+.timerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #edf1eb;
+}
+
+.timerHeading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.timerIcon {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(34, 102, 75, 0.13);
+  border-radius: 12px;
+  color: var(--green, #174b38);
+  background: #edf6e5;
+}
+
+.timerHeading > div {
+  min-width: 0;
+}
+
+.eyebrow {
+  color: var(--green-2, #22664b);
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+}
+
+.timerHeading h2 {
+  margin: 5px 0 0;
+  color: var(--ink, #17251f);
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Timer status                                                               */
+/* -------------------------------------------------------------------------- */
+
+.timerStatus {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid rgba(34, 102, 75, 0.13);
+  border-radius: 999px;
+  color: #286d4c;
+  background: #eff7e9;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #29945d;
+  box-shadow: 0 0 0 3px rgba(41, 148, 93, 0.1);
+  animation: timerPulse 1.8s ease-in-out infinite;
+}
+
+.readyStatus {
+  color: #176340;
+  border-color: rgba(34, 125, 76, 0.17);
+  background: #e9f7ee;
+}
+
+.readyStatus .statusDot {
+  animation: none;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Timer body                                                                 */
+/* -------------------------------------------------------------------------- */
+
+.timerBody {
+  display: grid;
+  grid-template-columns: minmax(170px, 0.75fr) minmax(0, 1.65fr);
+  align-items: center;
+  gap: 28px;
+  padding: 23px 12px 21px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Progress ring                                                              */
+/* -------------------------------------------------------------------------- */
+
+.progressArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.progressRing {
+  position: relative;
+  width: 155px;
+  height: 155px;
+  display: grid;
+  place-items: center;
+}
+
+.progressSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.progressTrack,
+.progressValue {
+  fill: none;
+  stroke-width: 9;
+}
+
+.progressTrack {
+  stroke: var(--timer-track);
+}
+
+.progressValue {
+  stroke: #39895c;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 350ms linear;
+  filter: drop-shadow(0 2px 3px rgba(34, 102, 75, 0.13));
+}
+
+.completedTimer .progressValue {
+  stroke: #26945c;
+}
+
+.timerValue {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.timerValue strong {
+  color: var(--green, #174b38);
+  font-size: 29px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+}
+
+.timerValue > span:not(.completeCheck) {
+  color: var(--muted, #738079);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.completeCheck {
+  width: 47px;
+  height: 47px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: #26945c;
+  box-shadow: 0 5px 15px rgba(38, 148, 92, 0.19);
+}
+
+.completeCheck svg {
+  width: 23px;
+  height: 23px;
+}
+
+.progressCaption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.progressCaption strong {
+  color: var(--green-2, #22664b);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.progressCaption span {
+  color: var(--subtle, #a0aaa4);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Timer information                                                          */
+/* -------------------------------------------------------------------------- */
+
+.timerInformation {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.informationHeading h3 {
+  margin: 0;
+  color: var(--ink, #17251f);
+  font-size: 17px;
+  line-height: 1.4;
+  font-weight: 900;
+  letter-spacing: -0.025em;
+}
+
+.informationHeading p {
+  max-width: 510px;
+  margin: 7px 0 0;
+  color: var(--muted, #738079);
+  font-size: 12px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Duration details                                                           */
+/* -------------------------------------------------------------------------- */
+
+.durationDetails {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.durationItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 13px;
+  border: 1px solid #e9eee7;
+  border-radius: 11px;
+  background: #fafbf9;
+}
+
+.durationItem > span {
+  color: var(--subtle, #a0aaa4);
+  font-size: 9px;
+  line-height: 1.3;
+  font-weight: 850;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.durationItem strong {
+  color: var(--ink, #17251f);
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Submit button                                                              */
+/* -------------------------------------------------------------------------- */
+
+.submitButton {
+  width: 100%;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 16px;
+  border: 1px solid #dce8d8;
+  border-radius: 11px;
+  color: #718076;
+  background: #edf2ea;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: not-allowed;
+  transition:
+    color 170ms ease,
+    background 170ms ease,
+    border-color 170ms ease,
+    box-shadow 170ms ease,
+    transform 170ms ease;
+}
+
+.submitButton:disabled {
+  opacity: 0.9;
+}
+
+.submitReady {
+  border-color: var(--green, #174b38);
+  color: #ffffff;
+  background: var(--green, #174b38);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.submitReady:hover:not(:disabled) {
+  border-color: var(--green-2, #22664b);
+  background: var(--green-2, #22664b);
+  box-shadow: 0 5px 14px rgba(23, 75, 56, 0.17);
+  transform: translateY(-1px);
+}
+
+.submitReady:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.submitButton:focus-visible {
+  outline: 3px solid rgba(89, 125, 255, 0.35);
+  outline-offset: 3px;
+}
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: timerSpin 700ms linear infinite;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Security note                                                              */
+/* -------------------------------------------------------------------------- */
+
+.timerFootnote {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px 14px;
+  border: 1px solid rgba(89, 125, 255, 0.11);
+  border-radius: 11px;
+  background: #f5f6ff;
+}
+
+.footnoteIcon {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+  color: #6173b5;
+}
+
+.timerFootnote p {
+  margin: 0;
+  color: #727d9e;
+  font-size: 10px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Animations                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@keyframes timerPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(41, 148, 93, 0.1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(41, 148, 93, 0.04);
+  }
+}
+
+@keyframes timerSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Responsive                                                                 */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 800px) {
+  .timerBody {
+    grid-template-columns: minmax(130px, 0.65fr) minmax(0, 1.35fr);
+    gap: 19px;
+    padding-right: 2px;
+    padding-left: 2px;
+  }
+
+  .progressRing {
+    width: 135px;
+    height: 135px;
+  }
+
+  .timerValue strong {
+    font-size: 25px;
+  }
+
+  .informationHeading h3 {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .timerCard {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .timerHeader {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .timerHeading {
+    gap: 9px;
+  }
+
+  .timerIcon {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+  }
+
+  .timerHeading h2 {
+    font-size: 13px;
+  }
+
+  .eyebrow {
+    font-size: 8px;
+  }
+
+  .timerStatus {
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+
+  .timerBody {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 20px;
+    padding: 20px 0;
+  }
+
+  .progressRing {
+    width: 145px;
+    height: 145px;
+  }
+
+  .timerInformation {
+    width: 100%;
+    gap: 13px;
+  }
+
+  .informationHeading {
+    text-align: center;
+  }
+
+  .informationHeading h3 {
+    font-size: 15px;
+  }
+
+  .informationHeading p {
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 11px;
+  }
+
+  .durationDetails {
+    gap: 8px;
+  }
+
+  .durationItem {
+    padding: 10px;
+  }
+
+  .durationItem strong {
+    font-size: 13px;
+  }
+
+  .submitButton {
+    min-height: 43px;
+  }
+}
+
+@media (max-width: 390px) {
+  .timerCard {
+    padding: 13px;
+  }
+
+  .timerHeader {
+    flex-wrap: wrap;
+  }
+
+  .timerStatus {
+    margin-left: 44px;
+  }
+
+  .progressRing {
+    width: 135px;
+    height: 135px;
+  }
+
+  .timerValue strong {
+    font-size: 24px;
+  }
+
+  .timerFootnote {
+    padding: 10px;
+  }
+
+  .timerFootnote p {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .statusDot,
+  .spinner {
+    animation: none;
+  }
+
+  .progressValue,
+  .submitButton {
+    transition: none;
+  }
+}

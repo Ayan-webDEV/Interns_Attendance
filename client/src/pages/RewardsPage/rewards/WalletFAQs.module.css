@@ -1,0 +1,635 @@
+/* =========================================================
+   VELOOP REWARDS — INTERN CASH FAQ
+========================================================= */
+
+.section {
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* =========================================================
+   FAQ HEADER ICON
+========================================================= */
+
+.headerIcon {
+  display: grid;
+
+  width: 44px;
+  height: 44px;
+
+  flex: 0 0 44px;
+
+  place-items: center;
+
+  border: 1px solid #e4daf8;
+  border-radius: 15px;
+
+  color: #6946b4;
+  background: #ffffff;
+
+  box-shadow: 0 5px 14px rgb(90 57 160 / 6%);
+}
+
+/* =========================================================
+   FAQ CARD
+========================================================= */
+
+.faqCard {
+  display: flex;
+
+  min-width: 0;
+  min-height: 116px;
+
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 15px;
+
+  border: 1px solid #e6e1f0;
+  border-radius: 17px;
+
+  color: inherit;
+  background: linear-gradient(140deg, #ffffff, #fcfbff);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
+}
+
+.faqCard:hover {
+  transform: translateY(-2px);
+
+  border-color: #c9b9ed;
+
+  background: linear-gradient(140deg, #ffffff, #f8f5ff);
+
+  box-shadow: 0 10px 24px rgb(66 43 120 / 7%);
+}
+
+.faqCard:active {
+  transform: translateY(0) scale(0.99);
+}
+
+.faqCard:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.faqCard[aria-expanded="true"] {
+  border-color: #bca9e6;
+
+  background: #faf7ff;
+}
+
+/* =========================================================
+   FAQ ICON
+========================================================= */
+
+.faqIcon {
+  display: grid;
+
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  place-items: center;
+
+  border: 1px solid #e3dafa;
+  border-radius: 13px;
+
+  color: #6946b4;
+  background: #f5f1ff;
+
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+}
+
+.faqCard:hover .faqIcon {
+  transform: scale(1.05);
+
+  border-color: #d3c3f5;
+
+  background: #eee8ff;
+}
+
+/* =========================================================
+   FAQ CATEGORY LABEL
+========================================================= */
+
+.category {
+  display: block;
+
+  color: #7859ad;
+
+  font-size: 9px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   FAQ ARROW
+========================================================= */
+
+.cardArrow {
+  flex: 0 0 auto;
+
+  margin-top: 27px;
+
+  color: #9aa1b0;
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.faqCard:hover .cardArrow {
+  transform: translateX(4px);
+  color: #6946b4;
+}
+
+/* =========================================================
+   MODAL BACKDROP
+========================================================= */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 2147481500;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: 16px;
+
+  background: rgb(15 23 42 / 65%);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  animation: fadeIn 160ms ease both;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.modal {
+  display: flex;
+
+  width: min(100%, 570px);
+  max-height: min(88dvh, 680px);
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  margin: auto;
+
+  border: 1px solid #e6e0f1;
+  border-radius: 25px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 28px 90px rgb(17 13 44 / 28%),
+    0 4px 16px rgb(17 13 44 / 10%);
+
+  animation: modalIn 210ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.modalHeader {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: flex-start;
+  gap: 13px;
+
+  padding: 20px;
+
+  border-bottom: 1px solid #eeeaf5;
+
+  background: linear-gradient(120deg, #f5f0ff, #ffffff 65%, #eff6ff);
+}
+
+/* =========================================================
+   MODAL ICON
+========================================================= */
+
+.modalIcon {
+  display: grid;
+
+  width: 45px;
+  height: 45px;
+
+  flex: 0 0 45px;
+
+  place-items: center;
+
+  border: 1px solid #e5dcf7;
+  border-radius: 14px;
+
+  color: #6946b4;
+  background: #ffffff;
+
+  box-shadow: 0 4px 12px rgb(90 57 160 / 5%);
+}
+
+/* =========================================================
+   MODAL TITLE
+========================================================= */
+
+.modalHeader h2 {
+  margin: 7px 0 0;
+
+  color: #1e2431;
+
+  font-size: 19px;
+  font-weight: 950;
+  line-height: 1.4;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   CLOSE BUTTON
+========================================================= */
+
+.closeButton {
+  display: grid;
+
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  place-items: center;
+
+  border: 1px solid #e3e5eb;
+  border-radius: 11px;
+
+  color: #647084;
+  background: #ffffff;
+
+  cursor: pointer;
+
+  transition:
+    color 150ms ease,
+    border-color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.closeButton:hover {
+  transform: rotate(5deg);
+
+  border-color: #f5c8cb;
+
+  color: #b63b4b;
+  background: #fff1f2;
+}
+
+.closeButton:active {
+  transform: scale(0.94);
+}
+
+.closeButton:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.modalBody {
+  min-height: 0;
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+
+  padding: 22px;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d8cce9 transparent;
+}
+
+.modalBody::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: #d8cce9;
+}
+
+/* =========================================================
+   ANSWER LABEL
+========================================================= */
+
+.answerLabel {
+  display: flex;
+
+  align-items: center;
+  gap: 8px;
+
+  color: #6946b4;
+
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+}
+
+.answerLabel svg {
+  flex: 0 0 auto;
+}
+
+/* =========================================================
+   ANSWER TEXT
+========================================================= */
+
+.modalBody > p {
+  margin: 15px 0 0;
+
+  color: #465468;
+
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.85;
+
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   REMINDER
+========================================================= */
+
+.reminder {
+  display: flex;
+
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-top: 22px;
+  padding: 13px;
+
+  border: 1px solid #d9eade;
+  border-radius: 13px;
+
+  color: #286143;
+  background: #f1f8f1;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+.reminder svg {
+  flex: 0 0 auto;
+
+  margin-top: 1px;
+}
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.modalFooter {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 14px 20px;
+
+  border-top: 1px solid #edf0f3;
+
+  background: #fbfcfe;
+}
+
+.modalFooter > span {
+  color: #8b94a2;
+
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.modalFooter button {
+  display: inline-flex;
+
+  min-width: 83px;
+  min-height: 38px;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 17px;
+
+  border: 1px solid #35245e;
+  border-radius: 11px;
+
+  color: #ffffff;
+  background: #271b49;
+
+  font-size: 11px;
+  font-weight: 850;
+
+  cursor: pointer;
+
+  transition:
+    background 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.modalFooter button:hover {
+  transform: translateY(-1px);
+
+  background: #493179;
+
+  box-shadow: 0 5px 12px rgb(39 27 73 / 15%);
+}
+
+.modalFooter button:active {
+  transform: scale(0.97);
+}
+
+.modalFooter button:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(9px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 640px) {
+  .faqCard {
+    min-height: 108px;
+  }
+
+  .modal {
+    width: min(100%, 520px);
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 480px) {
+  .faqCard {
+    min-height: 100px;
+    padding: 12px;
+    border-radius: 15px;
+  }
+
+  .modalBackdrop {
+    align-items: flex-end;
+
+    padding: 8px;
+  }
+
+  .modal {
+    width: 100%;
+    max-height: 91dvh;
+
+    border-radius: 23px 23px 15px 15px;
+  }
+
+  .modalHeader,
+  .modalBody {
+    padding: 17px;
+  }
+
+  .modalHeader h2 {
+    font-size: 17px;
+  }
+
+  .modalFooter {
+    padding: 12px 17px;
+  }
+
+  .modalBody > p {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+}
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 350px) {
+  .faqCard {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .faqIcon {
+    width: 35px;
+    height: 35px;
+    flex-basis: 35px;
+    border-radius: 11px;
+  }
+
+  .modalIcon {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
+  }
+
+  .modalHeader {
+    gap: 9px;
+  }
+
+  .modalHeader h2 {
+    font-size: 15px;
+  }
+
+  .modalFooter > span {
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .faqCard,
+  .faqIcon,
+  .cardArrow,
+  .modalBackdrop,
+  .modal,
+  .closeButton,
+  .modalFooter button {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .faqCard:hover,
+  .faqCard:active,
+  .faqCard:hover .faqIcon,
+  .faqCard:hover .cardArrow,
+  .closeButton:hover,
+  .modalFooter button:hover {
+    transform: none;
+  }
+}

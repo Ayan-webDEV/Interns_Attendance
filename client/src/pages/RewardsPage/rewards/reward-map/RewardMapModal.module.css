@@ -1,0 +1,914 @@
+/* =========================================================
+   VELOOP REWARDS — FULL REWARD MAP MODAL
+   Component-scoped CSS Module
+========================================================= */
+
+/* =========================================================
+   BACKDROP
+========================================================= */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: auto;
+
+  padding: 18px;
+
+  background: rgb(16 19 34 / 72%);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  animation: fadeIn 180ms ease both;
+}
+
+/* =========================================================
+   MAIN WINDOW
+========================================================= */
+
+.window {
+  position: relative;
+
+  display: flex;
+
+  width: min(100%, 1320px);
+  height: min(94dvh, 960px);
+  min-height: 0;
+
+  flex-direction: column;
+
+  overflow: hidden;
+
+  margin: auto;
+
+  border: 1px solid #e3e8e5;
+  border-radius: 26px;
+
+  color: #26384c;
+  background: #ffffff;
+
+  box-shadow:
+    0 30px 110px rgb(0 0 0 / 32%),
+    0 5px 25px rgb(0 0 0 / 12%);
+
+  animation: modalIn 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  outline: none;
+}
+
+.window:focus {
+  outline: none;
+}
+
+/* =========================================================
+   PROGRESS SECTION
+========================================================= */
+
+.progress {
+  display: flex;
+  flex: 0 0 auto;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  padding: 14px 22px 13px;
+
+  border-bottom: 1px solid #edf0ef;
+
+  background: linear-gradient(110deg, #f5fbf6 0%, #ffffff 58%, #fffaf0 100%);
+}
+
+.progressTop {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.progressTop > div {
+  min-width: 0;
+}
+
+.progressTop > div > span {
+  color: #475569;
+
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.progressTop p {
+  margin: 3px 0 0;
+
+  color: #8994a0;
+
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.progressTop > strong {
+  color: #277a50;
+
+  font-size: 22px;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+  line-height: 1;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 8px;
+
+  overflow: hidden;
+
+  border: 1px solid #e6eee5;
+  border-radius: 99px;
+
+  background: #edf3ed;
+}
+
+.progressTrack i {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(90deg, #31895b 0%, #67b77c 55%, #d9ad53 100%);
+
+  box-shadow: 0 0 10px rgb(74 158 100 / 22%);
+
+  transition: width 350ms ease;
+}
+
+.progressBottom {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  color: #83908a;
+
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.progressBottom > span:first-child {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 6px;
+}
+
+.progressBottom svg {
+  color: #b18a38;
+}
+
+.progressBottom > span:last-child {
+  white-space: nowrap;
+}
+
+/* =========================================================
+   ERROR NOTICE
+========================================================= */
+
+.notice {
+  display: flex;
+  flex: 0 0 auto;
+
+  align-items: flex-start;
+  gap: 10px;
+
+  padding: 11px 20px;
+
+  border-bottom: 1px solid #f1e1bd;
+
+  color: #885619;
+  background: #fff9ed;
+
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.notice > svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.notice > span {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.notice button {
+  flex: 0 0 auto;
+
+  padding: 5px 9px;
+
+  border: 1px solid #eed5a5;
+  border-radius: 8px;
+
+  color: #875719;
+  background: #ffffff;
+
+  font-size: 9px;
+  font-weight: 900;
+
+  cursor: pointer;
+}
+
+.notice button:hover:not(:disabled) {
+  background: #fff0d5;
+}
+
+.notice button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* =========================================================
+   MAIN CONTENT GRID
+========================================================= */
+
+.content {
+  display: grid;
+  /* position: relative; */
+
+  min-width: 0;
+  min-height: 0;
+
+  flex: 1;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(310px, 0.75fr);
+
+  gap: 16px;
+
+  overflow: hidden;
+
+  padding: 17px;
+
+  background:
+    radial-gradient(circle at 80% 0%, rgb(255 246 223 / 65%), transparent 34%),
+    linear-gradient(135deg, #f0f8f1, #f5f6fb 55%, #faf6ff);
+}
+
+/* =========================================================
+   MAP PANEL
+========================================================= */
+
+.mapPanel {
+  position: relative;
+
+  min-width: 0;
+  min-height: 0;
+
+  overflow: auto;
+
+  border: 1px solid #dce8df;
+  border-radius: 22px;
+
+  background: #e7f5e8;
+
+  box-shadow:
+    0 8px 24px rgb(39 87 56 / 5%),
+    inset 0 1px 0 rgb(255 255 255 / 75%);
+
+  scrollbar-color: #b9cdbd transparent;
+  scrollbar-width: thin;
+
+  overscroll-behavior: contain;
+}
+
+.mapPanel::-webkit-scrollbar,
+.details::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.mapPanel::-webkit-scrollbar-thumb,
+.details::-webkit-scrollbar-thumb {
+  border-radius: 99px;
+  background: #c5d5c6;
+}
+
+.mapPanel::-webkit-scrollbar-thumb:hover,
+.details::-webkit-scrollbar-thumb:hover {
+  background: #95b49b;
+}
+
+/* Keep the map scene at its natural minimum height. */
+
+.mapPanel > * {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+/* =========================================================
+   DETAILS PANEL
+========================================================= */
+
+.details {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  overscroll-behavior: contain;
+
+  scrollbar-color: #c8c1d8 transparent;
+  scrollbar-width: thin;
+}
+
+/* =========================================================
+   CHECKPOINT NAVIGATION
+========================================================= */
+
+.navigation {
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 24px;
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  padding: 11px;
+  border-radius: 15px;
+}
+
+.navigation button {
+  display: inline-flex;
+
+  min-width: 91px;
+  min-height: 38px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  padding: 7px 10px;
+
+  border: 1px solid #e2eadf;
+  border-radius: 10px;
+
+  color: #33714e;
+  background: #f8fcf6;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.navigation button:hover:not(:disabled) {
+  transform: translateY(-1px);
+
+  border-color: #b8d8bc;
+  background: #edf8ee;
+}
+
+.navigation button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.navigation button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.navigation > span {
+  color: #7b8391;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  font-variant-numeric: tabular-nums;
+}
+
+/* =========================================================
+   FIRST CHECKPOINT PROMPT
+========================================================= */
+
+.firstStep {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+
+  flex-direction: column;
+
+  gap: 9px;
+
+  padding: 18px 14px;
+
+  border: 1px dashed #d8cee9;
+  border-radius: 17px;
+
+  color: #6a5598;
+
+  background: #ffffff;
+
+  box-shadow: 0 5px 18px rgb(67 46 106 / 4%);
+
+  text-align: center;
+}
+
+.firstStep > span {
+  display: grid;
+
+  width: 45px;
+  height: 45px;
+
+  place-items: center;
+
+  border: 1px solid #e4dbf4;
+  border-radius: 14px;
+
+  color: #7958bd;
+  background: #f5f1ff;
+}
+
+.firstStep > strong {
+  color: #334155;
+
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.firstStep p {
+  max-width: 260px;
+
+  margin: 0;
+
+  color: #778197;
+
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.firstStep button {
+  display: inline-flex;
+
+  min-height: 38px;
+
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  margin-top: 3px;
+  padding: 8px 12px;
+
+  border: 1px solid #6546ad;
+  border-radius: 10px;
+
+  color: #ffffff;
+  background: #6546ad;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.firstStep button:hover {
+  transform: translateY(-1px);
+  background: #53348f;
+}
+
+/* =========================================================
+   EMPTY AND LOADING STATES
+========================================================= */
+
+.empty {
+  display: flex;
+
+  min-height: 340px;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  padding: 25px;
+
+  color: #778a7b;
+
+  text-align: center;
+}
+
+.emptyIcon {
+  display: grid;
+
+  width: 58px;
+  height: 58px;
+
+  place-items: center;
+
+  border: 1px solid #dcead9;
+  border-radius: 18px;
+
+  color: #34865a;
+  background: #f3faf0;
+}
+
+.empty strong {
+  color: #304436;
+
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.empty p {
+  max-width: 300px;
+
+  margin: 0;
+
+  color: #718273;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.empty button {
+  display: inline-flex;
+
+  min-height: 37px;
+
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 5px;
+  padding: 8px 12px;
+
+  border: 1px solid #cee2d1;
+  border-radius: 10px;
+
+  color: #31764c;
+  background: #ffffff;
+
+  font-size: 10px;
+  font-weight: 850;
+
+  cursor: pointer;
+}
+
+.empty button:hover:not(:disabled) {
+  background: #eef8ed;
+}
+
+.empty button:disabled {
+  cursor: wait;
+  opacity: 0.5;
+}
+
+/* Loading circle */
+
+.loader {
+  width: 31px;
+  height: 31px;
+
+  border: 3px solid #e4eadf;
+  border-top-color: #479765;
+  border-right-color: #d6ab51;
+
+  border-radius: 50%;
+
+  animation: spin 850ms linear infinite;
+}
+
+.spin {
+  animation: spin 850ms linear infinite;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer {
+  display: flex;
+  flex: 0 0 auto;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 5px 20px;
+
+  border-top: 1px solid #edf0ea;
+
+  color: #778274;
+  background: #ffffff;
+
+  font-size: 10px;
+}
+
+.footer > span,
+.footer > button {
+  display: inline-flex;
+
+  align-items: center;
+  gap: 7px;
+}
+
+.footer > span {
+  font-weight: 750;
+}
+
+.footer > span svg {
+  color: #b18a38;
+}
+
+.footer > button {
+  min-height: 39px;
+
+  padding: 8px 13px;
+
+  border: 1px solid #dce6dc;
+  border-radius: 11px;
+
+  color: #39764e;
+  background: #f9fcf7;
+
+  font-size: 10px;
+  font-weight: 900;
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.footer > button:hover {
+  transform: translateY(-1px);
+
+  border-color: #c0dac3;
+  background: #eff8ef;
+}
+
+/* =========================================================
+   FOCUS STATES
+========================================================= */
+
+.window button:focus-visible {
+  outline: 3px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+/* =========================================================
+   LARGE DESKTOP
+========================================================= */
+
+@media (min-width: 1400px) {
+  .content {
+    grid-template-columns:
+      minmax(0, 1.7fr)
+      minmax(340px, 0.72fr);
+
+    gap: 19px;
+    padding: 20px;
+  }
+
+  .progress {
+    padding-right: 25px;
+    padding-left: 25px;
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 950px) {
+  .window {
+    width: min(100%, 820px);
+    height: min(96dvh, 1100px);
+  }
+
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    padding: 13px;
+  }
+
+  .mapPanel {
+    min-height: 520px;
+    overflow: auto;
+  }
+
+  .details {
+    overflow: visible;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .window {
+    width: 100%;
+    height: 97dvh;
+    max-height: 97dvh;
+
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+
+    border-radius: 22px 22px 0 0;
+  }
+
+  .progress {
+    padding: 11px 14px;
+  }
+
+  .content {
+    gap: 11px;
+    padding: 9px;
+  }
+
+  .mapPanel {
+    min-height: 470px;
+    border-radius: 17px;
+  }
+
+  .navigation {
+    padding: 9px;
+  }
+
+  .navigation button {
+    min-width: 82px;
+    min-height: 36px;
+
+    padding: 6px 8px;
+
+    font-size: 9px;
+  }
+
+  .footer {
+    padding: 10px 13px;
+  }
+
+  .footer > span {
+    font-size: 9px;
+  }
+
+  .footer > button {
+    min-height: 36px;
+  }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 370px) {
+  .progressTop > strong {
+    font-size: 19px;
+  }
+
+  .progressBottom {
+    font-size: 8px;
+  }
+
+  .progressBottom > span:last-child {
+    display: none;
+  }
+
+  .mapPanel {
+    min-height: 435px;
+  }
+
+  .navigation {
+    gap: 5px;
+    padding: 7px;
+  }
+
+  .navigation button {
+    min-width: 72px;
+    padding: 6px;
+  }
+
+  .footer {
+    gap: 8px;
+  }
+
+  .footer > span {
+    max-width: 60%;
+    line-height: 1.5;
+  }
+
+  .footer > button {
+    padding: 7px 9px;
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   HOVER DEVICE SUPPORT
+========================================================= */
+
+@media (hover: none) {
+  .navigation button:hover,
+  .firstStep button:hover,
+  .footer > button:hover {
+    transform: none;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.99);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .window,
+  .progressTrack i,
+  .loader,
+  .spin {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .navigation button:hover,
+  .firstStep button:hover,
+  .footer > button:hover {
+    transform: none;
+  }
+}
