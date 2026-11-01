@@ -35,10 +35,10 @@ export default function Login({ onLogin }) {
       );
       return;
     }
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    const clientId = import.meta.env.GOOGLE_CLIENT_ID;
     if (!clientId) {
       toast(
-        "Add VITE_GOOGLE_CLIENT_ID to the frontend environment settings.",
+        "Add GOOGLE_CLIENT_ID to the frontend environment settings.",
         "error",
       );
       return;
