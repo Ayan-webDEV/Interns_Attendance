@@ -1,4 +1,5 @@
 import styles from "./AttendanceHeader.module.css";
+import { useEffect, useState } from "react";
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                    */
@@ -153,7 +154,52 @@ export default function AttendanceHeader({
   const initials = getInitials(displayName);
   const groupName = getGroupName(group);
   const groupCode = getGroupCode(group);
-  const profileImage = getProfileImage(user);
+
+  // Keep the same localStorage key used by Shell.jsx
+  const profilePictureKey = `vlr_profile_picture_${
+    user?.id || user?._id || user?.email || "intern"
+  }`;
+
+  const [savedProfileImage, setSavedProfileImage] = useState("");
+
+  useEffect(() => {
+    const loadProfilePicture = () => {
+      try {
+        const image = window.localStorage.getItem(profilePictureKey);
+        setSavedProfileImage(image || "");
+      } catch {
+        setSavedProfileImage("");
+      }
+    };
+
+    // Load the saved image when the component mounts
+    loadProfilePicture();
+
+    // Update when the Account page uploads or removes a picture
+    window.addEventListener("vlr-profile-picture-updated", loadProfilePicture);
+
+    // Update when localStorage changes in another browser tab
+    const handleStorageChange = (event) => {
+      if (event.key === profilePictureKey || event.key === null) {
+        loadProfilePicture();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(
+        "vlr-profile-picture-updated",
+        loadProfilePicture,
+      );
+
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [profilePictureKey]);
+
+  // Prefer the saved localStorage picture.
+  // If unavailable, use the profile image from the user object.
+  const profileImage = savedProfileImage || getProfileImage(user);
 
   const handleRefresh = () => {
     if (refreshing || typeof onRefresh !== "function") return;

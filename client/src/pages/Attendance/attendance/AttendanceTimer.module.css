@@ -5,7 +5,7 @@
 .timerCard {
   --timer-accent: #22664b;
   --timer-track: #e8eee5;
-
+  scroll-margin-top: 24px;
   width: 100%;
   min-width: 0;
   padding: 22px;

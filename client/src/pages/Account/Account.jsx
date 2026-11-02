@@ -113,9 +113,22 @@ export default function Account({ user }) {
   const [profilePicture, setProfilePicture] = useState("");
   const [profilePictureError, setProfilePictureError] = useState("");
 
+  // const identityKey = useMemo(
+  //   () => user?.id || user?.email || "intern",
+  //   [user?.id, user?.email],
+  // );
+
+  // const profilePictureKey = `vlr_profile_picture_${identityKey}`;
   const identityKey = useMemo(
-    () => user?.id || user?.email || "intern",
-    [user?.id, user?.email],
+    () =>
+      me?.id ||
+      me?._id ||
+      me?.email ||
+      user?.id ||
+      user?._id ||
+      user?.email ||
+      "intern",
+    [me?.id, me?._id, me?.email, user?.id, user?._id, user?.email],
   );
 
   const profilePictureKey = `vlr_profile_picture_${identityKey}`;
@@ -300,6 +313,7 @@ export default function Account({ user }) {
         const imageData = String(reader.result || "");
 
         window.localStorage.setItem(profilePictureKey, imageData);
+        window.dispatchEvent(new Event("vlr-profile-picture-updated"));
         setProfilePicture(imageData);
 
         notify("Profile picture updated.");
@@ -321,6 +335,7 @@ export default function Account({ user }) {
   const handleRemoveProfilePicture = () => {
     try {
       window.localStorage.removeItem(profilePictureKey);
+      window.dispatchEvent(new Event("vlr-profile-picture-updated"));
       setProfilePicture("");
       setProfilePictureError("");
       notify("Profile picture removed.");

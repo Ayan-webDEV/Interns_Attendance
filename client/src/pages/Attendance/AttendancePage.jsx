@@ -1207,6 +1207,8 @@ export default function AttendancePage({ data = {} }) {
           onRefresh={refresh}
         />
 
+        <AttendanceTabs activeTab={activeTab} onChange={setActiveTab} />
+
         <AttendanceStatusBanner
           status={statusMessage}
           group={group}
@@ -1214,8 +1216,6 @@ export default function AttendancePage({ data = {} }) {
           groupStartDate={groupStartDate}
           groupEndDate={groupEndDate}
         />
-
-        <AttendanceTabs activeTab={activeTab} onChange={setActiveTab} />
 
         {activeTab === "overview" && (
           <section

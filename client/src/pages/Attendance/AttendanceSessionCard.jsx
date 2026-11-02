@@ -369,10 +369,40 @@ export default function AttendanceSessionCard({
     !canStart ||
     typeof onStart !== "function";
 
+  // const handleStart = () => {
+  //   if (buttonDisabled) return;
+
+  //   onStart(sessionNumber);
+  // };
+  // Wait for the active timer to appear, then scroll to it.
+  const scrollToAttendanceTimer = (attempt = 0) => {
+    const timerSection = document.getElementById("attendance-timer-section");
+
+    if (timerSection) {
+      timerSection.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+
+      return;
+    }
+
+    // Wait for the timer component to render.
+    if (attempt < 40) {
+      globalThis.setTimeout(() => {
+        scrollToAttendanceTimer(attempt + 1);
+      }, 100);
+    }
+  };
+
   const handleStart = () => {
     if (buttonDisabled) return;
 
+    // Preserve existing attendance functionality.
     onStart(sessionNumber);
+
+    // Scroll to the active timer.
+    scrollToAttendanceTimer();
   };
 
   const reason =

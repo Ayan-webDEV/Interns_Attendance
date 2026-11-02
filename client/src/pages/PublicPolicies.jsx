@@ -21,6 +21,8 @@ import {
   Sparkles,
   ArrowLeft,
   CheckCircle2,
+  Menu,
+  X,
   Scale,
   UserRound,
   Bell,
@@ -937,6 +939,9 @@ export default function PublicPolicies() {
       : "overview";
   });
 
+  // Mobile policy navigation drawer
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   const allExpanded = expandedSections.length === policySections.length;
 
   const toggleSection = (id) => {
@@ -975,6 +980,29 @@ export default function PublicPolicies() {
 
     return () => window.clearTimeout(timer);
   }, [location.hash]);
+
+  /* Close mobile navigation on Escape or desktop resize */
+  useEffect(() => {
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    const handleResize = () => {
+      if (window.innerWidth >= 1300) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   /* Automatically highlight the currently visible policy */
   useEffect(() => {
@@ -1021,24 +1049,39 @@ export default function PublicPolicies() {
           <span className={styles.backIcon}>
             <ArrowLeft size={16} />
           </span>
-          <span>Back to sign in</span>
-        </Link>
+          {/* <span>Back to sign in</span> */}
+          <Link
+            className={`${styles.brand} ms-2`}
+            to="/login"
+            aria-label={brand}
+          >
+            <span className={styles.brandLogo}>
+              <img src="/LOGO.jpeg" alt="" />
+            </span>
 
-        <Link className={styles.brand} to="/login" aria-label={brand}>
-          <span className={styles.brandLogo}>
-            <img src="/LOGO.jpeg" alt="" />
-          </span>
-
-          <span className={styles.brandText}>
-            <strong>{brand}</strong>
-            <small>PEOPLE & PROGRAMMES</small>
-          </span>
+            <span className={styles.brandText}>
+              <strong>{brand}</strong>
+              <small>PEOPLE & PROGRAMMES</small>
+            </span>
+          </Link>
         </Link>
 
         <div className={styles.headerTrust}>
           <ShieldCheck size={15} />
           <span>Official policy centre</span>
         </div>
+
+        {/* MOBILE POLICY MENU BUTTON */}
+        <button
+          type="button"
+          className={styles.mobileMenuButton}
+          onClick={() => setMobileMenuOpen((current) => !current)}
+          aria-label={mobileMenuOpen ? "Close policy menu" : "Open policy menu"}
+          aria-expanded={mobileMenuOpen}
+          aria-controls="policy-navigation"
+        >
+          {mobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
+        </button>
       </header>
 
       {/* ======================================================
@@ -1046,8 +1089,23 @@ export default function PublicPolicies() {
       ====================================================== */}
 
       <div className={styles.appBody}>
+        {/* MOBILE MENU BACKDROP */}
+        {mobileMenuOpen && (
+          <button
+            type="button"
+            className={styles.mobileMenuBackdrop}
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Close policy navigation"
+          />
+        )}
+
         {/* FIXED LEFT SIDEBAR */}
-        <aside className={styles.navigation}>
+        <aside
+          id="policy-navigation"
+          className={`${styles.navigation} ${
+            mobileMenuOpen ? styles.navigationOpen : ""
+          }`}
+        >
           <div className={styles.navigationTop}>
             <span className={styles.sidebarEyebrow}>POLICY GUIDE</span>
             <strong>Quick navigation</strong>
@@ -1071,6 +1129,8 @@ export default function PublicPolicies() {
                     activeSection === section.id ? "location" : undefined
                   }
                   onClick={() => {
+                    setMobileMenuOpen(false);
+
                     setActiveSection(section.id);
 
                     setExpandedSections((current) =>

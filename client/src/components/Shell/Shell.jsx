@@ -22,7 +22,7 @@ import {
   Search,
   Command,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { tokenStore } from "../../api/client";
 import styles from "./Shell.module.css";
 
@@ -72,6 +72,18 @@ const pathLabels = {
 
 export default function Shell({ user, onLogout }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  // Saved profile picture
+  const [profilePicture, setProfilePicture] = useState("");
+
+  // const profilePictureKey = `vlr_profile_picture_${
+  //   user?.id || user?.email || "intern"
+  // }`;
+
+  const profilePictureKey = `vlr_profile_picture_${
+    user?.id || user?._id || user?.email || "intern"
+  }`;
+
   const nav = useNavigate();
   const location = useLocation();
   const isAdmin = user?.role === "admin";
@@ -84,6 +96,45 @@ export default function Shell({ user, onLogout }) {
   const firstName = (user?.name || (isAdmin ? "Admin" : "Intern")).split(
     " ",
   )[0];
+
+  /* ---------------------------------------------------------
+   Load and synchronize profile picture
+--------------------------------------------------------- */
+
+  useEffect(() => {
+    const loadProfilePicture = () => {
+      try {
+        const image = window.localStorage.getItem(profilePictureKey);
+        setProfilePicture(image || "");
+      } catch {
+        setProfilePicture("");
+      }
+    };
+
+    // Load saved image
+    loadProfilePicture();
+
+    // Listen for changes from Account.jsx in the same tab
+    window.addEventListener("vlr-profile-picture-updated", loadProfilePicture);
+
+    // Listen for changes from other browser tabs
+    const handleStorageChange = (event) => {
+      if (event.key === profilePictureKey || event.key === null) {
+        loadProfilePicture();
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener(
+        "vlr-profile-picture-updated",
+        loadProfilePicture,
+      );
+
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [profilePictureKey]);
 
   /* ---------------------------------------------------------
      Role-based footer links
@@ -278,7 +329,14 @@ export default function Shell({ user, onLogout }) {
             <div className={styles.topDivider} />
             <div className={styles.userMenu}>
               <div className={styles.topAvatar}>
-                {firstName.slice(0, 1).toUpperCase()}
+                {profilePicture ? (
+                  <img
+                    src={profilePicture}
+                    alt={`${user?.name || "User"} profile`}
+                  />
+                ) : (
+                  <span>{firstName.slice(0, 1).toUpperCase()}</span>
+                )}
               </div>
               <div className={styles.userMeta}>
                 <b>{user?.name || "Workspace user"}</b>

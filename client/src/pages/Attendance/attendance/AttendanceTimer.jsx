@@ -137,6 +137,7 @@ export default function AttendanceTimer({
 
   return (
     <section
+      id="attendance-timer-section"
       className={`${styles.timerCard} ${
         isComplete ? styles.completedTimer : ""
       }`}
