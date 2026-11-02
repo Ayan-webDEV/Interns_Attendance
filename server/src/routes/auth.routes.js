@@ -5,6 +5,8 @@ import { OAuth2Client } from "google-auth-library";
 import { z } from "zod";
 
 import User from "../models/User.js";
+import { randomUUID } from "node:crypto";
+import OnboardingTicket from "../models/OnboardingTicket.js";
 import InternshipGroup from "../models/InternshipGroup.js";
 import WalletTransaction from "../models/WalletTransaction.js";
 
@@ -220,12 +222,36 @@ router.post(
       });
     }
 
+    // const onboardingTicket = jwt.sign(
+    //   {
+    //     purpose: "intern-onboarding",
+    //     googleSub: profile.sub,
+    //     email,
+    //     name: profile.name || email.split("@")[0],
+    //   },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: "10m",
+    //   },
+    // );
+    const jti = randomUUID();
+
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    await OnboardingTicket.create({
+      jti,
+      googleSub: profile.sub,
+      email,
+      expiresAt,
+    });
+
     const onboardingTicket = jwt.sign(
       {
         purpose: "intern-onboarding",
         googleSub: profile.sub,
         email,
         name: profile.name || email.split("@")[0],
+        jti,
       },
       process.env.JWT_SECRET,
       {
@@ -286,11 +312,28 @@ router.post(
 
     if (
       onboarding.purpose !== "intern-onboarding" ||
-      onboarding.email !== data.email.toLowerCase()
+      !onboarding.googleSub ||
+      !onboarding.jti ||
+      onboarding.email !== data.email.trim().toLowerCase()
     ) {
       throw new HttpError(
         401,
-        "Google identity does not match the registration email.",
+        "Google identity does not match the registration session.",
+      );
+    }
+
+    const validTicket = await OnboardingTicket.findOne({
+      jti: onboarding.jti,
+      googleSub: onboarding.googleSub,
+      email: onboarding.email,
+      consumedAt: null,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (!validTicket) {
+      throw new HttpError(
+        401,
+        "Your Google verification has expired or has already been used. Sign in with Google again.",
       );
     }
 
@@ -364,7 +407,36 @@ router.post(
       throw new HttpError(400, "The start date must match the offer letter.");
     }
 
+    // const passwordHash = await bcrypt.hash(data.password, 12);
+
     const passwordHash = await bcrypt.hash(data.password, 12);
+
+    // Atomically consume the Google onboarding ticket.
+    // Only one registration request can successfully consume it.
+    const consumedTicket = await OnboardingTicket.findOneAndUpdate(
+      {
+        jti: onboarding.jti,
+        googleSub: onboarding.googleSub,
+        email: onboarding.email,
+        consumedAt: null,
+        expiresAt: { $gt: new Date() },
+      },
+      {
+        $set: {
+          consumedAt: new Date(),
+        },
+      },
+      {
+        new: true,
+      },
+    );
+
+    if (!consumedTicket) {
+      throw new HttpError(
+        401,
+        "This Google verification session has expired or has already been used. Sign in again.",
+      );
+    }
 
     let user;
 
@@ -474,14 +546,39 @@ router.post(
       throw new HttpError(403, "This account is not active.");
     }
 
-    user.lastLoginAt = new Date();
+    // Existing user found
 
+    if (user.role === "admin" && !isAllowedAdmin(user.email)) {
+      throw new HttpError(403, "Admin access is not allowed.");
+    }
+
+    // Check Google identity mismatch here if your existing code has this check.
+
+    // Prevent incomplete intern accounts from receiving a normal login token
+    if (user.role === "intern" && !user.registrationComplete) {
+      throw new HttpError(
+        403,
+        "Your intern registration is incomplete. Please contact support.",
+      );
+    }
+
+    user.lastLoginAt = new Date();
     await user.save();
 
-    res.json({
-      token: issue(user, "password"),
+    return res.json({
+      token: issue(user, "google"),
       user: publicUser(user),
+      onboardingRequired: false,
     });
+
+    // user.lastLoginAt = new Date();
+
+    // await user.save();
+
+    // res.json({
+    //   token: issue(user, "password"),
+    //   user: publicUser(user),
+    // });
   }),
 );
 
