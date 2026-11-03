@@ -49,23 +49,40 @@ app.use(
 
 const allowedOrigins = (process.env.CLIENT_ORIGIN || "http://localhost:5173")
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/\/+$/, ""))
   .filter(Boolean);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests without an Origin header.
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+console.log("[CORS] Allowed frontend origins:", allowedOrigins);
 
-      return callback(new Error("Origin not allowed by CORS"));
-    },
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow server-to-server requests and tools without an Origin header
+    if (!origin) {
+      return callback(null, true);
+    }
 
-    credentials: true,
-  }),
-);
+    const normalizedOrigin = origin.replace(/\/+$/, "");
+
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true);
+    }
+
+    console.warn("[CORS] Blocked origin:", origin);
+
+    return callback(new Error(`Origin ${origin} is not allowed by CORS`));
+  },
+
+  credentials: true,
+
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+
+  optionsSuccessStatus: 204,
+};
+
+// Register CORS before API routes so preflight requests are handled
+app.use(cors(corsOptions));
 
 /* -------------------------------------------------------------------------- */
 /* Request parsing and logging                                                */
