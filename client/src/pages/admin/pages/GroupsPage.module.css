@@ -1,15 +1,21 @@
-.groupEditModal {
-  width: min(620px, calc(100vw - 24px));
-  height: auto;
-  max-height: 90vh;
-  max-height: 90dvh;
-  overflow: auto;
-}
-
-@media (max-width: 640px) {
-  .groupEditModal {
-    width: calc(100vw - 20px);
-    max-height: 92vh;
-    max-height: 92dvh;
-  }
-}
+.page {min-height:90vh;padding-bottom:2rem}
+.createPanel,.membersPanel {min-width:0;padding:19px;border-radius:21px;border:1px solid var(--border);background:var(--surface);box-shadow:0 18px 42px -34px rgba(15,23,42,.45)}
+.createIntro {display:flex;align-items:flex-start;gap:13px;margin-bottom:18px}
+.createIcon {display:grid;place-items:center;width:44px;height:44px;flex:0 0 44px;border-radius:15px;color:#8b5cf6;background:rgba(139,92,246,.13);box-shadow:0 0 25px -15px #8b5cf6}
+.panelEyebrow {margin:0 0 4px;color:#a78bfa;font-size:.68rem;font-weight:700;letter-spacing:.14em}
+.createIntro h2,.listHeading h2 {margin:0;color:var(--text);font-size:1.08rem;font-weight:700;letter-spacing:-.02em}
+.createIntro p:not(.panelEyebrow) {margin:4px 0 0;color:var(--muted);font-size:.82rem}
+.helper {display:flex;align-items:center;gap:7px;color:var(--muted);font-size:.76rem;margin:0}
+.helper svg {color:#06b6d4}
+.inviteBanner {display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:17px;padding:14px;border-radius:16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25)}
+.inviteBanner strong {color:#059669;font-size:.85rem}
+.inviteBanner p {margin:4px 0 0;color:var(--text);font-size:.78rem;overflow-wrap:anywhere}
+.listHeading {display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.listHeading h2 span {display:inline-grid;place-items:center;min-width:27px;height:25px;margin-left:7px;padding:0 7px;border-radius:8px;color:#7c3aed;background:rgba(139,92,246,.12);font-size:.75rem}
+.memberCard {display:flex;align-items:center;gap:11px;min-width:0;padding:12px;border:1px solid var(--border);border-radius:15px;background:rgba(148,163,184,.055)}
+.memberAvatar {display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border-radius:13px;color:white;background:linear-gradient(135deg,#8b5cf6,#06b6d4);font-weight:700}
+.memberCard strong,.memberCard span,.memberCard small {display:block;overflow-wrap:anywhere}
+.memberCard strong {font-size:.82rem;color:var(--text)}.memberCard span {font-size:.7rem;color:#8b5cf6;font-weight:700}.memberCard small {font-size:.69rem;color:var(--muted)}
+.memberCard > b {flex:0 0 auto;color:#059669;font-size:.78rem}
+:global([data-theme="dark-disabled"]) .createPanel,:global([data-theme="dark-disabled"]) .membersPanel {background:linear-gradient(145deg,#20263a,#1b2032);border-color:#343b54}
+@media(max-width:640px) {.createPanel,.membersPanel {padding:14px;border-radius:17px}.inviteBanner > div:last-child {width:100%}.inviteBanner > div:last-child button {flex:1}.memberCard {align-items:flex-start}.memberCard > b {font-size:.7rem}}

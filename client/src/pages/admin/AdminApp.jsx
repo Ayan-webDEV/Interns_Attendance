@@ -61,9 +61,13 @@ import AttendancePage from "./pages/AttendancePage.jsx";
 
 import { dateToday } from "../../lib/session.js";
 import { Field, Stat } from "../../components/ui/Primitives.jsx";
-import { ActionOverlay, PageSkeleton } from "../../components/ui/Loading.jsx";
+import AdminActionOverlay from "./components/AdminActionOverlay.jsx";
+import { AdminPageSkeleton } from "./components/AdminSkeletons.jsx";
+import FullscreenModal from "./components/FullscreenModal.jsx";
 import WalletAdmin from "./WalletAdmin.jsx";
 import AdminSidebar from "./components/AdminSidebar.jsx";
+import AdminHeader from "./components/AdminHeader.jsx";
+import AdminMobileNavigation from "./components/AdminMobileNavigation.jsx";
 
 const NAV = [
   ["overview", "Overview", LayoutDashboard],
@@ -115,14 +119,14 @@ function AdminApp({
   setTab,
   notify,
   onLogout,
-  theme,
-  onToggleTheme,
 }) {
   const [overview, setOverview] = useState(null),
     [groups, setGroups] = useState([]),
     [interns, setInterns] = useState([]),
+    [allInterns, setAllInterns] = useState([]),
     [codes, setCodes] = useState([]),
     [attendance, setAttendance] = useState([]),
+    [allAttendance, setAllAttendance] = useState([]),
     [approvals, setApprovals] = useState([]),
     [notifications, setNotifications] = useState([]);
   const [query, setQuery] = useState(""),
@@ -172,6 +176,7 @@ function AdminApp({
   const [selectedApprovals, setSelectedApprovals] = useState([]),
     [approvalGroup, setApprovalGroup] = useState(""),
     [approvalSession, setApprovalSession] = useState("");
+  const [scheduleLoading, setScheduleLoading] = useState(false);
   const [scheduleForm, setScheduleForm] = useState({
     firstStart: "09:30",
     firstEnd: "12:30",
@@ -201,8 +206,10 @@ function AdminApp({
         setOverview(o);
         setGroups(g.groups || []);
         setInterns(i.interns || []);
+        setAllInterns(i.interns || []);
         setCodes(p.codes || []);
         setAttendance(a.records || []);
+        setAllAttendance(a.records || []);
         setNotifications(n.notifications || []);
         setError("");
       } catch (e) {
@@ -231,6 +238,7 @@ function AdminApp({
     }
   };
   const loadSchedule = useCallback(async () => {
+    setScheduleLoading(true);
     try {
       const d = await api("/admin/settings/attendance", {
         token: session.token,
@@ -238,6 +246,8 @@ function AdminApp({
       setScheduleForm(d.settings);
     } catch (e) {
       notify(e.message);
+    } finally {
+      setScheduleLoading(false);
     }
   }, [session.token, notify]);
   useEffect(() => {
@@ -680,32 +690,16 @@ function AdminApp({
       onClose={() => setMobileMenuOpen(false)}
     />
   );
-  if (loading && !overview) return <PageSkeleton rows={6} />;
+  if (loading && !overview) return <AdminPageSkeleton variant="overview" />;
   return (
     <>
-      <div className={styles.mobileTopbar}>
-        <button
-          type="button"
-          className={styles.hamburger}
-          aria-label={mobileMenuOpen ? "Close admin menu" : "Open admin menu"}
-          aria-expanded={mobileMenuOpen}
-          onClick={() => setMobileMenuOpen((open) => !open)}
-        >
-          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-        <div className={styles.mobileBrand}>
-          <strong>VELOop Admin</strong>
-          <span>{NAV.find(([id]) => id === tab)?.[1] || "Workspace"}</span>
-        </div>
-        <button
-          type="button"
-          className={styles.mobileRefresh}
-          onClick={() => refresh(true)}
-          aria-label="Refresh dashboard"
-        >
-          <RefreshCw size={18} className={refreshing ? "spin" : ""} />
-        </button>
-      </div>
+      <AdminHeader
+        menuOpen={mobileMenuOpen}
+        setMenuOpen={setMobileMenuOpen}
+        refreshing={refreshing}
+        onRefresh={() => refresh(true)}
+        activeLabel={NAV.find(([id]) => id === tab)?.[1] || "Workspace"}
+      />
       {mobileMenuOpen && (
         <button
           aria-label="Close navigation overlay"
@@ -715,6 +709,7 @@ function AdminApp({
       )}
       <div className={styles.dashboard}>
         <aside
+          id="admin-sidebar"
           className={`${styles.sidebar} ${mobileMenuOpen ? styles.sidebarOpen : ""}`}
         >
           {nav}
@@ -730,9 +725,9 @@ function AdminApp({
                 chartData={chartData}
                 refreshing={refreshing}
                 refresh={refresh}
-                onToggleTheme={onToggleTheme}
-                theme={theme}
                 setTab={setTab}
+                interns={allInterns}
+                attendance={allAttendance}
               />
             )}
             {tab === "groups" && (
@@ -770,6 +765,7 @@ function AdminApp({
               <InternsPage
                 interns={interns}
                 groups={groups}
+                attendance={allAttendance}
                 query={query}
                 setQuery={setQuery}
                 selectedGroup={selectedGroup}
@@ -821,7 +817,7 @@ function AdminApp({
               />
             )}
             {tab === "wallet" && (
-              <WalletPage session={session} groups={groups} notify={notify} />
+              <WalletPage session={session} groups={groups} interns={allInterns} notify={notify} onAdjusted={() => refresh(true)} />
             )}
             {tab === "promos" && (
               <PromosPage
@@ -837,6 +833,7 @@ function AdminApp({
             )}
             {tab === "settings" && (
               <SettingsPage
+                scheduleLoading={scheduleLoading}
                 scheduleForm={scheduleForm}
                 setScheduleForm={setScheduleForm}
                 saveSchedule={saveSchedule}
@@ -856,72 +853,78 @@ function AdminApp({
           <LegalFooter />
         </div>
       </div>
-      {completionGroup && (
-        <div className="legal-backdrop">
-          <section
-            className="legal-modal"
-            style={{ maxWidth: 460, height: "auto" }}
+      <AdminMobileNavigation
+        activeTab={tab}
+        onNavigate={setTab}
+        onMore={() => setMobileMenuOpen(true)}
+      />
+      <FullscreenModal
+        open={Boolean(completionGroup)}
+        title={
+          completionGroup?.status === "completion_pending"
+            ? "Second completion approval"
+            : "Request group completion"
+        }
+        description={completionGroup?.name || ""}
+        size="small"
+        onClose={() => {
+          setCompletionGroup(null);
+          setCompletionPassword("");
+          setApprovePassword("");
+        }}
+      >
+        {completionGroup ? (
+          <form
+            className="space-y-4"
+            onSubmit={
+              completionGroup.status === "completion_pending"
+                ? approveCompletion
+                : requestCompletion
+            }
           >
-            <header className="legal-header">
-              <div>
-                <b>
-                  {completionGroup.status === "completion_pending"
-                    ? "Second completion approval"
-                    : "Request group completion"}
-                </b>
-                <p className="muted small">{completionGroup.name}</p>
-              </div>
+            <div className="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-sm leading-6 text-[var(--muted)]">
+              Two different admin accounts must approve group completion. The second approval closes attendance, unlocks certification status and triggers an updated cumulative CSV archive.
+            </div>
+            <Field label="Confirm your admin password">
+              <input
+                className="input w-full"
+                type="password"
+                required
+                value={
+                  completionGroup.status === "completion_pending"
+                    ? approvePassword
+                    : completionPassword
+                }
+                onChange={(event) =>
+                  completionGroup.status === "completion_pending"
+                    ? setApprovePassword(event.target.value)
+                    : setCompletionPassword(event.target.value)
+                }
+                autoComplete="current-password"
+              />
+            </Field>
+            <div className="flex flex-wrap justify-end gap-2">
               <button
-                className="icon-button"
+                type="button"
+                className="btn btn-secondary"
                 onClick={() => {
                   setCompletionGroup(null);
                   setCompletionPassword("");
                   setApprovePassword("");
                 }}
               >
-                <X />
+                Cancel
               </button>
-            </header>
-            <form
-              className="legal-content"
-              onSubmit={
-                completionGroup.status === "completion_pending"
-                  ? approveCompletion
-                  : requestCompletion
-              }
-            >
-              <div className="notice" style={{ marginBottom: 15 }}>
-                Two different admin accounts must approve. The second approval
-                closes attendance, unlocks certification status and triggers an
-                updated cumulative CSV download.
-              </div>
-              <Field label="Confirm your admin password">
-                <input
-                  className="input"
-                  type="password"
-                  required
-                  value={
-                    completionGroup.status === "completion_pending"
-                      ? approvePassword
-                      : completionPassword
-                  }
-                  onChange={(e) =>
-                    completionGroup.status === "completion_pending"
-                      ? setApprovePassword(e.target.value)
-                      : setCompletionPassword(e.target.value)
-                  }
-                />
-              </Field>
-              <button className="btn btn-primary btn-block">
+              <button className="btn btn-primary" type="submit">
                 {completionGroup.status === "completion_pending"
                   ? "Approve completion & archive"
                   : "Submit first approval"}
               </button>
-            </form>
-          </section>
-        </div>
-      )}
-      {busyLabel && <ActionOverlay label={busyLabel} />}
+            </div>
+          </form>
+        ) : null}
+      </FullscreenModal>
+      {busyLabel && <AdminActionOverlay label={busyLabel} />}
     </>
   );
 }

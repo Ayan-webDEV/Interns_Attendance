@@ -1,22 +1,16 @@
 import WalletAdmin from "../WalletAdmin.jsx";
+import styles from "./WalletPage.module.css";
 
-export default function WalletPage({ session, groups, notify }) {
+export default function WalletPage({ session, groups, interns, notify, onAdjusted }) {
   return (
-    <div className="min-w-0 space-y-5">
-      <header className="page-heading">
-        <div>
-          <div className="eyebrow">INTERN CASH</div>
-          <h1>InternCash ledger</h1>
-          <p>
-            Review and manage intern wallet records using the existing wallet
-            administration tools.
-          </p>
-        </div>
-      </header>
-
-      <section className="min-w-0">
-        <WalletAdmin session={session} groups={groups} notify={notify} />
-      </section>
+    <div className={`${styles.page} admin-page min-w-0`}>
+      <WalletAdmin
+        session={session}
+        groups={groups}
+        interns={interns}
+        notify={notify}
+        onAdjusted={onAdjusted}
+      />
     </div>
   );
 }

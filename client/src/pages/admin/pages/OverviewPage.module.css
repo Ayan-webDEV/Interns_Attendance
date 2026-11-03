@@ -1,0 +1,43 @@
+.page { min-height:90vh; padding-bottom:2rem; }
+.riskSection { display:grid; gap:14px; min-width:0; }
+.sectionHeading { display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap; }
+.sectionEyebrow {margin:0 0 5px;color:#f97316;font-size:.68rem;font-weight:700;letter-spacing:.16em}
+.sectionHeading h2 {margin:0;color:var(--text);font-size:1.18rem;font-weight:700;letter-spacing:-.025em}
+.sectionHeading p {margin:5px 0 0;color:var(--muted);font-size:.86rem}
+.attentionTag {display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:999px;color:#e05a0b;background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.24);font-size:.75rem;font-weight:700}
+.riskPanel,.panel {min-width:0;border:1px solid var(--border);border-radius:21px;background:var(--surface);box-shadow:0 18px 42px -34px rgba(15,23,42,.45);padding:17px}
+.riskPanel h3 {margin:0;color:var(--text);font-size:1rem;font-weight:700}
+.riskPanel > div:first-child p {margin:4px 0 0;color:var(--muted);font-size:.8rem}
+.riskCount {display:grid;place-items:center;min-width:42px;height:42px;border-radius:14px;font-size:1.1rem;font-weight:700}
+.orange .riskCount {color:#ea580c;background:#ffedd5}.purple .riskCount {color:#7c3aed;background:#ede9fe}.cyan .riskCount {color:#0891b2;background:#cffafe}
+.riskList {display:grid;gap:8px;margin-top:14px;max-height:510px;overflow:auto;padding-right:3px;overscroll-behavior:contain}
+.riskItem {display:flex;align-items:center;gap:11px;min-width:0;padding:10px;border-radius:14px;background:rgba(148,163,184,.07);border:1px solid rgba(148,163,184,.12)}
+.avatar {display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:13px;color:#fff;font-weight:700;background:linear-gradient(135deg,#f97316,#fb7185)}
+.riskItem strong,.riskItem span,.riskItem small {display:block;overflow-wrap:anywhere}
+.riskItem strong {font-size:.84rem;color:var(--text)}
+.riskItem span {margin-top:2px;font-size:.72rem;color:var(--muted)}
+.riskItem small {margin-top:3px;font-size:.7rem;color:var(--muted)}
+.whatsapp {display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:12px;color:#059669;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25)}
+.viewAll {display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;color:#ea580c;font-size:.8rem;font-weight:700}
+.riskEmpty,.chartEmpty {display:flex;align-items:center;justify-content:center;gap:9px;padding:28px 12px;color:var(--muted);font-size:.83rem;text-align:center}
+.dataNote {margin:0;color:var(--muted);font-size:.72rem;line-height:1.5}
+.panel {padding:18px}
+.panelHeader {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.panelHeader > div {display:flex;align-items:center;gap:11px;min-width:0}
+.panelHeader h2 {margin:0;color:var(--text);font-size:1rem;font-weight:700}
+.panelHeader p {margin:3px 0 0;color:var(--muted);font-size:.77rem}
+.panelIconCyan,.panelIconOrange {display:grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:13px}
+.panelIconCyan {color:#0891b2;background:rgba(6,182,212,.13)}.panelIconOrange {color:#ea580c;background:rgba(249,115,22,.13)}
+.chartBox {height:280px;min-width:0}
+.quickGrid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.quickGrid button {display:flex;align-items:center;gap:9px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:15px;background:rgba(148,163,184,.055);color:var(--text);font-size:.84rem;font-weight:700;text-align:left;transition:.2s}
+.quickGrid button svg:first-child {color:#f97316;flex:0 0 auto}.quickGrid button svg:last-child {margin-left:auto;color:var(--muted);flex:0 0 auto}
+.quickGrid button:hover {transform:translateY(-2px);border-color:rgba(249,115,22,.45);box-shadow:0 12px 28px -22px #f97316}
+.policyNote {display:flex;align-items:flex-start;gap:10px;margin-top:13px;padding:12px;border-radius:14px;background:rgba(6,182,212,.08);color:#0891b2;border:1px solid rgba(6,182,212,.18)}
+.policyNote p {margin:0;color:var(--muted);font-size:.77rem;line-height:1.5}
+:global([data-theme="dark-disabled"]) .riskPanel,:global([data-theme="dark-disabled"]) .panel {background:linear-gradient(145deg,#20263a,#1b2032);border-color:#343b54}
+:global([data-theme="dark-disabled"]) .riskItem {background:rgba(148,163,184,.045);border-color:rgba(148,163,184,.12)}
+:global([data-theme="dark-disabled"]) .orange .riskCount {background:rgba(249,115,22,.17);color:#fdba74}
+:global([data-theme="dark-disabled"]) .purple .riskCount {background:rgba(139,92,246,.17);color:#c4b5fd}
+:global([data-theme="dark-disabled"]) .cyan .riskCount {background:rgba(6,182,212,.17);color:#67e8f9}
+@media(max-width:640px) { .panel,.riskPanel {padding:14px;border-radius:17px}.panelHeader {align-items:flex-start;flex-direction:column}.quickGrid {grid-template-columns:1fr}.chartBox {height:230px}.riskItem {padding:9px}.sectionHeading h2 {font-size:1.05rem} }

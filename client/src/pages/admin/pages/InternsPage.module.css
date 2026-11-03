@@ -1,0 +1,52 @@
+.page {min-height:90vh;padding-bottom:2rem}
+.filterPanel,.transferPanel {min-width:0;padding:17px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:0 16px 40px -34px rgba(15,23,42,.5)}
+.searchField {display:flex;align-items:center;gap:10px;min-width:0;padding:0 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--muted)}
+.searchField:focus-within {border-color:#06b6d4;box-shadow:0 0 0 3px rgba(6,182,212,.12)}
+.searchField input {width:100%;min-width:0;height:44px;border:0;outline:0;background:transparent;color:var(--text);font-size:.88rem}
+.resultCount {color:var(--muted);font-size:.8rem}.resultCount b {color:var(--text);font-size:1rem}
+.loadingLabel {color:#0891b2;font-size:.75rem;font-weight:700}
+.internGrid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;min-width:0}
+.internCard {min-width:0;padding:16px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:0 16px 40px -35px rgba(15,23,42,.55);transition:transform .2s,border-color .2s,box-shadow .2s}
+.internCard:hover {transform:translateY(-2px);border-color:rgba(6,182,212,.42);box-shadow:0 20px 42px -32px rgba(6,182,212,.32)}
+.cardTop {display:flex;align-items:center;gap:11px;min-width:0}
+.avatar,.avatarLarge {display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:14px;color:#fff;font-size:1.05rem;font-weight:700;background:linear-gradient(135deg,#0891b2,#8b5cf6);box-shadow:0 8px 22px -14px #0891b2}
+.cardTop h3 {margin:0;color:var(--text);font-size:.92rem;font-weight:700;overflow-wrap:anywhere}
+.cardTop p {margin:3px 0 0;color:#0891b2;font-size:.73rem;font-weight:700}
+.walletPill {display:flex;align-items:center;gap:5px;flex:0 0 auto;padding:6px 9px;border-radius:999px;color:#059669;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);font-size:.7rem;font-weight:700}
+.infoList {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:15px}
+.infoList > div {min-width:0;padding:9px 10px;border-radius:12px;background:rgba(148,163,184,.065);border:1px solid rgba(148,163,184,.1)}
+.infoList span,.infoList strong {display:block;overflow-wrap:anywhere}
+.infoList span {color:var(--muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.infoList strong {margin-top:3px;color:var(--text);font-size:.77rem}
+.attendancePreview {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:11px}
+.attendancePreview > div {min-width:0;padding:9px 7px;border-radius:12px;background:rgba(6,182,212,.055);text-align:center}
+.attendancePreview span {display:flex;align-items:center;justify-content:center;gap:4px;color:var(--muted);font-size:.64rem;line-height:1.3}
+.attendancePreview span svg {color:#0891b2}
+.attendancePreview b {display:block;margin-top:4px;color:var(--text);font-size:1.05rem}
+.cardActions {display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:13px;padding-top:12px;border-top:1px solid var(--border)}
+.noWhatsApp {color:var(--muted);font-size:.7rem}
+.transferIcon {display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border-radius:14px;background:rgba(249,115,22,.13);color:#ea580c}
+.eyebrow {margin:0 0 4px;color:#f97316;font-size:.68rem;font-weight:700;letter-spacing:.14em}
+.transferPanel h2 {margin:0;color:var(--text);font-size:1.02rem;font-weight:700}
+.transferPanel p:not(.eyebrow) {margin:4px 0 0;color:var(--muted);font-size:.8rem}
+.disclaimer {margin:12px 0 0!important;font-size:.72rem!important;line-height:1.5}
+.detailIdentity {display:flex;align-items:center;gap:13px;min-width:0;padding:14px;border:1px solid var(--border);border-radius:17px;background:rgba(6,182,212,.06)}
+.avatarLarge {width:50px;height:50px;flex-basis:50px;border-radius:16px;font-size:1.25rem}
+.detailIdentity h3 {margin:0;color:var(--text);font-size:1rem;font-weight:700}
+.detailIdentity p {margin:3px 0 0;color:var(--muted);font-size:.76rem;overflow-wrap:anywhere}
+.detailIdentity .btn {margin-left:auto;flex:0 0 auto}
+.endDateBanner {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.endDateBanner > div {padding:12px;border-radius:14px;background:rgba(148,163,184,.07);border:1px solid var(--border)}
+.endDateBanner span,.endDateBanner strong {display:block}.endDateBanner span {color:var(--muted);font-size:.7rem}.endDateBanner strong {margin-top:5px;color:var(--text);font-size:.84rem;overflow-wrap:anywhere}
+.completeness {padding:14px;border-radius:16px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18)}
+.completeness > div:first-child {display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.completeness strong {color:var(--text);font-size:.84rem}.completeness span {color:var(--muted);font-size:.75rem}
+.progressTrack {height:9px;margin-top:11px;overflow:hidden;border-radius:999px;background:rgba(148,163,184,.2)}.progressTrack span {display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#10b981,#06b6d4);transition:width .35s}
+.completeness p {margin:9px 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
+.recordsPanel {padding:14px;border:1px solid var(--border);border-radius:16px}.recordsPanel > div:first-child h3 {margin:0;color:var(--text);font-size:.9rem;font-weight:700}.recordsPanel > div:first-child span {color:var(--muted);font-size:.72rem}
+.recordList {display:grid;gap:7px;margin-top:12px}.recordRow {display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px 12px;padding:10px;border-radius:12px;background:rgba(148,163,184,.06)}
+.recordRow > div:first-child strong,.recordRow > div:first-child span {display:block}.recordRow > div:first-child strong {color:var(--text);font-size:.79rem}.recordRow > div:first-child span {color:var(--muted);font-size:.7rem;margin-top:2px}
+.recordRow small {grid-column:1/-1;color:var(--muted);font-size:.68rem}
+.recordStatus {padding:5px 8px;border-radius:999px;font-size:.67rem;font-weight:700;text-transform:capitalize;color:#0891b2;background:rgba(6,182,212,.12)}.statusapproved,.statusadmincorrectedpresent {color:#059669;background:rgba(16,185,129,.12)}.statuspending {color:#d97706;background:rgba(245,158,11,.14)}.statusrejected,.statusmissed {color:#e11d48;background:rgba(244,63,94,.12)}
+:global([data-theme="dark-disabled"]) .filterPanel,:global([data-theme="dark-disabled"]) .transferPanel,:global([data-theme="dark-disabled"]) .internCard {background:linear-gradient(145deg,#20263a,#1b2032);border-color:#343b54}
+@media(max-width:900px) {.internGrid {grid-template-columns:1fr}}
+@media(max-width:600px) {.filterPanel,.transferPanel {padding:14px;border-radius:17px}.internCard {padding:13px;border-radius:17px}.infoList {gap:7px}.infoList > div {padding:8px}.attendancePreview {grid-template-columns:repeat(3,minmax(0,1fr))}.attendancePreview span {font-size:.59rem}.cardActions .btn {flex:1;justify-content:center}.endDateBanner {grid-template-columns:1fr}.detailIdentity {align-items:flex-start;flex-wrap:wrap}.detailIdentity .btn {margin-left:0}.recordRow {grid-template-columns:1fr auto}}

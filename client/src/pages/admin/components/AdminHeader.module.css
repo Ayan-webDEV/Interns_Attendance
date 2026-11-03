@@ -1,0 +1,9 @@
+.mobileTopbar {display:none}
+.mobileBrand {display:flex;min-width:0;flex:1;align-items:center;gap:11px}
+.brandMark {display:grid;place-items:center;width:39px;height:39px;flex:0 0 39px;border-radius:13px;color:white;font-weight:700;background:linear-gradient(135deg,#f97316,#8b5cf6 60%,#06b6d4);box-shadow:0 8px 24px -12px #f97316}
+.mobileBrand strong {display:block;overflow:hidden;color:var(--text);font-size:.88rem;font-weight:700;white-space:nowrap;text-overflow:ellipsis}
+.mobileBrand > div > span {display:block;overflow:hidden;margin-top:2px;color:var(--muted);font-size:.69rem;white-space:nowrap;text-overflow:ellipsis}
+.hamburger,.mobileRefresh {display:inline-flex;flex:0 0 40px;align-items:center;justify-content:center;width:40px;height:40px;padding:0;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);cursor:pointer;transition:background .16s,border-color .16s,transform .16s}
+.hamburger:hover,.mobileRefresh:hover {border-color:rgba(249,115,22,.45);background:rgba(249,115,22,.06)}
+.hamburger:active,.mobileRefresh:active {transform:scale(.96)}
+@media(max-width:768px){.mobileTopbar{position:sticky;top:0;z-index:80;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:9px 13px;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:0 8px 28px -25px rgba(15,23,42,.7)}}

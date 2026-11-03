@@ -1,241 +1,93 @@
-import { Check, CheckCheck, ClipboardCheck, RefreshCw } from "lucide-react";
+import { useMemo } from "react";
+import { Check, CheckCheck, ClipboardCheck, RefreshCw, XCircle, Clock3 } from "lucide-react";
 import { Field } from "../../../components/ui/Primitives.jsx";
+import AdminPageHeader from "../components/AdminPageHeader.jsx";
+import AdminStatCard from "../components/AdminStatCard.jsx";
+import { AdminPageSkeleton } from "../components/AdminSkeletons.jsx";
+import styles from "./ApprovalsPage.module.css";
 
 export default function ApprovalsPage({
-  approvals,
-  groups,
-  approvalGroup,
-  setApprovalGroup,
-  approvalSession,
-  setApprovalSession,
-  selectedApprovals,
-  setSelectedApprovals,
-  loadApprovals,
-  approveSelected,
-  rejectSelected,
-  refreshing,
+  approvals = [], groups = [], approvalGroup, setApprovalGroup, approvalSession,
+  setApprovalSession, selectedApprovals = [], setSelectedApprovals,
+  loadApprovals, approveSelected, rejectSelected, refreshing,
 }) {
-  const allShownSelected =
-    approvals.length > 0 &&
-    approvals.every((item) => selectedApprovals.includes(item._id));
+  const allShownSelected = approvals.length > 0 && approvals.every((item)=>selectedApprovals.includes(item._id));
+  const counts = useMemo(()=>({
+    first:approvals.filter((item)=>Number(item.sessionNumber)===1).length,
+    second:approvals.filter((item)=>Number(item.sessionNumber)===2).length,
+  }),[approvals]);
+  const toggleOne = (id,checked)=>setSelectedApprovals((current)=>checked?(current.includes(id)?current:[...current,id]):current.filter((x)=>x!==id));
+  const toggleAll = (checked)=>setSelectedApprovals((current)=>{
+    const ids=new Set(approvals.map((item)=>item._id));
+    return checked?[...new Set([...current,...ids])]:current.filter((id)=>!ids.has(id));
+  });
 
-  const toggleOne = (id, checked) => {
-    setSelectedApprovals((current) => {
-      if (checked) {
-        return current.includes(id) ? current : [...current, id];
-      }
-
-      return current.filter((itemId) => itemId !== id);
-    });
-  };
-
-  const toggleAllShown = (checked) => {
-    setSelectedApprovals((current) => {
-      if (!checked) {
-        const visibleIds = new Set(approvals.map((item) => item._id));
-        return current.filter((id) => !visibleIds.has(id));
-      }
-
-      const combined = new Set(current);
-      approvals.forEach((item) => combined.add(item._id));
-      return [...combined];
-    });
-  };
+  if (refreshing && !approvals.length) return <AdminPageSkeleton variant="approvals" />;
 
   return (
-    <div className="space-y-5">
-      <header className="page-heading flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <div className="eyebrow">ATTENDANCE CONTROL</div>
-          <h1>Attendance approvals</h1>
-          <p>
-            Only approved attendance counts. First session earns 1 IC;
-            re-attendance earns 3 IC.
-          </p>
-        </div>
+    <div className={`${styles.page} admin-page space-y-6`}>
+      <AdminPageHeader
+        eyebrow="ATTENDANCE CONTROL"
+        title="Attendance approvals"
+        description="Review submissions before they count toward attendance progress and InternCash rewards."
+        icon={ClipboardCheck}
+        accent="green"
+        actions={<button type="button" className="btn btn-secondary inline-flex items-center gap-2" onClick={loadApprovals} disabled={refreshing}><RefreshCw size={15} className={refreshing?"animate-spin":""}/> Refresh queue</button>}
+      />
 
-        <button
-          type="button"
-          className={`btn btn-secondary shrink-0 ${
-            refreshing ? "is-refreshing" : ""
-          }`}
-          onClick={loadApprovals}
-          disabled={refreshing}
-        >
-          <RefreshCw size={15} />
-          {refreshing ? "Refreshing…" : "Refresh queue"}
-        </button>
-      </header>
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
+        <AdminStatCard label="Waiting for review" value={approvals.length} hint="Current filtered queue" icon={Clock3} tone="orange"/>
+        <AdminStatCard label="First session" value={counts.first} hint="Standard attendance requests" icon={Check} tone="green"/>
+        <AdminStatCard label="Second session" value={counts.second} hint="Re-attendance requests" icon={CheckCheck} tone="purple"/>
+      </div>
 
-      <section className="panel min-w-0">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <Field label="Group">
-            <select
-              className="select w-full"
-              value={approvalGroup}
-              onChange={(event) => setApprovalGroup(event.target.value)}
-            >
-              <option value="">All groups</option>
-              {groups.map((group) => (
-                <option key={group._id} value={group._id}>
-                  {group.name}
-                </option>
-              ))}
+      <section className={styles.queuePanel}>
+        <div className={styles.filters}>
+          <Field label="Internship group">
+            <select className="select w-full" value={approvalGroup} onChange={(e)=>setApprovalGroup(e.target.value)}>
+              <option value="">All groups</option>{groups.map((group)=><option key={group._id} value={group._id}>{group.name}</option>)}
             </select>
           </Field>
-
-          <Field label="Session">
-            <select
-              className="select w-full"
-              value={approvalSession}
-              onChange={(event) => setApprovalSession(event.target.value)}
-            >
-              <option value="">Both sessions</option>
-              <option value="1">First attendance · 9:30–12:30</option>
-              <option value="2">Re-attendance · 1:00–3:30</option>
+          <Field label="Attendance session">
+            <select className="select w-full" value={approvalSession} onChange={(e)=>setApprovalSession(e.target.value)}>
+              <option value="">Both sessions</option><option value="1">Session 1</option><option value="2">Session 2</option>
             </select>
           </Field>
         </div>
-
-        <div className="my-4 flex flex-col gap-3 border-b border-[var(--border-color,#2b3045)] pb-4 xl:flex-row xl:items-center xl:justify-between">
-          <div className="inline-actions flex flex-wrap items-center gap-3">
-            <label className="checkbox-line">
-              <input
-                type="checkbox"
-                checked={allShownSelected}
-                onChange={(event) => toggleAllShown(event.target.checked)}
-              />
-              Select all shown
-            </label>
-
-            <span className="badge">{approvals.length} pending</span>
-
-            {selectedApprovals.length > 0 && (
-              <span className="muted small">
-                {selectedApprovals.length} selected
-              </span>
-            )}
-          </div>
-
+        <div className={styles.bulkBar}>
+          <label className={styles.selectAll}><input type="checkbox" checked={allShownSelected} onChange={(e)=>toggleAll(e.target.checked)}/> Select all visible <span>{approvals.length}</span></label>
           <div className="flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn btn-primary btn-small"
-              onClick={() => approveSelected(false)}
-              disabled={!selectedApprovals.length}
-            >
-              <Check size={14} />
-              Approve selected
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-secondary btn-small"
-              onClick={() => approveSelected(true)}
-              disabled={!approvalGroup}
-              title={
-                approvalGroup
-                  ? "Approve pending requests in this group"
-                  : "Choose a group first"
-              }
-            >
-              <CheckCheck size={14} />
-              Approve all in group
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-danger btn-small"
-              onClick={rejectSelected}
-              disabled={!selectedApprovals.length}
-            >
-              Reject selected
-            </button>
+            <button type="button" className="btn btn-primary btn-small" onClick={()=>approveSelected(false)} disabled={!selectedApprovals.length}><Check size={14}/> Approve selected ({selectedApprovals.length})</button>
+            <button type="button" className="btn btn-secondary btn-small" onClick={()=>approveSelected(true)} disabled={!approvalGroup}><CheckCheck size={14}/> Approve all in group</button>
+            <button type="button" className="btn btn-danger btn-small" onClick={rejectSelected} disabled={!selectedApprovals.length}><XCircle size={14}/> Reject selected</button>
           </div>
         </div>
 
-        {approvals.length > 0 ? (
-          <div className="space-y-3">
-            {approvals.map((item) => {
-              const selected = selectedApprovals.includes(item._id);
-              const firstSession = Number(item.sessionNumber) === 1;
-
+        {approvals.length ? (
+          <div className={styles.approvalList}>
+            {approvals.map((item)=>{
+              const first=Number(item.sessionNumber)===1;
+              const selected=selectedApprovals.includes(item._id);
               return (
-                <article
-                  className="approval-row flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start"
-                  key={item._id}
-                >
-                  <div className="flex shrink-0 items-start pt-1">
-                    <input
-                      type="checkbox"
-                      aria-label={`Select attendance for ${
-                        item.intern?.name || "unknown intern"
-                      }`}
-                      checked={selected}
-                      onChange={(event) =>
-                        toggleOne(item._id, event.target.checked)
-                      }
-                    />
-                  </div>
-
+                <article key={item._id} className={`${styles.approvalCard} ${selected?styles.selected:""}`}>
+                  <label className={styles.checkbox}><input type="checkbox" checked={selected} onChange={(e)=>toggleOne(item._id,e.target.checked)} aria-label={`Select ${item.intern?.name||"intern"} attendance`}/></label>
                   <div className="min-w-0 flex-1">
-                    <b className="break-words">
-                      {item.intern?.name || "Unknown intern"}
-                    </b>
-
-                    <div className="muted small break-words">
-                      {item.intern?.internId || "No intern ID"}
-                      {" · "}
-                      {item.intern?.email || "No email"}
-                    </div>
-
-                    <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className="badge">
-                        {item.group?.name || "Group"}
-                      </span>
-
-                      <span className="badge">
-                        Session {item.sessionNumber}
-                      </span>
-
-                      <span className="badge">{item.dateKey}</span>
-
-                      <span className="badge">
-                        {item.markedAt
-                          ? new Date(item.markedAt).toLocaleTimeString("en-IN")
-                          : "Time unavailable"}
-                      </span>
-
-                      <span
-                        className={`badge ${
-                          firstSession ? "badge-green" : "badge-purple"
-                        }`}
-                      >
-                        +{firstSession ? 1 : 3} IC on approval
-                      </span>
+                    <div className="flex flex-wrap items-center gap-2"><h3>{item.intern?.name||"Unknown intern"}</h3><span className={`${styles.sessionBadge} ${first?styles.first:styles.second}`}>Session {item.sessionNumber}</span></div>
+                    <p>{item.intern?.internId||"No intern ID"} · {item.intern?.email||"No email"}</p>
+                    <div className={styles.metadata}>
+                      <span>{item.group?.name||"Group unavailable"}</span>
+                      <span>{item.dateKey||"Date unavailable"}</span>
+                      <span>{item.markedAt?new Date(item.markedAt).toLocaleTimeString("en-IN"):"Time unavailable"}</span>
+                      <b>+{first?1:3} IC after approval</b>
                     </div>
                   </div>
-
-                  <div className="approval-actions flex shrink-0">
-                    <button
-                      type="button"
-                      className="btn btn-secondary btn-small"
-                      onClick={() => toggleOne(item._id, !selected)}
-                      aria-pressed={selected}
-                    >
-                      {selected ? "Deselect" : "Select"}
-                    </button>
-                  </div>
+                  <button type="button" className="btn btn-secondary btn-small" onClick={()=>toggleOne(item._id,!selected)}>{selected?"Deselect":"Select"}</button>
                 </article>
               );
             })}
           </div>
         ) : (
-          <div className="empty px-4 py-12 text-center">
-            <ClipboardCheck size={28} className="mx-auto mb-3 opacity-40" />
-            <b>No pending requests</b>
-            <p>New attendance requests will appear here for approval.</p>
-          </div>
+          <div className={styles.empty}><span><CheckCheck size={25}/></span><h3>All caught up</h3><p>No pending attendance requests match these filters.</p></div>
         )}
       </section>
     </div>

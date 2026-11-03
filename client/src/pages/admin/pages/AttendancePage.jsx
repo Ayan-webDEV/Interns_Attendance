@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Field } from "../../../components/ui/Primitives.jsx";
 import styles from "./AttendancePage.module.css";
+import { AdminPageSkeleton } from "../components/AdminSkeletons.jsx";
 
 const STATUS_LABELS = {
   pending: "Pending review",
@@ -87,6 +88,8 @@ export default function AttendancePage({
   const rejectedCount = records.filter(
     (record) => record.status === "rejected",
   ).length;
+
+  if (refreshing && !records.length) return <AdminPageSkeleton variant="attendance" />;
 
   const updateCorrection = (key, value) => {
     setCorrection((previous) => ({

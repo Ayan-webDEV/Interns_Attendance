@@ -1,0 +1,141 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(40, 34, 59, 0.28);
+  backdrop-filter: blur(7px);
+}
+.card {
+  display: grid;
+  justify-items: center;
+  gap: 13px;
+  width: min(100%, 390px);
+  padding: 27px 24px 22px;
+  border: 1px solid #eee6f1;
+  border-radius: 25px;
+  background: #fff;
+  color: #30263e;
+  text-align: center;
+  box-shadow: 0 28px 80px rgba(49, 31, 67, 0.18);
+}
+.orbit {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  color: #fff;
+  background: linear-gradient(135deg, #f97316, #8b5cf6 65%, #06b6d4);
+  box-shadow: 0 12px 35px -14px #8b5cf6;
+}
+.orbit::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 29px;
+  animation: pulse 1.7s ease-out infinite;
+}
+.orbit span {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fbbf24;
+  animation: orbit 2.5s linear infinite;
+}
+.orbit span:nth-child(1) {
+  top: -8px;
+  left: 32px;
+}
+.orbit span:nth-child(2) {
+  right: -7px;
+  bottom: 21px;
+  background: #67e8f9;
+  animation-delay: -0.8s;
+}
+.orbit span:nth-child(3) {
+  bottom: -5px;
+  left: 14px;
+  background: #86efac;
+  animation-delay: -1.5s;
+}
+.eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 0 4px;
+  color: #e47536;
+  font-size: 0.64rem;
+  font-weight:700;
+  letter-spacing: 0.16em;
+}
+.card h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.2rem;
+  font-weight:700;
+}
+.card p:not(.eyebrow) {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+.progress {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+}
+.progress span {
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #f97316, #8b5cf6, #06b6d4);
+  animation: progress 1.6s ease-in-out infinite;
+}
+.card small {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.13);
+    opacity: 0;
+  }
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg) translateX(35px) rotate(-360deg);
+  }
+}
+@keyframes progress {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(330%);
+  }
+}
+:global([data-theme="dark-disabled"]) .card {
+  background: #1d2235;
+  border-color: #363c55;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit::before,
+  .orbit span,
+  .progress span {
+    animation: none;
+  }
+}
