@@ -78,6 +78,11 @@ textarea:focus-visible {
   outline: 3px solid #8ecb75;
   outline-offset: 3px;
 }
+input:focus-visible {
+  outline: unset;
+  outline-offset: unset;
+}
+
 ::selection {
   background: #dff7a7;
   color: #163c2d;

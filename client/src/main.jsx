@@ -91,11 +91,17 @@ function App() {
   }
 
   const home = user?.role === "admin" ? "/admin" : "/intern/dashboard";
-  const login = <Login onLogin={setUser} />;
   const privateShell = user ? (
     <Shell user={user} onLogout={() => setUser(null)} />
   ) : (
     <Navigate to={`/login${location.search || ""}`} replace />
+  );
+
+  const [googleVerified, setGoogleVerified] = useState(
+    () => sessionStorage.getItem("vlr_google_verified") === "true",
+  );
+  const login = (
+    <Login onGoogleVerified={() => setGoogleVerified(true)} onLogin={setUser} />
   );
 
   return (
@@ -116,12 +122,29 @@ function App() {
         }
       />
 
-      <Route
+      {/* <Route
         path="/register"
         element={
           user ? <Navigate to={home} replace /> : <Register onLogin={setUser} />
         }
+      /> */}
+
+      <Route
+        path="/register"
+        element={
+          user ? (
+            <Navigate to={home} replace />
+          ) : googleVerified &&
+            sessionStorage.getItem("vlr_google_verified") === "true" &&
+            sessionStorage.getItem("vlr_onboarding_ticket") &&
+            sessionStorage.getItem("vlr_google_profile") ? (
+            <Register onLogin={setUser} />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
       />
+
       <Route path="/policies" element={<PublicPolicies />} />
 
       <Route element={privateShell}>

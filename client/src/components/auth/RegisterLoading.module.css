@@ -1,0 +1,155 @@
+.backdrop {
+  background: rgba(12, 25, 18, 0.48);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
+  animation: fadeIn 0.22s ease both;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 25px 80px rgba(15, 40, 24, 0.22),
+    0 4px 15px rgba(15, 40, 24, 0.08);
+  animation: cardIn 0.3s ease both;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -90px;
+  left: 50%;
+  width: 210px;
+  height: 150px;
+  transform: translateX(-50%);
+  background: rgba(52, 211, 153, 0.13);
+  filter: blur(45px);
+}
+
+.visual {
+  position: relative;
+  display: flex;
+  width: 85px;
+  height: 85px;
+  align-items: center;
+  justify-content: center;
+}
+
+.orbit {
+  position: absolute;
+  inset: 3px;
+  border: 1px dashed rgba(34, 111, 68, 0.3);
+  border-radius: 50%;
+  animation: rotate 12s linear infinite;
+}
+
+.shield {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: 55px;
+  height: 55px;
+  align-items: center;
+  justify-content: center;
+  color: #216441;
+  border: 1px solid #d7ecdc;
+  border-radius: 18px;
+  background: linear-gradient(145deg, #f0faf1, #dcefe0);
+  box-shadow: 0 6px 20px rgba(33, 100, 65, 0.12);
+}
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  color: #6ba77b;
+  animation: rotate 2.2s linear infinite;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  color: #65826d;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.status span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2d9c62;
+  box-shadow: 0 0 0 4px rgba(45, 156, 98, 0.1);
+  animation: pulse 1.4s ease infinite;
+}
+
+.progressTrack {
+  height: 5px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #e8efe8;
+}
+
+.progress {
+  width: 35%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #286341, #78bd88);
+  animation: loading 1.8s ease-in-out infinite;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(310%);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit,
+  .spinner,
+  .status span,
+  .progress {
+    animation: none !important;
+  }
+  .progress {
+    width: 65%;
+  }
+}

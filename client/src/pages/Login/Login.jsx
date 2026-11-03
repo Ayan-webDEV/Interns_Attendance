@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowRight,
@@ -14,13 +14,16 @@ import {
 import { api, tokenStore } from "../../api/client";
 import { useToast } from "../../components/Toast/Toast";
 import styles from "./Login.module.css";
+import AuthLoadingOverlay from "../../components/auth/AuthLoadingOverlay";
 
-export default function Login({ onLogin }) {
+export default function Login({ onLogin, onGoogleVerified }) {
   const [mode, setMode] = useState("intern");
   const [internId, setInternId] = useState("VLRINT");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [authLoadingType, setAuthLoadingType] = useState("intern");
+  const googleButtonRef = useRef(null);
   const [search] = useSearchParams();
   const nav = useNavigate();
   const toast = useToast();
@@ -37,8 +40,6 @@ export default function Login({ onLogin }) {
       return;
     }
 
-    const clientId = import.meta.env.GOOGLE_CLIENT_ID;
-
     if (!clientId) {
       toast(
         "Add GOOGLE_CLIENT_ID to the frontend environment settings.",
@@ -47,18 +48,52 @@ export default function Login({ onLogin }) {
       return;
     }
 
-    setBusy(true);
+    // setBusy(true);
 
     window.google.accounts.id.initialize({
       client_id: clientId,
+
       callback: async (response) => {
         try {
+          if (!response?.credential) {
+            throw new Error("Google did not return a valid credential.");
+          }
+
+          setAuthLoadingType("google");
+          setBusy(true);
+
           const data = await api("/auth/google", {
             method: "POST",
             body: { credential: response.credential },
           });
 
-          if (data.onboardingRequired) {
+          // if (data.onboardingRequired) {
+          //   sessionStorage.setItem(
+          //     "vlr_onboarding_ticket",
+          //     data.onboardingTicket,
+          //   );
+
+          //   sessionStorage.setItem(
+          //     "vlr_google_profile",
+          //     JSON.stringify(data.googleProfile || {}),
+          //   );
+
+          //   sessionStorage.setItem("vlr_invite_token", invite);
+
+          //   nav(
+          //     "/register" +
+          //       (invite ? `?invite=${encodeURIComponent(invite)}` : ""),
+          //   );
+          // } else {
+          //   tokenStore.set(data.token);
+          //   onLogin(data.user);
+
+          //   nav(data.user.role === "admin" ? "/admin" : "/intern/dashboard");
+          // }
+          if (data.onboardingRequired && data.onboardingTicket) {
+            // Clear any previous verification session
+            sessionStorage.removeItem("vlr_google_verified");
+
             sessionStorage.setItem(
               "vlr_onboarding_ticket",
               data.onboardingTicket,
@@ -71,15 +106,23 @@ export default function Login({ onLogin }) {
 
             sessionStorage.setItem("vlr_invite_token", invite);
 
+            // Mark Google verification as completed
+            sessionStorage.setItem("vlr_google_verified", "true");
+            onGoogleVerified?.();
+
             nav(
               "/register" +
                 (invite ? `?invite=${encodeURIComponent(invite)}` : ""),
             );
-          } else {
+          } else if (data.token && data.user) {
             tokenStore.set(data.token);
             onLogin(data.user);
 
             nav(data.user.role === "admin" ? "/admin" : "/intern/dashboard");
+          } else {
+            throw new Error(
+              "Google authentication did not return a valid response.",
+            );
           }
         } catch (error) {
           toast(error.message, "error");
@@ -92,8 +135,126 @@ export default function Login({ onLogin }) {
     window.google.accounts.id.prompt();
   };
 
+  const clientId = import.meta.env.GOOGLE_CLIENT_ID;
+
+  useEffect(() => {
+    if (!clientId || !googleButtonRef.current) return;
+
+    let cancelled = false;
+
+    const initializeGoogleButton = () => {
+      if (
+        cancelled ||
+        !window.google?.accounts?.id ||
+        !googleButtonRef.current
+      ) {
+        return;
+      }
+
+      const container = googleButtonRef.current;
+      container.innerHTML = "";
+
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+
+        // Avoid the FedCM button flow.
+        use_fedcm_for_button: false,
+
+        callback: async (response) => {
+          if (!response?.credential) {
+            toast("Google sign-in did not return a credential.", "error");
+            return;
+          }
+
+          setBusy(true);
+
+          try {
+            const data = await api("/auth/google", {
+              method: "POST",
+              body: { credential: response.credential },
+            });
+
+            if (data.onboardingRequired && data.onboardingTicket) {
+              // Clear any previous verification session
+              sessionStorage.removeItem("vlr_google_verified");
+
+              sessionStorage.setItem(
+                "vlr_onboarding_ticket",
+                data.onboardingTicket,
+              );
+
+              sessionStorage.setItem(
+                "vlr_google_profile",
+                JSON.stringify(data.googleProfile || {}),
+              );
+
+              sessionStorage.setItem("vlr_invite_token", invite);
+
+              // Mark Google verification as completed
+              sessionStorage.setItem("vlr_google_verified", "true");
+              onGoogleVerified?.();
+
+              nav(
+                "/register" +
+                  (invite ? `?invite=${encodeURIComponent(invite)}` : ""),
+              );
+            } else if (data.token && data.user) {
+              tokenStore.set(data.token);
+              onLogin(data.user);
+
+              nav(data.user.role === "admin" ? "/admin" : "/intern/dashboard");
+            } else {
+              throw new Error(
+                "Google authentication did not return a valid response.",
+              );
+            }
+          } catch (error) {
+            toast(error.message, "error");
+          } finally {
+            setBusy(false);
+          }
+        },
+      });
+
+      window.google.accounts.id.renderButton(container, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+        width: 320,
+      });
+    };
+
+    const script = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+
+    if (window.google?.accounts?.id) {
+      initializeGoogleButton();
+    } else if (script) {
+      script.addEventListener("load", initializeGoogleButton, {
+        once: true,
+      });
+    } else {
+      const newScript = document.createElement("script");
+      newScript.src = "https://accounts.google.com/gsi/client";
+      newScript.async = true;
+      newScript.defer = true;
+      newScript.onload = initializeGoogleButton;
+      document.head.appendChild(newScript);
+    }
+
+    return () => {
+      cancelled = true;
+      script?.removeEventListener("load", initializeGoogleButton);
+    };
+  }, [clientId, invite, nav, onLogin, toast]);
+
   const submit = async (event) => {
     event.preventDefault();
+
+    setAuthLoadingType(mode);
     setBusy(true);
 
     try {
@@ -123,6 +284,7 @@ export default function Login({ onLogin }) {
 
   return (
     <div className={styles.page}>
+      <AuthLoadingOverlay open={busy} type={authLoadingType} />
       {/* Top navigation */}
       <header className={styles.topbar}>
         <div className={styles.brand}>
@@ -265,6 +427,16 @@ export default function Login({ onLogin }) {
 
                 <ArrowRight size={18} />
               </button>
+              {/* <div
+                ref={googleButtonRef}
+                className={styles.googleButton}
+                aria-label="Continue with Google"
+                aria-busy={busy}
+                style={{
+                  pointerEvents: busy ? "none" : "auto",
+                  opacity: busy ? 0.6 : 1,
+                }}
+              /> */}
 
               <div className={styles.or}>
                 <span />
