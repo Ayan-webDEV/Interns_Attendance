@@ -24,6 +24,11 @@ import CompatibilityErrorPage from "./compatibility/CompatibilityErrorPage";
 function App() {
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(Boolean(tokenStore.get()));
+  // Google onboarding verification state
+  const [googleVerified, setGoogleVerified] = useState(
+    () => sessionStorage.getItem("vlr_google_verified") === "true",
+  );
+
   const location = useLocation();
 
   // Minimum screen-width detection
@@ -97,9 +102,9 @@ function App() {
     <Navigate to={`/login${location.search || ""}`} replace />
   );
 
-  const [googleVerified, setGoogleVerified] = useState(
-    () => sessionStorage.getItem("vlr_google_verified") === "true",
-  );
+  // const [googleVerified, setGoogleVerified] = useState(
+  //   () => sessionStorage.getItem("vlr_google_verified") === "true",
+  // );
   const login = (
     <Login onGoogleVerified={() => setGoogleVerified(true)} onLogin={setUser} />
   );
