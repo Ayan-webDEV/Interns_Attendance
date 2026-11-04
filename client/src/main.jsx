@@ -32,13 +32,13 @@ function App() {
   const location = useLocation();
 
   // Minimum screen-width detection
-  const [isBelow1300, setIsBelow1300] = useState(
-    () => window.innerWidth < 1300,
+  const [isBelow1250, setIsBelow1250] = useState(
+    () => window.innerWidth < 1250,
   );
 
   useEffect(() => {
     const checkScreenWidth = () => {
-      setIsBelow1300(window.innerWidth < 1300);
+      setIsBelow1250(window.innerWidth < 1250);
     };
 
     window.addEventListener("resize", checkScreenWidth);
@@ -88,7 +88,7 @@ function App() {
 
   // Block authenticated non-admin users below 1300px.
   const shouldShowCompatibilityError =
-    Boolean(user) && !isAdmin && isBelow1300 && !isAllowedPublicPage;
+    Boolean(user) && !isAdmin && isBelow1250 && !isAllowedPublicPage;
 
   // Display the compatibility page instead of the dashboard.
   if (shouldShowCompatibilityError) {
@@ -119,7 +119,7 @@ function App() {
       <Route
         path="/login"
         element={
-          user && !(isBelow1300 && !isAdmin) ? (
+          user && !(isBelow1250 && !isAdmin) ? (
             <Navigate to={home} replace />
           ) : (
             login

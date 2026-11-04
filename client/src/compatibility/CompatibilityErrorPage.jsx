@@ -70,7 +70,7 @@ export default function CompatibilityErrorPage({ onLogout }) {
             <p className={styles.description}>
               Your account can use the internship workspace on a desktop or
               laptop with a screen width of at least{" "}
-              <strong>1300 pixels</strong>. Please switch to a wider screen to
+              <strong>1250 pixels</strong>. Please switch to a wider screen to
               continue using your dashboard.
             </p>
           </div>
@@ -81,7 +81,7 @@ export default function CompatibilityErrorPage({ onLogout }) {
             </div>
             <div className={styles.requirementCopy}>
               <span>MINIMUM VIEWPORT WIDTH</span>
-              <strong>1300 px</strong>
+              <strong>1250 px</strong>
             </div>
             <div className={styles.requirementStatus}>
               <span />
@@ -96,7 +96,7 @@ export default function CompatibilityErrorPage({ onLogout }) {
             <p>
               Open this portal on a laptop or desktop. You can also resize your
               browser window; access will return automatically when the viewport
-              reaches 1300px or wider.
+              reaches 1250px or wider.
             </p>
           </div>
 

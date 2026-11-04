@@ -86,10 +86,10 @@ function getInitialWideViewport() {
   }
 
   if (typeof window.matchMedia === "function") {
-    return window.matchMedia("(min-width: 1300px)").matches;
+    return window.matchMedia("(min-width: 1250px)").matches;
   }
 
-  return window.innerWidth >= 1300;
+  return window.innerWidth >= 1250;
 }
 
 /* =========================================================
@@ -167,7 +167,7 @@ export default function Attendance({ user }) {
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
 
-    const media = window.matchMedia("(min-width: 1300px)");
+    const media = window.matchMedia("(min-width: 1250px)");
 
     const updateViewport = () => {
       setWideViewport(media.matches);
@@ -440,7 +440,7 @@ export default function Attendance({ user }) {
 
     if (!desktopAccessAllowed) {
       toast(
-        "Attendance is available only on a laptop or desktop with a screen width of at least 1300px.",
+        "Attendance is available only on a laptop or desktop with a screen width of at least 1250px.",
         "error",
       );
 
