@@ -1,0 +1,721 @@
+.attendancePage {
+  --attendance-border: var(--border, #e5e7eb);
+  --attendance-surface: var(--surface, #ffffff);
+  --attendance-muted: var(--muted, #64748b);
+  --attendance-text: var(--text, #172033);
+  --attendance-primary: var(--accent, #6366f1);
+  width: 100%;
+  color: var(--attendance-text);
+  padding-bottom: 1.5rem;
+}
+
+.pageHeader {
+  padding: 0.25rem 0 0.5rem;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.65rem;
+  color: var(--attendance-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.pageDescription {
+  max-width: 680px;
+  margin-top: 0.65rem;
+  color: var(--attendance-muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.actionButton {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.actionButton:focus-visible,
+.formControl:focus-visible {
+  outline: 3px solid
+    color-mix(in srgb, var(--attendance-primary) 28%, transparent);
+  outline-offset: 2px;
+}
+
+.actionButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--attendance-primary);
+  border-radius: 10px;
+  background: var(--attendance-primary);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+  transition:
+    filter 160ms ease,
+    transform 160ms ease;
+}
+
+.primaryButton:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.primaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.68rem 0.9rem;
+  border: 1px solid var(--attendance-border);
+  border-radius: 10px;
+  background: var(--attendance-surface);
+  color: var(--attendance-text);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease;
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: var(--attendance-primary);
+  background: color-mix(
+    in srgb,
+    var(--attendance-primary) 5%,
+    var(--attendance-surface)
+  );
+}
+
+.secondaryButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Summary cards */
+
+.summaryCard {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 1.1rem;
+  border: 1px solid var(--attendance-border);
+  border-radius: 15px;
+  background: var(--attendance-surface);
+  box-shadow: 0 2px 8px rgb(15 23 42 / 3%);
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+.summaryCard:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(
+    in srgb,
+    var(--attendance-primary) 35%,
+    var(--attendance-border)
+  );
+}
+
+.summaryIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  border: 1px solid
+    color-mix(in srgb, var(--attendance-primary) 16%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--attendance-primary) 10%, transparent);
+  color: var(--attendance-primary);
+}
+
+.iconGreen {
+  border-color: rgb(22 163 74 / 15%);
+  background: rgb(22 163 74 / 10%);
+  color: #16a34a;
+}
+
+.iconAmber {
+  border-color: rgb(217 119 6 / 16%);
+  background: rgb(217 119 6 / 10%);
+  color: #d97706;
+}
+
+.iconRed {
+  border-color: rgb(220 38 38 / 15%);
+  background: rgb(220 38 38 / 9%);
+  color: #dc2626;
+}
+
+.summaryText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.summaryText > span {
+  color: var(--attendance-muted);
+  font-size: 0.79rem;
+  font-weight: 650;
+}
+
+.summaryText > strong {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.summaryText > small {
+  color: var(--attendance-muted);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+/* Shared panels */
+
+.panel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--attendance-border);
+  border-radius: 16px;
+  background: var(--attendance-surface);
+  box-shadow: 0 3px 12px rgb(15 23 42 / 3%);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid var(--attendance-border);
+}
+
+.panelTitleGroup {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.panelIcon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  place-items: center;
+  border: 1px solid
+    color-mix(in srgb, var(--attendance-primary) 15%, transparent);
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--attendance-primary) 9%, transparent);
+  color: var(--attendance-primary);
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.panelDescription {
+  margin-top: 0.2rem;
+  color: var(--attendance-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.filterCount {
+  flex: 0 0 auto;
+  padding: 0.38rem 0.65rem;
+  border: 1px solid var(--attendance-border);
+  border-radius: 8px;
+  background: color-mix(
+    in srgb,
+    var(--attendance-muted) 5%,
+    var(--attendance-surface)
+  );
+  color: var(--attendance-muted);
+  font-size: 0.72rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Form controls */
+
+.formControl {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--attendance-border);
+  border-radius: 9px;
+  background: var(--attendance-surface);
+  color: var(--attendance-text);
+  font-size: 0.84rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.formControl:focus {
+  border-color: var(--attendance-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--attendance-primary) 12%, transparent);
+}
+
+.formControl::placeholder {
+  color: var(--attendance-muted);
+  opacity: 0.75;
+}
+
+.filterFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--attendance-border);
+}
+
+.filterFooter > p,
+.correctionFooter > p {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--attendance-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+/* Attendance table */
+
+.tableScroll {
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--attendance-border) transparent;
+}
+
+.attendanceTable {
+  width: 100%;
+  min-width: 1050px;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 0.8rem;
+}
+
+.attendanceTable thead {
+  background: color-mix(
+    in srgb,
+    var(--attendance-muted) 6%,
+    var(--attendance-surface)
+  );
+}
+
+.attendanceTable th {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--attendance-border);
+  color: var(--attendance-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.attendanceTable td {
+  padding: 0.95rem 1rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--attendance-border) 75%, transparent);
+  color: var(--attendance-text);
+  vertical-align: middle;
+}
+
+.attendanceTable tbody tr {
+  transition: background 120ms ease;
+}
+
+.attendanceTable tbody tr:hover {
+  background: color-mix(
+    in srgb,
+    var(--attendance-primary) 4%,
+    var(--attendance-surface)
+  );
+}
+
+.attendanceTable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dateCell,
+.dateTimeCell {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.dateCell {
+  font-weight: 700;
+}
+
+.dateTimeCell {
+  color: var(--attendance-muted) !important;
+  font-size: 0.74rem;
+}
+
+.internName {
+  max-width: 210px;
+  overflow: hidden;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.internMeta {
+  max-width: 210px;
+  margin-top: 0.25rem;
+  overflow: hidden;
+  color: var(--attendance-muted);
+  font-size: 0.71rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sessionBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--attendance-border);
+  border-radius: 7px;
+  background: color-mix(
+    in srgb,
+    var(--attendance-muted) 5%,
+    var(--attendance-surface)
+  );
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.58rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 750;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status_pending {
+  border-color: rgb(217 119 6 / 18%);
+  background: rgb(217 119 6 / 9%);
+  color: #b45309;
+}
+
+.status_approved,
+.status_admin_corrected_present {
+  border-color: rgb(22 163 74 / 18%);
+  background: rgb(22 163 74 / 9%);
+  color: #15803d;
+}
+
+.status_rejected {
+  border-color: rgb(220 38 38 / 17%);
+  background: rgb(220 38 38 / 8%);
+  color: #b91c1c;
+}
+
+.statusUnknown {
+  border-color: var(--attendance-border);
+  background: color-mix(
+    in srgb,
+    var(--attendance-muted) 7%,
+    var(--attendance-surface)
+  );
+  color: var(--attendance-muted);
+}
+
+.rewardCell {
+  font-weight: 800;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.rewardCell > span {
+  color: var(--attendance-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.reasonCell {
+  max-width: 220px;
+  color: var(--attendance-muted) !important;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.tableFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.85rem 1.2rem;
+  border-top: 1px solid var(--attendance-border);
+  color: var(--attendance-muted);
+  font-size: 0.72rem;
+}
+
+/* Empty state */
+
+.emptyState {
+  display: flex;
+  min-height: 260px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.25rem;
+  text-align: center;
+}
+
+.emptyIcon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border: 1px solid var(--attendance-border);
+  border-radius: 16px;
+  background: color-mix(
+    in srgb,
+    var(--attendance-muted) 6%,
+    var(--attendance-surface)
+  );
+  color: var(--attendance-muted);
+}
+
+.emptyState h3 {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.emptyState p {
+  max-width: 360px;
+  margin: 0.45rem 0 1rem;
+  color: var(--attendance-muted);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+/* Manual correction */
+
+.correctionHeader {
+  padding: 1.1rem 1.2rem;
+  border-bottom: 1px solid var(--attendance-border);
+}
+
+.correctionIcon {
+  border-color: rgb(217 119 6 / 18%);
+  background: rgb(217 119 6 / 9%);
+  color: #d97706;
+}
+
+.correctionNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin: 1rem 1.2rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgb(217 119 6 / 20%);
+  border-radius: 11px;
+  background: rgb(217 119 6 / 7%);
+  color: #b45309;
+}
+
+.correctionNotice > svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.correctionNotice p {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.65;
+}
+
+.reasonInput {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.characterCount {
+  margin-top: 0.35rem;
+  color: var(--attendance-muted);
+  font-size: 0.7rem;
+  text-align: right;
+}
+
+.correctionFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--attendance-border);
+}
+
+/* Responsive behavior */
+
+@media (max-width: 640px) {
+  .pageHeader {
+    gap: 1rem;
+  }
+
+  .pageDescription {
+    font-size: 0.83rem;
+  }
+
+  .pageHeader > div:last-child {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actionButton {
+    min-width: 0;
+    padding: 0.68rem 0.65rem;
+    font-size: 0.75rem;
+  }
+
+  .summaryCard {
+    padding: 0.9rem;
+  }
+
+  .summaryText > strong {
+    font-size: 1.55rem;
+  }
+
+  .panelHeader {
+    align-items: flex-start;
+    padding: 0.95rem;
+  }
+
+  .panelTitle {
+    font-size: 0.9rem;
+  }
+
+  .panelDescription {
+    font-size: 0.73rem;
+  }
+
+  .filterFooter {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 0.95rem;
+  }
+
+  .filterFooter > button {
+    width: 100%;
+  }
+
+  .tableFooter {
+    padding: 0.8rem 0.95rem;
+  }
+
+  .correctionHeader {
+    padding: 0.95rem;
+  }
+
+  .correctionNotice {
+    margin: 0.85rem 0.95rem 0;
+  }
+
+  .correctionFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .correctionFooter > button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .summaryCard,
+  .actionButton,
+  .secondaryButton,
+  .formControl,
+  .attendanceTable tbody tr {
+    transition: none;
+  }
+
+  .summaryCard:hover,
+  .actionButton:hover:not(:disabled) {
+    transform: none;
+  }
+}

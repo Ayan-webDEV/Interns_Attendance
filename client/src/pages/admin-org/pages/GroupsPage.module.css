@@ -1,0 +1,15 @@
+.groupEditModal {
+  width: min(620px, calc(100vw - 24px));
+  height: auto;
+  max-height: 90vh;
+  max-height: 90dvh;
+  overflow: auto;
+}
+
+@media (max-width: 640px) {
+  .groupEditModal {
+    width: calc(100vw - 20px);
+    max-height: 92vh;
+    max-height: 92dvh;
+  }
+}

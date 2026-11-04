@@ -1846,3 +1846,77 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================================
+   GOOGLE SIGN-IN — DEDICATED POPUP BUTTON
+========================================================= */
+
+.googleButtonWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  overflow: hidden;
+  border-radius: 12px;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.googleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 52px;
+  overflow: hidden;
+}
+
+/* Google renders its official button inside an iframe */
+.googleButton iframe {
+  display: block;
+  max-width: 100% !important;
+  border-radius: 12px;
+}
+
+/* Hover interaction */
+.googleButtonWrap:hover {
+  transform: translateY(-1px);
+}
+
+/* Active interaction */
+.googleButtonWrap:active {
+  transform: scale(0.99);
+}
+
+/* Disabled/loading state */
+.googleButtonWrap[aria-busy="true"] {
+  cursor: wait;
+}
+
+/* Responsive — tablets */
+@media (max-width: 768px) {
+  .googleButtonWrap,
+  .googleButton {
+    min-height: 50px;
+  }
+}
+
+/* Responsive — mobiles */
+@media (max-width: 560px) {
+  .googleButtonWrap,
+  .googleButton {
+    min-height: 48px;
+  }
+}
+
+/* Small screens */
+@media (max-width: 360px) {
+  .googleButtonWrap,
+  .googleButton {
+    min-height: 46px;
+  }
+}
