@@ -64,6 +64,22 @@ const userSchema = new mongoose.Schema(
       default: undefined,
     },
 
+    termsAccepted: {
+      type: Boolean,
+      default: false,
+    },
+
+    termsAcceptedAt: {
+      type: Date,
+      default: null,
+    },
+
+    termsVersion: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     whatsappGroupName: {
       type: String,
       trim: true,

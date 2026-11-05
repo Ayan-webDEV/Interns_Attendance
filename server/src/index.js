@@ -22,6 +22,7 @@ import {
 } from "./services/attendanceMissedTracker.js";
 
 import AppSettings from "./models/AppSettings.js";
+import { requireAuth } from "./middleware/auth.js";
 
 /* -------------------------------------------------------------------------- */
 /* Express application                                                       */
@@ -117,13 +118,21 @@ app.use("/api/groups", groupRoutes);
 /* Attendance routes                                                         */
 /* -------------------------------------------------------------------------- */
 
+// Authenticate first, then rate-limit by account ID. Interns using the same
+// college/hostel/mobile-network public IP no longer share one attendance quota.
 app.use(
   "/api/attendance",
+  requireAuth,
   rateLimit({
     windowMs: 15 * 60 * 1000,
-    limit: 120,
+    limit: 180,
+    keyGenerator: (req) => `user:${String(req.user._id)}`,
     standardHeaders: true,
     legacyHeaders: false,
+    message: {
+      message: "You have made too many attendance requests. Please wait a moment and try again.",
+      code: "ATTENDANCE_RATE_LIMITED",
+    },
   }),
   attendanceRoutes,
 );
@@ -192,10 +201,17 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   if (err?.name === "ZodError") {
-    return res.status(400).json({
-      message: "Please check the submitted fields.",
+    const issues = err.issues || [];
+    const termsMissing = issues.some((issue) =>
+      ["termsAccepted", "termsVersion"].includes(issue.path?.[0]),
+    );
 
-      errors: err.issues?.map((issue) => ({
+    return res.status(400).json({
+      message: termsMissing
+        ? "Please review and accept all programme terms before creating your account."
+        : "Please check the submitted fields and try again.",
+      code: termsMissing ? "TERMS_ACCEPTANCE_REQUIRED" : "VALIDATION_ERROR",
+      errors: issues.map((issue) => ({
         field: issue.path.join("."),
         message: issue.message,
       })),
@@ -210,7 +226,12 @@ app.use((err, req, res, next) => {
 
   res.status(status).json({
     message:
-      status >= 500 ? "Something went wrong. Please try again." : err.message,
+      err?.expose === true && err.message
+        ? err.message
+        : status >= 500
+          ? "Something went wrong. Please try again."
+          : err.message,
+    ...(err?.code ? { code: err.code } : {}),
   });
 });
 

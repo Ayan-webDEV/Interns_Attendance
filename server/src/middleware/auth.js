@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 export async function requireAuth(req, res, next) {
+  // The app may authenticate once before a per-account limiter. Route-level
+  // requireAuth calls then reuse the verified request user instead of querying MongoDB again.
+  if (req.user?._id) return next();
+
   try {
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
     if (!token) return res.status(401).json({ message: 'Please sign in.' });

@@ -81,38 +81,74 @@ async function requestOfferGenerator({ payload, lookup = false }) {
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(20000),
     });
-  } catch {
+  } catch (error) {
+    console.error("[OfferVerification] Could not reach Offer Letter Generator:", {
+      name: error?.name || "FetchError",
+      message: error?.message || "Network request failed",
+    });
+
     throw new HttpError(
       503,
-      "Offer-letter verification service is unavailable. Please try again later.",
+      "We could not connect to the offer-letter service right now. Your information has not been lost. Please try again in a few minutes. If the problem continues, contact the VELoop administrator.",
+      "OFFER_SERVICE_UNAVAILABLE",
     );
   }
 
   if (!response.ok) {
+    const responseBody = await response.text().catch(() => "");
+    let upstreamMessage = "";
+
+    try {
+      const parsed = JSON.parse(responseBody);
+      upstreamMessage = String(parsed.message || parsed.error || "");
+    } catch {
+      upstreamMessage = responseBody.slice(0, 300);
+    }
+
+    // Keep diagnostics on the server; never log the shared integration secret.
+    console.error("[OfferVerification] Generator rejected lookup:", {
+      status: response.status,
+      statusText: response.statusText,
+      message: upstreamMessage.slice(0, 300),
+      lookup,
+    });
+
     if (response.status === 404) {
       throw new HttpError(
         404,
-        "No offer-letter record was found for this Intern ID.",
+        "We could not find an offer letter for this Intern ID. Check the ID printed on your offer letter and try again.",
+        "OFFER_NOT_FOUND",
       );
     }
 
     if (response.status === 409) {
       throw new HttpError(
         409,
-        "This offer-letter record is not eligible for registration.",
+        "This offer-letter record is already linked to an account or is not eligible for registration. Please contact the administrator.",
+        "OFFER_NOT_ELIGIBLE",
       );
     }
 
-    if (response.status === 422) {
+    if (response.status === 401 || response.status === 403) {
       throw new HttpError(
-        400,
-        "The intern ID, name, or email does not match the official offer-letter record.",
+        503,
+        "The secure connection to the offer-letter service needs administrator attention. Please contact the VELoop administrator.",
+        "OFFER_SERVICE_AUTH",
+      );
+    }
+
+    if (response.status === 400 || response.status === 422) {
+      throw new HttpError(
+        422,
+        "The offer-letter service could not validate this ID. Check that you entered the complete Intern ID exactly as printed and that your offer letter has been sent. If the ID is correct, contact the administrator.",
+        "OFFER_LOOKUP_REJECTED",
       );
     }
 
     throw new HttpError(
       503,
-      "Offer-letter verification could not be completed. Please try again later.",
+      "The offer-letter service is temporarily unavailable. Please try again in a few minutes. If the problem continues, contact the VELoop administrator.",
+      "OFFER_SERVICE_ERROR",
     );
   }
 

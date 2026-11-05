@@ -1058,6 +1058,7 @@ router.post(
       email: z.string().email(),
 
       whatsappNumber: z.string().min(7),
+      gender: z.enum(["Female", "Male", "Non-binary", "Prefer not to say"]),
       whatsappGroupName: z.string().min(2),
       whatsappGroupCode: z.string().min(1),
 
@@ -1067,6 +1068,8 @@ router.post(
       password: z.string().min(10),
 
       inviteToken: z.string().min(20),
+      termsAccepted: z.literal(true),
+      termsVersion: z.string().min(1).max(40),
     });
 
     const data = schema.parse(req.body);
@@ -1234,6 +1237,7 @@ router.post(
         googleSub: onboarding.googleSub,
 
         whatsappNumber: data.whatsappNumber,
+        gender: data.gender,
         whatsappGroupName: group.name,
         whatsappGroupCode: group.whatsappGroupCode || data.whatsappGroupCode,
 
@@ -1263,6 +1267,10 @@ router.post(
         passwordHash,
 
         registrationComplete: true,
+
+        termsAccepted: true,
+        termsAcceptedAt: new Date(),
+        termsVersion: data.termsVersion,
 
         internCashBalance: 20,
 

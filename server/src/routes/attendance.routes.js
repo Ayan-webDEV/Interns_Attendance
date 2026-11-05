@@ -7,6 +7,7 @@ import InternshipGroup from "../models/InternshipGroup.js";
 import User from "../models/User.js";
 import WalletTransaction from "../models/WalletTransaction.js";
 import AppSettings from "../models/AppSettings.js";
+import Notification from "../models/Notification.js";
 
 import {
   requireAuth,
@@ -20,6 +21,37 @@ import { HttpError } from "../utils/httpError.js";
 import { syncMissedAttendanceForIntern } from "../services/attendanceMissedTracker.js";
 
 const router = Router();
+
+/**
+ * Keep one private reminder per intern. If the intern already read it but
+ * still has no gender selected, make the existing reminder unread again.
+ */
+async function ensureGenderAttendanceReminder(user) {
+  const code = "gender-required-for-attendance";
+  const existing = await Notification.findOne({
+    targetUser: user._id,
+    code,
+  });
+
+  if (existing) {
+    await Notification.updateOne(
+      { _id: existing._id },
+      { $pull: { readBy: user._id } },
+    );
+    return;
+  }
+
+  await Notification.create({
+    title: "Complete your profile before marking attendance",
+    message:
+      "Attendance requires a gender selection in your profile. Open My Account → Profile preferences → Gender, choose an option (Female, Male, Non-binary, or Prefer not to say), and select Save preference. Then return to Attendance and start your session again.",
+    link: "",
+    targetGroup: user.group || null,
+    targetUser: user._id,
+    code,
+    createdBy: user._id,
+  });
+}
 
 /* -------------------------------------------------------------------------- */
 /* Constants and date/time helpers                                            */
@@ -378,9 +410,12 @@ router.post(
     }
 
     if (!req.user.gender) {
+      await ensureGenderAttendanceReminder(req.user);
+
       throw new HttpError(
         403,
-        "Please select your gender in My account before marking attendance.",
+        "Please select your gender in My Account → Profile preferences → Gender, then select Save preference. We have also sent you a notification with the steps.",
+        "GENDER_REQUIRED",
       );
     }
 
