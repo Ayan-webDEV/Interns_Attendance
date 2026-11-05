@@ -31,7 +31,12 @@ export async function api(path, options = {}) {
     const data = type.includes("json")
       ? await res.json().catch(() => ({}))
       : { message: await res.text() };
-    throw new Error(data.message || `Request failed (${res.status})`);
+
+    const error = new Error(data.message || `Request failed (${res.status})`);
+    error.status = res.status;
+    error.code = data.code || undefined;
+    error.details = data.errors || undefined;
+    throw error;
   }
   if (type.includes("text/csv")) return res.blob();
   return type.includes("json") ? res.json() : res.text();

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { api } from "../../api/client";
 import { useToast } from "../../components/Toast/Toast";
@@ -98,6 +99,7 @@ function getInitialWideViewport() {
 
 export default function Attendance({ user }) {
   const toast = useToast();
+  const navigate = useNavigate();
 
   /* -------------------------------------------------------
      SERVER DATA
@@ -152,7 +154,9 @@ export default function Attendance({ user }) {
   ------------------------------------------------------- */
 
   const requestSequence = useRef(0);
+  const attendanceFetchInFlightRef = useRef({ key: null, promise: null });
   const scheduleRefreshInProgress = useRef(false);
+  const lastScheduleRefreshAtRef = useRef(0);
 
   /* =======================================================
      RESPONSIVE VIEWPORT TRACKING
@@ -196,9 +200,19 @@ export default function Attendance({ user }) {
   ======================================================= */
 
   const fetchData = useCallback(
-    async ({ silent = false } = {}) => {
+    ({ silent = false } = {}) => {
+      const fetchKey = `${from}|${to}`;
+      const currentRequest = attendanceFetchInFlightRef.current;
+
+      // A StrictMode effect replay or a rapid repeat action shares the same
+      // pending request batch instead of hitting all four endpoints again.
+      if (currentRequest.key === fetchKey && currentRequest.promise) {
+        return currentRequest.promise;
+      }
+
       const requestId = ++requestSequence.current;
 
+      const request = (async () => {
       if (silent) {
         setRefreshing(true);
       } else {
@@ -302,6 +316,17 @@ export default function Attendance({ user }) {
       }
 
       return failures.length === 0;
+      })();
+
+      attendanceFetchInFlightRef.current = { key: fetchKey, promise: request };
+
+      request.finally(() => {
+        if (attendanceFetchInFlightRef.current.promise === request) {
+          attendanceFetchInFlightRef.current = { key: null, promise: null };
+        }
+      }).catch(() => {});
+
+      return request;
     },
     [from, to],
   );
@@ -313,12 +338,6 @@ export default function Attendance({ user }) {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
-
-  useEffect(() => {
-    return () => {
-      requestSequence.current += 1;
-    };
-  }, []);
 
   /* =======================================================
      REFRESH TODAY'S SERVER SCHEDULE
@@ -340,6 +359,12 @@ export default function Attendance({ user }) {
     ) {
       return;
     }
+
+    // A timer tick and a window-focus event can happen together. Throttle
+    // background schedule refreshes so they do not duplicate one another.
+    const now = Date.now();
+    if (now - lastScheduleRefreshAtRef.current < 20000) return;
+    lastScheduleRefreshAtRef.current = now;
 
     scheduleRefreshInProgress.current = true;
 
@@ -363,7 +388,7 @@ export default function Attendance({ user }) {
   }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(refreshSchedule, 15000);
+    const timer = window.setInterval(refreshSchedule, 60000);
 
     const handleFocus = () => {
       refreshSchedule();
@@ -427,17 +452,8 @@ export default function Attendance({ user }) {
   ======================================================= */
 
   const canStartAttendance = useCallback(() => {
-    if (!user?.gender) {
-      toast(
-        "Please select your gender in My account before marking attendance.",
-        "error",
-      );
-
-      window.location.assign("/account");
-
-      return false;
-    }
-
+    // The backend is the source of truth for profile requirements. It returns
+    // GENDER_REQUIRED and creates the private notification when gender is absent.
     if (!desktopAccessAllowed) {
       toast(
         "Attendance is available only on a laptop or desktop with a screen width of at least 1250px.",
@@ -448,7 +464,7 @@ export default function Attendance({ user }) {
     }
 
     return true;
-  }, [user?.gender, desktopAccessAllowed, toast]);
+  }, [desktopAccessAllowed, toast]);
 
   /* =======================================================
      START ATTENDANCE SESSION
@@ -527,6 +543,15 @@ export default function Attendance({ user }) {
 
         toast(message, "error");
 
+        if (error?.code === "GENDER_REQUIRED") {
+          // Client-side route navigation preserves the React app and toast;
+          // window.location.assign would reload the complete website.
+          navigate("/intern/account", {
+            state: { reason: "gender-required-for-attendance" },
+          });
+          return false;
+        }
+
         // Refresh the schedule and today's records in case
         // the server rejected a stale availability state.
         await refreshSchedule();
@@ -536,7 +561,14 @@ export default function Attendance({ user }) {
         setBusy(false);
       }
     },
-    [canStartAttendance, busy, today?.minimumSeconds, toast, refreshSchedule],
+    [
+      canStartAttendance,
+      busy,
+      today?.minimumSeconds,
+      toast,
+      refreshSchedule,
+      navigate,
+    ],
   );
 
   /* =======================================================

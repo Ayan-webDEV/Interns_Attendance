@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarCheck,
   Wallet,
@@ -321,73 +321,86 @@ export default function InternDashboard({ user }) {
   const [refreshing, setRefreshing] = useState(false);
   const [loadError, setLoadError] = useState("");
 
+  const dashboardLoadPromiseRef = useRef(null);
+
   const loadDashboard = useCallback(async ({ initial = false } = {}) => {
-    if (initial) {
-      setLoading(true);
-    } else {
-      setRefreshing(true);
+    // Reuse the current load if the effect is replayed or the user clicks
+    // refresh while the same dashboard request batch is still running.
+    if (dashboardLoadPromiseRef.current) {
+      return dashboardLoadPromiseRef.current;
     }
 
+    const runLoad = async () => {
+      if (initial) {
+        setLoading(true);
+      } else {
+        setRefreshing(true);
+      }
+
+      try {
+        const results = await fetchDashboardData();
+
+        if (results[0].status === "fulfilled") {
+          const payload = results[0].value;
+          setToday(payload);
+
+          const count = readMissedCount(payload);
+          if (count !== null) setMissedCountFromServer(count);
+        }
+
+        if (results[1].status === "fulfilled") {
+          setWallet(results[1].value);
+        }
+
+        if (results[2].status === "fulfilled") {
+          const payload = results[2].value;
+          const groups = Array.isArray(payload?.groups) ? payload.groups : [];
+          setGroup(
+            groups[0] || payload?.group || (payload?.name ? payload : null),
+          );
+        }
+
+        if (results[3].status === "fulfilled") {
+          const payload = results[3].value;
+          setNotes(
+            Array.isArray(payload?.notifications) ? payload.notifications : [],
+          );
+        }
+
+        if (results[4].status === "fulfilled") {
+          const payload = results[4].value;
+          setHistory(Array.isArray(payload?.records) ? payload.records : []);
+
+          const count = readMissedCount(payload);
+          if (count !== null) setMissedCountFromServer(count);
+        }
+
+        const failedRequests = results.filter(
+          (result) => result.status === "rejected",
+        );
+
+        setLoadError(
+          failedRequests.length
+            ? "Some dashboard information could not be refreshed. Previously loaded information has been retained."
+            : "",
+        );
+      } catch {
+        setLoadError("We could not refresh your dashboard. Please try again.");
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    };
+
+    const request = runLoad();
+    dashboardLoadPromiseRef.current = request;
+
     try {
-      const results = await fetchDashboardData();
-
-      if (results[0].status === "fulfilled") {
-        const payload = results[0].value;
-        setToday(payload);
-
-        const count = readMissedCount(payload);
-        if (count !== null) {
-          setMissedCountFromServer(count);
-        }
-      }
-
-      if (results[1].status === "fulfilled") {
-        setWallet(results[1].value);
-      }
-
-      if (results[2].status === "fulfilled") {
-        const payload = results[2].value;
-
-        const groups = Array.isArray(payload?.groups) ? payload.groups : [];
-
-        setGroup(
-          groups[0] || payload?.group || (payload?.name ? payload : null),
-        );
-      }
-
-      if (results[3].status === "fulfilled") {
-        const payload = results[3].value;
-
-        setNotes(
-          Array.isArray(payload?.notifications) ? payload.notifications : [],
-        );
-      }
-
-      if (results[4].status === "fulfilled") {
-        const payload = results[4].value;
-
-        setHistory(Array.isArray(payload?.records) ? payload.records : []);
-
-        const count = readMissedCount(payload);
-        if (count !== null) {
-          setMissedCountFromServer(count);
-        }
-      }
-
-      const failedRequests = results.filter(
-        (result) => result.status === "rejected",
-      );
-
-      setLoadError(
-        failedRequests.length
-          ? "Some dashboard information could not be refreshed. Previously loaded information has been retained."
-          : "",
-      );
-    } catch {
-      setLoadError("We could not refresh your dashboard. Please try again.");
+      return await request;
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (dashboardLoadPromiseRef.current === request) {
+        dashboardLoadPromiseRef.current = null;
+      }
     }
   }, []);
 

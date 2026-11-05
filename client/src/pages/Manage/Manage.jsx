@@ -1689,7 +1689,7 @@ export default function Manage({ user }) {
               <span>
                 <b>Require desktop for attendance</b>
                 <small>
-                  Minimum viewport width: 1300px. Admin access is not
+                  Minimum viewport width: 1250px. Admin access is not
                   restricted.
                 </small>
               </span>

@@ -880,6 +880,84 @@ const toDateInputValue = (value) => {
   return `${year}-${month}-${day}`;
 };
 
+const REGISTRATION_TERMS_VERSION = "2026-11-05-v1";
+
+// Eight concise acknowledgements summarise the live policy sections.
+const REGISTRATION_ACKNOWLEDGEMENTS = [
+  {
+    id: "terms",
+    title: "Account, accuracy and conduct",
+    description:
+      "I will provide accurate registration details, use only my own account, protect my credentials and follow official programme instructions.",
+    policy: "terms",
+    policyLabel: "Terms & conditions",
+    secondPolicy: "security",
+    secondPolicyLabel: "Security policy",
+  },
+  {
+    id: "schedule",
+    title: "Working days and hours",
+    description:
+      "Regular working hours are 9:30 AM–6:00 PM, Monday–Friday. Saturday is a holiday, but I may work independently and mark attendance when the scheduled session is available.",
+    policy: "attendance",
+    policyLabel: "Attendance policy",
+  },
+  {
+    id: "attendance",
+    title: "Attendance requirements",
+    description:
+      "I understand the two scheduled attendance sessions, device restrictions, attendance review process and that a submission is not approved until the portal records approval.",
+    policy: "attendance",
+    policyLabel: "Attendance policy",
+  },
+  {
+    id: "privacy",
+    title: "Privacy and information use",
+    description:
+      "I understand that account, contact, internship, attendance, project and reward information is used for programme administration, verification and support.",
+    policy: "privacy",
+    policyLabel: "Privacy policy",
+    secondPolicy: "cookies",
+    secondPolicyLabel: "Cookies policy",
+  },
+  {
+    id: "projects",
+    title: "Project work and evaluation",
+    description:
+      "I will submit genuine work that represents my contribution and follow the assigned requirements, instructions, deadlines and review process.",
+    policy: "projects",
+    policyLabel: "Project submission & evaluation",
+  },
+  {
+    id: "interncash",
+    title: "InternCash and reward credits",
+    description:
+      "I understand InternCash is an internal reward-credit system. Eligible credits may accrue through verified attendance and qualifying project submissions, and may be adjusted against certification processing charges. InternCash does not guarantee a stipend, PPO or certificate.",
+    policy: "interncash",
+    policyLabel: "InternCash policy",
+  },
+  {
+    id: "outcomes",
+    title: "Stipend and PPO outcomes",
+    description:
+      "I understand stipend and PPO opportunities are separately evaluated, performance/business dependent and not guaranteed by attendance, project submission or programme completion.",
+    policy: "stipend",
+    policyLabel: "Stipend policy",
+    secondPolicy: "ppo",
+    secondPolicyLabel: "PPO policy",
+  },
+  {
+    id: "certification",
+    title: "Certification charges and refunds",
+    description:
+      "I understand certification processing is separate from internship participation, applicable charges must be disclosed, and refund/payment disputes follow the published policy.",
+    policy: "certification",
+    policyLabel: "Certification charges",
+    secondPolicy: "refund",
+    secondPolicyLabel: "Refund policy",
+  },
+];
+
 export default function Register({ onLogin }) {
   const [search] = useSearchParams();
   const formRef = useRef(null);
@@ -891,6 +969,7 @@ export default function Register({ onLogin }) {
     name: "",
     email: "",
     whatsappNumber: "",
+    gender: "",
     whatsappGroupName: "",
     whatsappGroupCode: "",
     internshipStartDate: "",
@@ -907,6 +986,12 @@ export default function Register({ onLogin }) {
     message: "",
   });
   const offerLookupRequestRef = useRef(0);
+  const [termsOpen, setTermsOpen] = useState(false);
+  const [termsChecks, setTermsChecks] = useState({});
+
+  const allTermsAccepted = REGISTRATION_ACKNOWLEDGEMENTS.every(
+    (item) => termsChecks[item.id] === true,
+  );
 
   const nav = useNavigate();
   const toast = useToast();
@@ -1042,10 +1127,15 @@ export default function Register({ onLogin }) {
         if (requestId !== offerLookupRequestRef.current) return;
 
         setOfferRecord(null);
+        const lookupMessage =
+          error.message ||
+          "We could not verify this Intern ID. Please check the ID and try again.";
+
         setOfferLookup({
           status: "error",
-          message: error.message || "Could not verify this Intern ID.",
+          message: lookupMessage,
         });
+        toast(lookupMessage, "error");
         setForm((previous) => ({
           ...previous,
           name: "",
@@ -1110,7 +1200,7 @@ export default function Register({ onLogin }) {
       offerLookup.status !== "success"
     ) {
       toast(
-        "Enter your 9-digit Intern ID and wait for offer-letter verification.",
+        "Enter your complete 9-digit Intern ID and wait for offer-letter verification.",
         "error",
       );
       return;
@@ -1136,48 +1226,13 @@ export default function Register({ onLogin }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const submit = async (e) => {
+  // The final button opens the policy-acceptance modal. Account creation only
+  // runs after all eight acknowledgements have been checked.
+  const submit = (e) => {
     e.preventDefault();
 
     if (step === 1) {
       handleNext();
-      return;
-    }
-
-    // Verify Google registration session before submitting
-    let googleProfile = {};
-
-    try {
-      googleProfile = JSON.parse(
-        sessionStorage.getItem("vlr_google_profile") || "{}",
-      );
-    } catch {
-      googleProfile = {};
-    }
-
-    const isGoogleVerified =
-      sessionStorage.getItem("vlr_google_verified") === "true";
-
-    const onboardingTicket = sessionStorage.getItem("vlr_onboarding_ticket");
-
-    if (
-      !isGoogleVerified ||
-      !onboardingTicket ||
-      !googleProfile.email ||
-      !googleProfile.name
-    ) {
-      // Clear invalid or incomplete verification session
-      sessionStorage.removeItem("vlr_google_verified");
-      sessionStorage.removeItem("vlr_onboarding_ticket");
-      sessionStorage.removeItem("vlr_google_profile");
-      sessionStorage.removeItem("vlr_invite_token");
-
-      toast(
-        "Your Google verification session is missing or expired. Please sign in again.",
-        "error",
-      );
-
-      nav("/login", { replace: true });
       return;
     }
 
@@ -1187,10 +1242,38 @@ export default function Register({ onLogin }) {
       offerLookup.status !== "success"
     ) {
       toast(
-        "Please verify your Intern ID against the offer letter first.",
+        "Your offer-letter details are not verified yet. Return to Step 1 and verify your Intern ID.",
         "error",
       );
       setStep(1);
+      return;
+    }
+
+    setTermsOpen(true);
+  };
+
+  const createAccount = async () => {
+    if (!allTermsAccepted) {
+      toast("Please review and accept all eight registration terms.", "error");
+      return;
+    }
+
+    const googleProfile = readGoogleProfile();
+    const isGoogleVerified =
+      sessionStorage.getItem("vlr_google_verified") === "true";
+    const onboardingTicket = sessionStorage.getItem("vlr_onboarding_ticket");
+
+    if (!isGoogleVerified || !onboardingTicket || !googleProfile.email) {
+      sessionStorage.removeItem("vlr_google_verified");
+      sessionStorage.removeItem("vlr_onboarding_ticket");
+      sessionStorage.removeItem("vlr_google_profile");
+      sessionStorage.removeItem("vlr_invite_token");
+
+      toast(
+        "Your Google verification session has expired. Please sign in with Google again.",
+        "error",
+      );
+      nav("/login", { replace: true });
       return;
     }
 
@@ -1202,30 +1285,29 @@ export default function Register({ onLogin }) {
         body: {
           ...form,
           internId: offerRecord.internId,
-          onboardingTicket: ticket,
+          onboardingTicket,
           inviteToken: invite,
+          termsAccepted: true,
+          termsVersion: REGISTRATION_TERMS_VERSION,
         },
       });
 
-      // Save the newly created account's authentication token
       tokenStore.set(data.token);
-
-      // Clear Google verification and onboarding session
       sessionStorage.removeItem("vlr_google_verified");
       sessionStorage.removeItem("vlr_onboarding_ticket");
       sessionStorage.removeItem("vlr_google_profile");
       sessionStorage.removeItem("vlr_invite_token");
 
-      // Update authenticated user state
+      setTermsOpen(false);
       onLogin(data.user);
-
-      // Show success message
       toast("Your account is ready. Welcome to the internship!");
-
-      // Navigate to dashboard
       nav("/intern/dashboard");
-    } catch (e) {
-      toast(e.message, "error");
+    } catch (error) {
+      toast(
+        error.message ||
+          "We could not create your account. Your details are still here; please try again.",
+        "error",
+      );
     } finally {
       setBusy(false);
     }
@@ -1575,8 +1657,35 @@ export default function Register({ onLogin }) {
                           onChange={change}
                           required
                           placeholder="+91..."
+                          autoComplete="tel"
                         />
                       </div>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label htmlFor="gender">Gender</label>
+                      <div className={styles.field}>
+                        <UserRound size={17} />
+                        <select
+                          id="gender"
+                          name="gender"
+                          value={form.gender}
+                          onChange={change}
+                          required
+                          aria-describedby="gender-help"
+                        >
+                          <option value="">Select your gender</option>
+                          <option value="Female">Female</option>
+                          <option value="Male">Male</option>
+                          <option value="Non-binary">Non-binary</option>
+                          <option value="Prefer not to say">
+                            Prefer not to say
+                          </option>
+                        </select>
+                      </div>
+                      <small id="gender-help" className={styles.fieldHint}>
+                        Required for attendance setup.{" "}
+                      </small>
                     </div>
                   </div>
 
@@ -1868,6 +1977,134 @@ export default function Register({ onLogin }) {
           </div>
         </section>
       </main>
+
+      {termsOpen && (
+        <div
+          className={styles.termsOverlay}
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget && !busy) {
+              setTermsOpen(false);
+            }
+          }}
+        >
+          <section
+            className={styles.termsModal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="registration-terms-title"
+          >
+            <div className={styles.termsModalHeader}>
+              <div>
+                <span className={styles.termsEyebrow}>BEFORE YOU JOIN</span>
+                <h2 id="registration-terms-title">
+                  Programme terms & acknowledgement
+                </h2>
+                <p>
+                  Please review these key points and confirm each one to create
+                  your account.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={styles.termsClose}
+                onClick={() => setTermsOpen(false)}
+                disabled={busy}
+                aria-label="Close terms"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.termsWorkHours}>
+              <strong>Working schedule</strong>
+              <span>Monday–Friday · 9:30 AM–6:00 PM</span>
+              <small>
+                Saturday is a holiday. You may work independently and mark
+                attendance on Saturday when the scheduled attendance session is
+                available.
+              </small>
+            </div>
+
+            <div className={styles.termsChecklist}>
+              {REGISTRATION_ACKNOWLEDGEMENTS.map((item, index) => (
+                <div className={styles.termsCheckRow} key={item.id}>
+                  <input
+                    id={`registration-term-${item.id}`}
+                    type="checkbox"
+                    checked={termsChecks[item.id] === true}
+                    onChange={(event) =>
+                      setTermsChecks((current) => ({
+                        ...current,
+                        [item.id]: event.target.checked,
+                      }))
+                    }
+                  />
+                  <div className={styles.termsCheckCopy}>
+                    <label
+                      className={styles.termsCheckLabel}
+                      htmlFor={`registration-term-${item.id}`}
+                    >
+                      <strong>
+                        {index + 1}. {item.title}
+                      </strong>
+                      <span>{item.description}</span>
+                    </label>
+                    <span className={styles.termsLearnLinks}>
+                      <a
+                        href={`/policies#${item.policy}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Learn more: {item.policyLabel}
+                      </a>
+                      {item.secondPolicy && (
+                        <a
+                          href={`/policies#${item.secondPolicy}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {item.secondPolicyLabel}
+                        </a>
+                      )}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className={styles.termsFooter}>
+              <span className={styles.termsProgress}>
+                {
+                  REGISTRATION_ACKNOWLEDGEMENTS.filter(
+                    (item) => termsChecks[item.id],
+                  ).length
+                }{" "}
+                of {REGISTRATION_ACKNOWLEDGEMENTS.length} acknowledged
+              </span>
+              <div className={styles.termsActions}>
+                <button
+                  type="button"
+                  className={styles.termsCancel}
+                  onClick={() => setTermsOpen(false)}
+                  disabled={busy}
+                >
+                  Review later
+                </button>
+                <button
+                  type="button"
+                  className={styles.termsConfirm}
+                  onClick={createAccount}
+                  disabled={!allTermsAccepted || busy}
+                >
+                  {busy ? "Creating account…" : "I agree & create account"}
+                  <ArrowRight size={17} />
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      )}
     </div>
   );
 }

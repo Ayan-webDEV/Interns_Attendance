@@ -86,7 +86,7 @@ function App() {
   const isAllowedPublicPage =
     location.pathname === "/login" || location.pathname === "/policies";
 
-  // Block authenticated non-admin users below 1300px.
+  // Block authenticated non-admin users below 1250px.
   const shouldShowCompatibilityError =
     Boolean(user) && !isAdmin && isBelow1250 && !isAllowedPublicPage;
 

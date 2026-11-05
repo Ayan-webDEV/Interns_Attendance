@@ -156,6 +156,10 @@ const policySections = [
         text: "The official Intern Attendance Dashboard is used to maintain attendance records, monitor programme participation and support applicable internship evaluation and certification processes.",
       },
       {
+        type: "paragraph",
+        text: "Regular programme working hours are 9:30 AM to 6:00 PM, Monday through Friday. Saturday is a weekly holiday; interns may still work independently on their own tasks and may mark attendance when the scheduled attendance session is available.",
+      },
+      {
         type: "steps",
         title: "Dashboard registration",
         items: [
