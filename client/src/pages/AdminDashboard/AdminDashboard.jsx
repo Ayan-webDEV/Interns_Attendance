@@ -88,7 +88,14 @@ const getSessionStats = (backendStats, records, sessionNumber, today) => {
 /* Session attendance card                                                   */
 /* -------------------------------------------------------------------------- */
 
-function SessionSummaryCard({ title, subtitle, stats, icon: Icon, tone }) {
+function SessionSummaryCard({
+  totalInterns,
+  title,
+  subtitle,
+  stats,
+  icon: Icon,
+  tone,
+}) {
   return (
     <section className={`${styles.sessionCard} ${styles[tone]}`}>
       <div className={styles.sessionTop}>
@@ -101,12 +108,14 @@ function SessionSummaryCard({ title, subtitle, stats, icon: Icon, tone }) {
               className={`ms-10  text-xs  rounded-2xl ${title === "Session 2" ? "bg-slate-100" : "bg-amber-100"} px-3 py-2`}
             >
               ~{" "}
-              {stats.present + stats.missed + stats.pending === 0
+              {stats.present === 0
                 ? 0
-                : Math.round(
-                    (stats.present / (stats.present + stats.missed)) * 100,
+                : Math.floor(
+                    Math.round((stats.present / totalInterns) * 100),
+                    2,
                   )}
-              % <small>Present</small>
+              {/*  : (stats.present / totalInterns) * 100}} */}%{" "}
+              <small>Present</small>
             </span>
           </div>
 
@@ -127,7 +136,7 @@ function SessionSummaryCard({ title, subtitle, stats, icon: Icon, tone }) {
             <div className="w-4">
               <Tally1 size={17} className="ms-1" />
             </div>
-            {stats.missed + stats.present + stats.pending}
+            {totalInterns}
           </strong>
         </span>
 
@@ -356,6 +365,7 @@ export default function AdminDashboard() {
               title="Session 1"
               subtitle="Interns present"
               stats={session1}
+              totalInterns={data?.totalInterns ?? 0}
               icon={Clock3}
               tone="sessionOne"
               // sessionSection={true}
@@ -367,6 +377,7 @@ export default function AdminDashboard() {
             subtitle="Interns present"
             stats={session2}
             icon={CalendarCheck}
+            totalInterns={data?.totalInterns ?? 0}
             tone="sessionTwo"
             // sessionSection={true}
           />
