@@ -849,6 +849,7 @@ import {
   Sparkles,
   BadgeCheck,
   Fingerprint,
+  InfoIcon,
 } from "lucide-react";
 
 import { api, tokenStore } from "../api/client";
@@ -1562,6 +1563,10 @@ export default function Register({ onLogin }) {
                       <p>Your identity and contact details</p>
                     </div>
                     <span className={styles.sectionNumber}>01</span>
+                  </div>
+
+                  <div className="w-full mb-2 text-center text-[#925BD2] bg-linear-to-br from-white via-slate-50 to-slate-100 px-2 py-2 rounded-xl  text-[2.6vw] sm:text-xs font-semibold tracking-wider uppercase">
+                    First Enter InternID & wait for Fetching data...
                   </div>
 
                   <div className={styles.formGrid}>
