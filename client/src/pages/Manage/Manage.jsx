@@ -38,6 +38,9 @@ import Notifications from "../Notifications/Notifications";
 import Promos from "../Promos/Promos";
 import RewardsPage from "../RewardsPage/RewardsPage";
 import CertificatePage from "../Certificate/CertificatePage";
+import ApprovalsPage from "../admin/pages/ApprovalsPage/ApprovalsPage";
+// import ApprovalsPage from "./ApprovalsPage/ApprovalsPage";
+// import ApprovalsPage from "./ApprovalsPage/"
 
 const blankGroup = {
   name: "",
@@ -324,8 +327,8 @@ export default function Manage({ user }) {
   };
   const approve = async (all = false) =>
     run(
-      () =>
-        api("/attendance/admin/approvals/approve", {
+      async () => {
+        await api("/attendance/admin/approvals/approve", {
           method: "POST",
           body: all
             ? {
@@ -334,7 +337,9 @@ export default function Manage({ user }) {
                 approveAll: true,
               }
             : { attendanceIds: selected },
-        }),
+        });
+        setSelected([]);
+      },
       all ? "All pending requests approved." : "Selected requests approved.",
     );
   const submitPromo = (e) => {
@@ -675,99 +680,31 @@ export default function Manage({ user }) {
     );
   if (path === "/admin/approvals")
     return (
-      <div className={styles.page}>
-        <Head
-          title={title}
-          sub="Review attendance requests before they count toward attendance and rewards."
-          action={
-            <button className={styles.ghost} onClick={load}>
-              <RefreshCw size={15} /> Refresh
-            </button>
-          }
-        />
-        <div className={styles.filters}>
-          <Select
-            label="Group"
-            value={groupFilter}
-            onChange={setGroupFilter}
-            options={groups.map((g) => ({ label: g.name, value: g._id }))}
-          />
-          <Select
-            label="Session"
-            value={sessionFilter}
-            onChange={setSessionFilter}
-            options={[
-              { label: "Session 1", value: "1" },
-              { label: "Session 2", value: "2" },
-            ]}
-          />
-          <span className={styles.count}>{data.length} pending requests</span>
-          <button
-            className={styles.primary}
-            disabled={!groupFilter || !data.length || busy}
-            onClick={() => approve(true)}
-          >
-            <CheckCircle2 size={15} /> Approve all in group
-          </button>
-        </div>
-        <DataTable
-          headers={[
-            "Select",
-            "Intern",
-            "Group",
-            "Date",
-            "Session",
-            "Requested",
-            "Status",
-          ]}
-          rows={data.map((r) => (
-            <tr key={r._id}>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={selected.includes(r._id)}
-                  onChange={(e) =>
-                    setSelected((p) =>
-                      e.target.checked
-                        ? [...p, r._id]
-                        : p.filter((x) => x !== r._id),
-                    )
-                  }
-                />
-              </td>
-              <td>
-                <b>{r.intern?.name || "Unknown intern"}</b>
-                <small>
-                  {r.intern?.internId} · {r.intern?.email}
-                </small>
-              </td>
-              <td>{r.group?.name || "—"}</td>
-              <td>{r.dateKey}</td>
-              <td>Session {r.sessionNumber}</td>
-              <td>{date(r.markedAt || r.createdAt)}</td>
-              <td>
-                <span className={styles.statusPending}>Pending</span>
-              </td>
-            </tr>
-          ))}
-        />
-        {data.length > 0 && (
-          <div className={styles.bottomActions}>
-            <span>{selected.length} selected</span>
-            <button
-              className={styles.primary}
-              disabled={!selected.length || busy}
-              onClick={() => approve(false)}
-            >
-              <Check size={15} /> Approve selected
-            </button>
-          </div>
-        )}
-        {data.length === 0 && (
-          <Empty text="No attendance requests are waiting for approval with these filters." />
-        )}
-      </div>
+      <ApprovalsPage
+        title={title}
+        data={data}
+        groups={groups}
+        loading={loading}
+        busy={busy}
+        groupFilter={groupFilter}
+        setGroupFilter={(value) => {
+          setGroupFilter(value);
+          setSelected([]);
+        }}
+        sessionFilter={sessionFilter}
+        setSessionFilter={(value) => {
+          setSessionFilter(value);
+          setSelected([]);
+        }}
+        selected={selected}
+        setSelected={setSelected}
+        onRefresh={load}
+        onApproveSelected={() => approve(false)}
+        onApproveAllInGroup={() => approve(true)}
+        formatDate={date}
+      />
     );
+
   if (path === "/admin/interns")
     return (
       <div className={styles.page}>
