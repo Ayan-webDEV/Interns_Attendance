@@ -52,6 +52,71 @@ const toDateInputValue = (value) => {
 
 const REGISTRATION_TERMS_VERSION = "2026-11-05-v1";
 
+const getOfferLookupError = (error, nav, invite = "") => {
+  const message = String(
+    error?.message ||
+      error?.response?.data?.message ||
+      error?.data?.message ||
+      "",
+  ).trim();
+
+  const normalized = message.toLowerCase();
+
+  const status = error?.status || error?.response?.status || error?.statusCode;
+
+  if (
+    normalized.includes("email mismatch") ||
+    normalized.includes("email does not match") ||
+    normalized.includes("email not matching") ||
+    normalized.includes("different email")
+  ) {
+    return "The email address on your offer letter does not match your Google sign-in email. Please sign in using the email registered on your offer letter.";
+  }
+
+  if (
+    normalized.includes("intern id not found") ||
+    normalized.includes("internid not found") ||
+    normalized.includes("no offer letter") ||
+    normalized.includes("record not found") ||
+    status === 404
+  ) {
+    return "We couldn't find an offer letter for this Intern ID. Please check all 9 digits and try again.";
+  }
+
+  if (
+    normalized.includes("expired") ||
+    normalized.includes("invalid onboarding ticket")
+  ) {
+    if (invite) {
+      sessionStorage.setItem("vlr_invite_token", invite);
+    }
+
+    const loginUrl = invite
+      ? `/login?invite=${encodeURIComponent(invite)}`
+      : "/login";
+
+    nav(loginUrl);
+
+    return "Your Google verification session has expired. Please return to sign in and verify your Google account again.";
+  }
+
+  if (
+    normalized.includes("service unavailable") ||
+    normalized.includes("offer letter service") ||
+    normalized.includes("failed to fetch") ||
+    normalized.includes("network error") ||
+    status === 503
+  ) {
+    return "The offer-letter verification service is temporarily unavailable. Please try again in a few minutes.";
+  }
+
+  if (message) {
+    return message;
+  }
+
+  return "We couldn't verify your offer letter. Please check your Intern ID and try again.";
+};
+
 // Eight concise acknowledgements summarise the live policy sections.
 const REGISTRATION_ACKNOWLEDGEMENTS = [
   {
@@ -172,6 +237,15 @@ export default function Register({ onLogin }) {
   const invite =
     search.get("invite") || sessionStorage.getItem("vlr_invite_token") || "";
 
+  // Preserve the invitation when the user is redirected to login.
+  useEffect(() => {
+    const inviteFromUrl = search.get("invite");
+
+    if (inviteFromUrl) {
+      sessionStorage.setItem("vlr_invite_token", inviteFromUrl);
+    }
+  }, [search]);
+
   useEffect(() => {
     const validProfile = Boolean(profile.email && profile.name);
     const googleVerified =
@@ -266,10 +340,38 @@ export default function Register({ onLogin }) {
 
         if (requestId !== offerLookupRequestRef.current) return;
 
+        // const offer = response.offer || response.intern || response;
+        // const startDate = toDateInputValue(offer.startDate);
+        // const domain = String(offer.domain || "").trim();
+        // const offerName = String(offer.name || "").trim();
         const offer = response.offer || response.intern || response;
+
         const startDate = toDateInputValue(offer.startDate);
         const domain = String(offer.domain || "").trim();
         const offerName = String(offer.name || "").trim();
+
+        const offerEmail = String(offer.email || offer.emailAddress || "")
+          .trim()
+          .toLowerCase();
+
+        const googleEmail = String(profile.email || "")
+          .trim()
+          .toLowerCase();
+
+        /*
+         * Validate the offer-letter email against the verified Google email.
+         */
+        if (!offerEmail) {
+          throw new Error(
+            "Your offer letter does not contain a registered email address. Please contact the administrator.",
+          );
+        }
+
+        if (offerEmail !== googleEmail) {
+          throw new Error(
+            "EMAIL_MISMATCH: The email address on your offer letter does not match your Google sign-in email.",
+          );
+        }
 
         if (!offerName || !startDate || !domain) {
           throw new Error(
@@ -294,18 +396,20 @@ export default function Register({ onLogin }) {
         });
       } catch (error) {
         if (error.name === "AbortError") return;
+
         if (requestId !== offerLookupRequestRef.current) return;
 
         setOfferRecord(null);
-        const lookupMessage =
-          error.message ||
-          "We could not verify this Intern ID. Please check the ID and try again.";
+
+        const lookupMessage = getOfferLookupError(error, nav, invite);
 
         setOfferLookup({
           status: "error",
           message: lookupMessage,
         });
+
         toast(lookupMessage, "error");
+
         setForm((previous) => ({
           ...previous,
           name: "",
@@ -313,6 +417,27 @@ export default function Register({ onLogin }) {
           domain: "",
         }));
       }
+      // catch (error) {
+      //   if (error.name === "AbortError") return;
+      //   if (requestId !== offerLookupRequestRef.current) return;
+
+      //   setOfferRecord(null);
+      //   const lookupMessage =
+      //     error.message ||
+      //     "We could not verify this Intern ID. Please check the ID and try again.";
+
+      //   setOfferLookup({
+      //     status: "error",
+      //     message: lookupMessage,
+      //   });
+      //   toast(lookupMessage, "error");
+      //   setForm((previous) => ({
+      //     ...previous,
+      //     name: "",
+      //     internshipStartDate: "",
+      //     domain: "",
+      //   }));
+      // }
     }, 450);
 
     return () => {
@@ -355,7 +480,7 @@ export default function Register({ onLogin }) {
       sessionStorage.removeItem("vlr_google_verified");
       sessionStorage.removeItem("vlr_onboarding_ticket");
       sessionStorage.removeItem("vlr_google_profile");
-      sessionStorage.removeItem("vlr_invite_token");
+      // sessionStorage.removeItem("vlr_invite_token");
 
       toast("Google verification is required. Please sign in again.", "error");
 
@@ -437,7 +562,7 @@ export default function Register({ onLogin }) {
       sessionStorage.removeItem("vlr_google_verified");
       sessionStorage.removeItem("vlr_onboarding_ticket");
       sessionStorage.removeItem("vlr_google_profile");
-      sessionStorage.removeItem("vlr_invite_token");
+      // sessionStorage.removeItem("vlr_invite_token");
 
       toast(
         "Your Google verification session has expired. Please sign in with Google again.",
@@ -490,24 +615,89 @@ export default function Register({ onLogin }) {
   //                 nav("/login");
 
   //                 const location = useLocation();
+  // useEffect(() => {
+  //   const autoCleanSession = () => {
+  //     sessionStorage.removeItem("vlr_google_verified");
+  //     sessionStorage.removeItem("vlr_onboarding_ticket");
+  //     sessionStorage.removeItem("vlr_google_profile");
+  //     // sessionStorage.removeItem("vlr_invite_token");
+
+  //     nav("/login");
+  //   };
+
+  //   const interval = setInterval(autoCleanSession, 15 * 60 * 1000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
   useEffect(() => {
     const autoCleanSession = () => {
+      // Preserve the invitation token before redirecting.
+      if (invite) {
+        sessionStorage.setItem("vlr_invite_token", invite);
+      }
+
+      // Clear Google verification session.
       sessionStorage.removeItem("vlr_google_verified");
       sessionStorage.removeItem("vlr_onboarding_ticket");
       sessionStorage.removeItem("vlr_google_profile");
-      sessionStorage.removeItem("vlr_invite_token");
 
-      nav("/login");
+      // Preserve invitation in the login URL.
+      const loginUrl = invite
+        ? `/login?invite=${encodeURIComponent(invite)}`
+        : "/login";
+
+      nav(loginUrl, { replace: true });
     };
 
     const interval = setInterval(autoCleanSession, 15 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [nav]);
+  }, [invite, nav]);
 
   return (
     <div className={`${styles.page} min-h-screen relative`}>
       <RegisterLoading open={busy} />
+      {(offerLookup.status === "waiting" ||
+        offerLookup.status === "loading") && (
+        <div
+          className={styles.lookupOverlay}
+          role="status"
+          aria-live="polite"
+          aria-label="Verifying your offer letter"
+        >
+          <div className={styles.lookupModal}>
+            <div className={styles.lookupSpinner}>
+              <Fingerprint size={30} />
+              <span />
+            </div>
+
+            <span className={styles.lookupEyebrow}>
+              SECURE IDENTITY VERIFICATION
+            </span>
+
+            <h2>Verifying your offer letter</h2>
+
+            <p>
+              Please wait while we securely retrieve and verify your internship
+              information.
+            </p>
+
+            <div className={styles.lookupProgress}>
+              <span />
+            </div>
+
+            <div className={styles.lookupEmail}>
+              <Mail size={16} />
+
+              <span>{form.email}</span>
+
+              <CheckCircle2 size={16} />
+            </div>
+
+            <small>Please don't close or refresh this page.</small>
+          </div>
+        </div>
+      )}
 
       {/* BACKGROUND DECORATIONS */}
       <div className={styles.geometry} aria-hidden="true">
@@ -648,8 +838,17 @@ export default function Register({ onLogin }) {
                 sessionStorage.removeItem("vlr_google_verified");
                 sessionStorage.removeItem("vlr_onboarding_ticket");
                 sessionStorage.removeItem("vlr_google_profile");
-                sessionStorage.removeItem("vlr_invite_token");
-                nav("/login");
+
+                // Preserve invitation token in storage and login URL.
+                if (invite) {
+                  sessionStorage.setItem("vlr_invite_token", invite);
+                }
+
+                const loginUrl = invite
+                  ? `/login?invite=${encodeURIComponent(invite)}`
+                  : "/login";
+
+                nav(loginUrl);
               }}
               className={styles.backButton}
             >
@@ -740,9 +939,9 @@ export default function Register({ onLogin }) {
               {/* ===================================
                   STEP 1
               =================================== */}
-              {step === 1 && (
+              {/* {step === 1 && (
                 <div className={styles.stepContent}>
-                  {/* PERSONAL DETAILS */}
+                  
                   <div className={styles.sectionHeading}>
                     <span
                       className={`${styles.sectionIcon} ${styles.orangeIcon}`}
@@ -890,7 +1089,6 @@ export default function Register({ onLogin }) {
 
                   <div className={styles.sectionDivider} />
 
-                  {/* INTERNSHIP DETAILS */}
                   <div className={styles.sectionHeading}>
                     <span
                       className={`${styles.sectionIcon} ${styles.purpleIcon}`}
@@ -1055,6 +1253,428 @@ export default function Register({ onLogin }) {
                     <ArrowRight size={19} />
                   </button>
                 </div>
+              )} */}
+              {step === 1 && (
+                <div className={styles.stepContent}>
+                  <div className={styles.sectionHeading}>
+                    <span
+                      className={`${styles.sectionIcon} ${styles.orangeIcon}`}
+                    >
+                      <Fingerprint size={19} />
+                    </span>
+
+                    <div>
+                      <h3>Verify your internship identity</h3>
+                      <p>
+                        Start with the Intern ID on your official offer letter.
+                      </p>
+                    </div>
+
+                    <span className={styles.sectionNumber}>01</span>
+                  </div>
+
+                  {/* GOOGLE EMAIL — ALWAYS VISIBLE */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="email">Google account email</label>
+
+                    <div className={`${styles.field} ${styles.readonlyField}`}>
+                      <Mail size={18} />
+
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        readOnly
+                        required
+                        aria-label="Google verified email"
+                      />
+
+                      <CheckCircle2 size={17} className={styles.verifiedIcon} />
+                    </div>
+
+                    <small className={styles.fieldHint}>
+                      Automatically obtained from your Google sign-in. This
+                      email must match your official offer letter.
+                    </small>
+                  </div>
+
+                  {/* INTERN ID — ONLY REGISTRATION INPUT INITIALLY */}
+                  <div className={styles.idEntryCard}>
+                    <div className={styles.idEntryHeader}>
+                      <div>
+                        <span className={styles.idEntryEyebrow}>
+                          OFFER LETTER VERIFICATION
+                        </span>
+
+                        <h3>Enter your Intern ID</h3>
+
+                        <p>
+                          Enter the 9-digit number printed on your official
+                          VELoop internship offer letter.
+                        </p>
+                      </div>
+
+                      <span className={styles.idEntryIcon}>
+                        <Fingerprint size={25} />
+                      </span>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                      <label htmlFor="internId">Your Intern ID</label>
+
+                      <div
+                        className={`${styles.field} ${styles.internIdField}`}
+                      >
+                        <Fingerprint size={19} />
+
+                        <span className={styles.prefix}>VLRINT</span>
+
+                        <input
+                          id="internId"
+                          name="internId"
+                          value={form.internId}
+                          onChange={(event) => {
+                            const raw = event.target.value
+                              .toUpperCase()
+                              .replace(/^VLRINT/, "");
+
+                            const digits = raw.replace(/\D/g, "").slice(0, 9);
+
+                            setOfferRecord(null);
+                            setOfferLookup({
+                              status: "idle",
+                              message: "",
+                            });
+
+                            setForm((previous) => ({
+                              ...previous,
+                              internId: digits,
+                              name: "",
+                              internshipStartDate: "",
+                              domain: "",
+                            }));
+                          }}
+                          required
+                          inputMode="numeric"
+                          pattern="[0-9]{9}"
+                          minLength={9}
+                          maxLength={9}
+                          autoComplete="off"
+                          placeholder="202601234"
+                        />
+                      </div>
+
+                      <div className={styles.idEntryFooter}>
+                        <span>{form.internId.length}/9 digits entered</span>
+
+                        <span>
+                          {form.internId.length === 9
+                            ? "Ready for verification"
+                            : "9 digits required"}
+                        </span>
+                      </div>
+
+                      <div className={styles.idDigitTrack}>
+                        <span
+                          style={{
+                            width: `${(form.internId.length / 9) * 100}%`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* LOOKUP FEEDBACK */}
+                  {form.internId.length > 0 && form.internId.length < 9 && (
+                    <div className={styles.inlineNotice}>
+                      <Fingerprint size={17} />
+                      Enter {9 - form.internId.length} more digit(s) to verify
+                      your offer letter.
+                    </div>
+                  )}
+
+                  {offerLookup.status === "error" && (
+                    <div className={styles.lookupError} role="alert">
+                      <ShieldCheck size={19} />
+
+                      <div>
+                        <strong>Verification unsuccessful</strong>
+                        <p>{offerLookup.message}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {offerLookup.status === "success" && offerRecord && (
+                    <div className={styles.detectedNotice} role="status">
+                      <CheckCircle2 size={17} />
+                      {offerLookup.message}
+                    </div>
+                  )}
+
+                  {/* DETAILS APPEAR ONLY AFTER SUCCESSFUL VERIFICATION */}
+                  {offerRecord && offerLookup.status === "success" && (
+                    <>
+                      <div className={styles.verifiedProfile}>
+                        <div className={styles.verifiedProfileHeader}>
+                          <div className={styles.verifiedProfileIcon}>
+                            <BadgeCheck size={21} />
+                          </div>
+
+                          <div>
+                            <span>IDENTITY VERIFIED</span>
+                            <h3>Your offer-letter details</h3>
+                            <p>
+                              We found your official internship record. Review
+                              the details and complete your profile.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className={styles.formGrid}>
+                          {/* FULL NAME */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="name">Full name</label>
+
+                            <div
+                              className={`${styles.field} ${styles.readonlyField}`}
+                            >
+                              <UserRound size={17} />
+
+                              <input
+                                id="name"
+                                name="name"
+                                value={form.name}
+                                readOnly
+                                required
+                              />
+
+                              <CheckCircle2
+                                size={17}
+                                className={styles.verifiedIcon}
+                              />
+                            </div>
+                          </div>
+
+                          {/* GOOGLE EMAIL */}
+                          <div className={styles.formGroup}>
+                            <label>Google email</label>
+
+                            <div
+                              className={`${styles.field} ${styles.readonlyField}`}
+                            >
+                              <Mail size={17} />
+
+                              <input
+                                value={form.email}
+                                readOnly
+                                aria-label="Verified Google email"
+                              />
+
+                              <CheckCircle2
+                                size={17}
+                                className={styles.verifiedIcon}
+                              />
+                            </div>
+                          </div>
+
+                          {/* WHATSAPP NUMBER */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="whatsappNumber">
+                              WhatsApp number
+                            </label>
+
+                            <div className={styles.field}>
+                              <Phone size={17} />
+
+                              <input
+                                id="whatsappNumber"
+                                name="whatsappNumber"
+                                type="tel"
+                                value={form.whatsappNumber}
+                                onChange={change}
+                                required
+                                placeholder="+91..."
+                                autoComplete="tel"
+                              />
+                            </div>
+                          </div>
+
+                          {/* GENDER */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="gender">Gender</label>
+
+                            <div className={styles.field}>
+                              <UserRound size={17} />
+
+                              <select
+                                id="gender"
+                                name="gender"
+                                value={form.gender}
+                                onChange={change}
+                                required
+                                aria-describedby="gender-help"
+                              >
+                                <option value="">Select your gender</option>
+                                <option value="Female">Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Non-binary">Non-binary</option>
+                                <option value="Prefer not to say">
+                                  Prefer not to say
+                                </option>
+                              </select>
+                            </div>
+
+                            <small
+                              id="gender-help"
+                              className={styles.fieldHint}
+                            >
+                              Required for attendance setup.
+                            </small>
+                          </div>
+
+                          {/* WHATSAPP GROUP */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="whatsappGroupName">
+                              WhatsApp group
+                            </label>
+
+                            <div className={styles.field}>
+                              <Users size={17} />
+
+                              <input
+                                id="whatsappGroupName"
+                                name="whatsappGroupName"
+                                value={form.whatsappGroupName}
+                                onChange={change}
+                                required
+                                readOnly={!!inviteGroup}
+                                placeholder="Group name"
+                              />
+                            </div>
+                          </div>
+
+                          {/* GROUP CODE */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="whatsappGroupCode">
+                              Group code
+                            </label>
+
+                            <div className={styles.field}>
+                              <KeyRound size={17} />
+
+                              <input
+                                id="whatsappGroupCode"
+                                name="whatsappGroupCode"
+                                value={form.whatsappGroupCode}
+                                onChange={change}
+                                required
+                                readOnly={!!inviteGroup}
+                                placeholder="Group code"
+                              />
+                            </div>
+                          </div>
+
+                          {/* START DATE */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="internshipStartDate">
+                              Internship start date
+                            </label>
+
+                            <div
+                              className={`${styles.field} ${styles.readonlyField}`}
+                            >
+                              <CalendarDays size={17} />
+
+                              <input
+                                id="internshipStartDate"
+                                name="internshipStartDate"
+                                type="date"
+                                value={form.internshipStartDate}
+                                readOnly
+                                required
+                              />
+
+                              <CheckCircle2
+                                size={17}
+                                className={styles.verifiedIcon}
+                              />
+                            </div>
+                          </div>
+
+                          {/* DOMAIN */}
+                          <div className={styles.formGroup}>
+                            <label htmlFor="domain">Internship domain</label>
+
+                            <div
+                              className={`${styles.field} ${styles.readonlyField}`}
+                            >
+                              <BriefcaseBusiness size={17} />
+
+                              <input
+                                id="domain"
+                                name="domain"
+                                value={form.domain}
+                                readOnly
+                                required
+                              />
+
+                              <CheckCircle2
+                                size={17}
+                                className={styles.verifiedIcon}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {groupLoading && (
+                        <div className={styles.inlineNotice}>
+                          <span className={styles.miniSpinner} />
+                          Validating your internship group invitation...
+                        </div>
+                      )}
+
+                      {inviteGroup && (
+                        <div className={styles.detectedNotice}>
+                          <CheckCircle2 size={16} />
+                          Your internship group was detected from your
+                          invitation.
+                        </div>
+                      )}
+
+                      {!inviteGroup && !groupLoading && (
+                        <div className={styles.lookupError} role="alert">
+                          <ShieldCheck size={18} />
+                          <div>
+                            <strong>Invitation not verified</strong>
+                            <p>
+                              Your WhatsApp group invitation could not be
+                              verified. Please check your invitation link.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className={styles.stepInfo}>
+                        <ShieldCheck size={18} />
+                        Your details have been matched with your official offer
+                        letter. Please review your contact and group information
+                        before continuing.
+                      </div>
+
+                      <button
+                        type="button"
+                        className={styles.nextButton}
+                        onClick={handleNext}
+                        disabled={groupLoading || !inviteGroup}
+                      >
+                        <span>Continue to account security</span>
+                        <ArrowRight size={19} />
+                      </button>
+                    </>
+                  )}
+                </div>
               )}
 
               {/* ===================================
@@ -1215,9 +1835,11 @@ export default function Register({ onLogin }) {
               </button>
             </div>
 
-            <div className={styles.termsWorkHours}>
-              <strong>Working schedule</strong>
-              <span>Monday–Friday · 9:30 AM–6:00 PM</span>
+            <div className={`${styles.termsWorkHours} hidden md:grid`}>
+              <div className="flex">
+                <strong>Working schedule: </strong>{" "}
+                <span className="ms-1">Monday–Friday · 9:30 AM–6:00 PM</span>
+              </div>
               <small>
                 Saturday is a holiday, but you may work independently and mark
                 attendance when the scheduled session is available.
@@ -1281,14 +1903,6 @@ export default function Register({ onLogin }) {
                 of {REGISTRATION_ACKNOWLEDGEMENTS.length} acknowledged
               </span>
               <div className={styles.termsActions}>
-                {/* <button
-                  type="button"
-                  className={styles.termsCancel}
-                  onClick={() => setTermsOpen(false)}
-                  disabled={busy}
-                >
-                  Review later
-                </button> */}
                 <button
                   type="button"
                   className={styles.termsConfirm}
