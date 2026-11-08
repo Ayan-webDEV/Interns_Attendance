@@ -1219,9 +1219,8 @@ export default function Register({ onLogin }) {
               <strong>Working schedule</strong>
               <span>Monday–Friday · 9:30 AM–6:00 PM</span>
               <small>
-                Saturday is a holiday. You may work independently and mark
-                attendance on Saturday when the scheduled attendance session is
-                available.
+                Saturday is a holiday, but you may work independently and mark
+                attendance when the scheduled session is available.
               </small>
             </div>
 
@@ -1282,14 +1281,14 @@ export default function Register({ onLogin }) {
                 of {REGISTRATION_ACKNOWLEDGEMENTS.length} acknowledged
               </span>
               <div className={styles.termsActions}>
-                <button
+                {/* <button
                   type="button"
                   className={styles.termsCancel}
                   onClick={() => setTermsOpen(false)}
                   disabled={busy}
                 >
                   Review later
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className={styles.termsConfirm}
