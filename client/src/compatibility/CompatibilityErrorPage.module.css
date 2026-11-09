@@ -528,3 +528,61 @@
     transition: none;
   }
 }
+
+@media (max-width: 360px) {
+  .brandRow {
+    flex-wrap: wrap;
+  }
+
+  .brandCopy {
+    flex: 1 1 120px;
+  }
+
+  .secureBadge {
+    margin-left: 0;
+    max-width: none;
+  }
+
+  .requirement {
+    align-items: flex-start;
+  }
+
+  .requirementStatus {
+    flex-wrap: wrap;
+    white-space: normal;
+  }
+}
+
+@media (max-width: 320px) {
+  .page {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .card {
+    border-radius: 16px;
+  }
+
+  .card > div:nth-child(2) {
+    padding-right: 13px;
+    padding-left: 13px;
+  }
+
+  .title {
+    font-size: 25px;
+  }
+
+  .visual {
+    width: 160px;
+    transform: scale(0.88);
+    transform-origin: center;
+  }
+
+  .requirementCopy strong {
+    font-size: 17px;
+  }
+
+  .footerNote {
+    text-align: left;
+  }
+}

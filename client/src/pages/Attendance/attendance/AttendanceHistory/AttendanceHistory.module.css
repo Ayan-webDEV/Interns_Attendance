@@ -1,7 +1,10 @@
-/* -------------------------------------------------------------------------- */
-/* Section                                                                    */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   VELoop — Attendance History
+   Original green and neutral palette preserved
+   Responsive layout for desktop, tablet and mobile
+   ========================================================================== */
 
+/* Section */
 .section {
   display: flex;
   flex-direction: column;
@@ -49,18 +52,17 @@
   background: #ffffff;
   font-size: 10px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Summary                                                                    */
-/* -------------------------------------------------------------------------- */
-
+/* Summary */
 .summary {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   align-items: center;
-  gap: 24px;
+  gap: 12px;
   min-height: 59px;
-  padding: 11px 16px;
+  padding: 12px 16px;
   border: 1px solid var(--line, #e2e7e0);
   border-radius: 14px;
   background: #ffffff;
@@ -70,9 +72,11 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
   color: var(--muted, #738079);
   font-size: 11px;
   font-weight: 650;
+  white-space: nowrap;
 }
 
 .summaryItem strong {
@@ -106,14 +110,12 @@
   background: #8b75d7;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Filter card                                                                */
-/* -------------------------------------------------------------------------- */
-
+/* Filter card */
 .filterCard {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  min-width: 0;
   padding: 16px;
   border: 1px solid var(--line, #e2e7e0);
   border-radius: 16px;
@@ -141,6 +143,7 @@
 
 .searchWrapper input {
   width: 100%;
+  min-width: 0;
   height: 43px;
   padding: 0 42px 0 40px;
   border: 1px solid #e7ece5;
@@ -149,7 +152,7 @@
   color: var(--ink, #17251f);
   background: #fafbf9;
   font: inherit;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 550;
   transition:
     border-color 150ms ease,
@@ -174,9 +177,9 @@
 .clearSearch {
   position: absolute;
   right: 10px;
+  display: grid;
   width: 25px;
   height: 25px;
-  display: grid;
   place-items: center;
   border: 0;
   border-radius: 7px;
@@ -193,10 +196,7 @@
   background: #e5eee0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Filter controls                                                            */
-/* -------------------------------------------------------------------------- */
-
+/* Filter controls */
 .filterControls {
   display: grid;
   grid-template-columns:
@@ -207,6 +207,7 @@
     auto;
   align-items: end;
   gap: 11px;
+  min-width: 0;
 }
 
 .filterField {
@@ -218,7 +219,7 @@
 
 .filterField > span:first-child {
   color: var(--muted, #738079);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.3;
   font-weight: 800;
 }
@@ -233,7 +234,7 @@
   color: var(--ink, #17251f);
   background: #fafbf9;
   font: inherit;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 
@@ -275,7 +276,7 @@
   color: var(--ink, #17251f);
   background: transparent;
   font: inherit;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 650;
 }
 
@@ -312,10 +313,7 @@
   cursor: not-allowed;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Records card                                                               */
-/* -------------------------------------------------------------------------- */
-
+/* Records card */
 .recordsCard {
   width: 100%;
   min-width: 0;
@@ -338,7 +336,7 @@
 .recordsHeader h3 {
   margin: 0;
   color: var(--ink, #17251f);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.4;
   font-weight: 850;
 }
@@ -349,14 +347,14 @@
   font-weight: 650;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Table                                                                      */
-/* -------------------------------------------------------------------------- */
-
+/* Table */
 .tableScroll {
   width: 100%;
+  min-width: 0;
   overflow-x: auto;
   overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd8cc transparent;
 }
 
 .historyTable {
@@ -434,10 +432,7 @@
   background: #f8faf6;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Table cells                                                                */
-/* -------------------------------------------------------------------------- */
-
+/* Table cells */
 .dateCell,
 .submittedCell {
   display: flex;
@@ -449,16 +444,17 @@
 .dateCell strong,
 .submittedCell strong {
   color: var(--ink, #17251f);
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.4;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .dateCell span,
 .submittedCell span {
   color: var(--subtle, #a0aaa4);
-  font-size: 9px;
-  line-height: 1.35;
+  font-size: 10px;
+  line-height: 1.4;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
@@ -473,17 +469,17 @@
 .sessionCell > strong {
   min-width: 0;
   color: #425449;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.4;
   font-weight: 750;
   overflow-wrap: anywhere;
 }
 
 .sessionIcon {
+  display: grid;
   flex: 0 0 26px;
   width: 26px;
   height: 26px;
-  display: grid;
   place-items: center;
   border: 1px solid rgba(34, 102, 75, 0.1);
   border-radius: 8px;
@@ -497,10 +493,7 @@
   min-width: 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Status badges                                                              */
-/* -------------------------------------------------------------------------- */
-
+/* Status badges */
 .statusBadge {
   display: inline-flex;
   align-items: center;
@@ -572,10 +565,7 @@
   background: #7185c9;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Expand button                                                              */
-/* -------------------------------------------------------------------------- */
-
+/* Expand button */
 .expandCell {
   display: flex;
   align-items: center;
@@ -583,9 +573,9 @@
 }
 
 .expandButton {
+  display: grid;
   width: 31px;
   height: 31px;
-  display: grid;
   place-items: center;
   border: 1px solid #e7ece5;
   border-radius: 9px;
@@ -613,10 +603,7 @@
   transform: rotate(180deg);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Expanded details                                                           */
-/* -------------------------------------------------------------------------- */
-
+/* Expanded details */
 .expandedContent {
   padding: 15px 19px 18px;
   border-top: 1px solid #e8eee5;
@@ -647,10 +634,11 @@
 
 .expandedDetail strong {
   color: #405247;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
   font-weight: 750;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .referenceValue {
@@ -682,10 +670,7 @@
   overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Pagination                                                                 */
-/* -------------------------------------------------------------------------- */
-
+/* Pagination */
 .pagination {
   display: flex;
   align-items: center;
@@ -712,13 +697,14 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  min-width: 0;
 }
 
 .pageButton {
+  display: grid;
   flex: 0 0 30px;
   width: 30px;
   height: 30px;
-  display: grid;
   place-items: center;
   border: 1px solid #e7ece5;
   border-radius: 8px;
@@ -762,10 +748,7 @@
   font-size: 11px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Empty state                                                                */
-/* -------------------------------------------------------------------------- */
-
+/* Empty state */
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -777,9 +760,9 @@
 }
 
 .emptyIcon {
+  display: grid;
   width: 46px;
   height: 46px;
-  display: grid;
   place-items: center;
   margin-bottom: 13px;
   border: 1px solid rgba(34, 102, 75, 0.12);
@@ -821,10 +804,7 @@
   background: #e7f2dc;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
-
+/* Tablet */
 @media (max-width: 1050px) {
   .filterControls {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -833,8 +813,17 @@
   .resetButton {
     align-self: end;
   }
+
+  .summary {
+    gap: 10px;
+  }
+
+  .expandedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
+/* Mobile */
 @media (max-width: 680px) {
   .section {
     gap: 13px;
@@ -847,11 +836,11 @@
   }
 
   .sectionHeader h2 {
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .sectionHeader p {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .totalBadge {
@@ -860,19 +849,19 @@
   }
 
   .summary {
-    justify-content: space-between;
-    gap: 9px;
-    min-height: 54px;
-    padding: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 10px;
+    min-height: auto;
+    padding: 13px;
   }
 
   .summaryItem {
-    gap: 5px;
-    font-size: 9px;
+    gap: 7px;
+    font-size: 10px;
   }
 
   .summaryItem strong {
-    font-size: 10px;
+    font-size: 11px;
   }
 
   .summaryDot {
@@ -888,8 +877,8 @@
   }
 
   .searchWrapper input {
-    height: 40px;
-    font-size: 10px;
+    height: 41px;
+    font-size: 11px;
   }
 
   .filterControls {
@@ -897,17 +886,18 @@
     gap: 10px;
   }
 
-  .filterField select,
-  .dateInputWrapper {
-    height: 37px;
+  .filterField > span:first-child {
+    font-size: 9px;
   }
 
-  .filterField > span:first-child {
-    font-size: 8px;
+  .filterField select,
+  .dateInputWrapper {
+    height: 38px;
+    font-size: 10px;
   }
 
   .resetButton {
-    min-height: 37px;
+    min-height: 38px;
     grid-column: 1 / -1;
   }
 
@@ -920,19 +910,22 @@
   }
 
   .recordsHeader h3 {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .recordsHeader > span {
     font-size: 9px;
   }
 
+  /* Convert desktop table rows into mobile record cards */
   .tableScroll {
     overflow: visible;
   }
 
   .historyTable {
+    width: 100%;
     min-width: 0;
+    table-layout: auto;
   }
 
   .historyTable thead {
@@ -941,10 +934,12 @@
 
   .historyTable tbody {
     display: block;
+    width: 100%;
   }
 
   .historyTable tbody tr {
     display: block;
+    width: 100%;
   }
 
   .recordCell {
@@ -956,7 +951,7 @@
     grid-template-columns: minmax(0, 1fr) auto;
     gap: 10px;
     min-height: auto;
-    padding: 13px;
+    padding: 14px;
   }
 
   .dateCell {
@@ -978,6 +973,7 @@
     grid-column: 2;
     grid-row: 1;
     justify-self: end;
+    align-self: start;
   }
 
   .expandCell {
@@ -986,13 +982,27 @@
     align-self: center;
   }
 
+  .dateCell strong,
+  .submittedCell strong {
+    font-size: 11px;
+  }
+
+  .dateCell span,
+  .submittedCell span {
+    font-size: 10px;
+  }
+
+  .sessionCell > strong {
+    font-size: 11px;
+  }
+
   .expandedContent {
     padding: 13px;
   }
 
   .expandedGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    gap: 13px;
   }
 
   .pagination {
@@ -1008,19 +1018,32 @@
   }
 }
 
+/* Small phones */
 @media (max-width: 390px) {
+  .sectionHeader h2 {
+    font-size: 17px;
+  }
+
   .summary {
-    gap: 6px;
-    padding: 9px 7px;
+    gap: 11px 7px;
+    padding: 11px 9px;
   }
 
   .summaryItem {
-    gap: 4px;
-    font-size: 8px;
+    gap: 5px;
+    font-size: 9px;
+  }
+
+  .summaryItem strong {
+    font-size: 10px;
+  }
+
+  .filterCard {
+    padding: 10px;
   }
 
   .filterControls {
-    gap: 8px;
+    gap: 9px;
   }
 
   .filterField select,
@@ -1028,13 +1051,43 @@
     font-size: 9px;
   }
 
+  .filterField select {
+    padding: 0 6px;
+  }
+
+  .dateInputWrapper {
+    gap: 4px;
+    padding: 0 6px;
+  }
+
+  .dateInputWrapper svg {
+    width: 13px;
+    height: 13px;
+  }
+
   .statusBadge {
+    gap: 4px;
     padding: 5px 7px;
     font-size: 8px;
   }
 
+  .recordRow {
+    gap: 8px;
+    padding: 12px 10px;
+  }
+
+  .expandedContent {
+    padding: 11px;
+  }
+
   .expandedGrid {
     grid-template-columns: minmax(0, 1fr);
+    gap: 11px;
+  }
+
+  .pagination {
+    gap: 10px;
+    padding: 10px;
   }
 
   .paginationControls {
@@ -1048,12 +1101,90 @@
   }
 }
 
+/* Very narrow phones */
+@media (max-width: 340px) {
+  .summary {
+    gap: 10px 5px;
+    padding: 10px 7px;
+  }
+
+  .summaryItem {
+    gap: 4px;
+    font-size: 8px;
+  }
+
+  .summaryItem strong {
+    font-size: 9px;
+  }
+
+  .filterControls {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .filterField select,
+  .dateInputWrapper {
+    height: 38px;
+    font-size: 10px;
+  }
+
+  .resetButton {
+    grid-column: auto;
+  }
+
+  .recordsHeader {
+    gap: 7px;
+    padding: 11px;
+  }
+
+  .recordsHeader h3 {
+    font-size: 12px;
+  }
+
+  .recordsHeader > span {
+    font-size: 8px;
+  }
+
+  .recordRow {
+    gap: 7px;
+    padding: 11px 9px;
+  }
+
+  .statusBadge {
+    padding: 5px 6px;
+    font-size: 7px;
+  }
+
+  .expandButton {
+    width: 28px;
+    height: 28px;
+  }
+
+  .paginationControls {
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .pageButton {
+    flex-basis: 26px;
+    width: 26px;
+    height: 26px;
+    font-size: 9px;
+  }
+
+  .pageEllipsis {
+    font-size: 9px;
+  }
+}
+
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .searchWrapper input,
   .clearSearch,
   .resetButton,
   .expandButton,
-  .pageButton {
-    transition: none;
+  .pageButton,
+  .recordRow {
+    transition: none !important;
   }
 }

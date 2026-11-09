@@ -68,10 +68,10 @@ export default function CompatibilityErrorPage({ onLogout }) {
               A wider screen is <span>required</span>
             </h1>
             <p className={styles.description}>
-              Your account can use the internship workspace on a desktop or
-              laptop with a screen width of at least{" "}
-              <strong>1250 pixels</strong>. Please switch to a wider screen to
-              continue using your dashboard.
+              Your account can use the internship workspace on a screen with a
+              viewport width of at least <strong>300 pixels</strong>. Please
+              increase your browser window width to continue using your
+              dashboard.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ export default function CompatibilityErrorPage({ onLogout }) {
             </div>
             <div className={styles.requirementCopy}>
               <span>MINIMUM VIEWPORT WIDTH</span>
-              <strong>1250 px</strong>
+              <strong>300 px</strong>
             </div>
             <div className={styles.requirementStatus}>
               <span />

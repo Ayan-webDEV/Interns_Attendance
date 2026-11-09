@@ -1,146 +1,193 @@
-/* -------------------------------------------------------------------------- */
-/* Page layout                                                                */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   VELOOP — INTERN ATTENDANCE PAGE
+   Premium, accessible and responsive design
+   ========================================================================== */
 
 .page {
+  --attendance-ink: #183a27;
+  --attendance-heading: #173e27;
+  --attendance-text: #405e49;
+  --attendance-muted: #5e7564;
+  --attendance-green: #1d7541;
+  --attendance-green-dark: #155a32;
+  --attendance-green-light: #eaf6e5;
+  --attendance-border: #d8e6d6;
+  --attendance-paper: #ffffff;
+  --attendance-canvas: #f6f9f4;
+
   width: 100%;
+  min-width: 0;
   min-height: 100vh;
-  padding: 28px 24px 48px;
-  color: var(--ink, #17251f);
-  background: var(--canvas, #f5f6f1);
+  min-height: 100dvh;
+  padding: 27px 25px 45px;
+  color: var(--attendance-ink);
+  /* background: var(--attendance-canvas); */
   font-family: "DM Sans", "Manrope", sans-serif;
+  overflow-wrap: anywhere;
 }
+
+/* ==========================================================================
+   MAIN CONTAINER
+   ========================================================================== */
 
 .container {
   width: 100%;
   max-width: 1440px;
+  min-width: 0;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 22px;
-  min-width: 0;
+  gap: 23px;
 }
 
 .tabContent {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 23px;
   width: 100%;
   min-width: 0;
   animation: contentEnter 240ms ease both;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Overview note                                                              */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   OVERVIEW INFORMATION PANEL
+   ========================================================================== */
 
 .overviewNote {
+  position: relative;
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 15px;
   width: 100%;
-  padding: 19px 21px;
-  border: 1px solid rgba(34, 102, 75, 0.12);
-  border-radius: 18px;
-  background: linear-gradient(
-    115deg,
-    rgba(223, 247, 167, 0.34),
-    rgba(255, 255, 255, 0.94) 72%
-  );
-  box-shadow: 0 5px 18px rgba(23, 37, 31, 0.035);
+  min-width: 0;
+  padding: 20px 22px;
+  overflow: hidden;
+  border: 1px solid #cfe2c9;
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(192, 228, 177, 0.24),
+      transparent 40%
+    ),
+    linear-gradient(115deg, #eef8e8, #ffffff 76%);
+  box-shadow: 0 5px 17px rgba(28, 76, 42, 0.045);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.overviewNote:hover {
+  border-color: #bad8b5;
+  box-shadow: 0 7px 20px rgba(28, 76, 42, 0.07);
 }
 
 .overviewNoteIcon {
-  flex: 0 0 34px;
-  width: 34px;
-  height: 34px;
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
   display: grid;
   place-items: center;
-  color: var(--green, #174b38);
-  background: var(--mint, #dff7a7);
-  border-radius: 11px;
-  font-weight: 800;
+  color: #176638;
+  background: linear-gradient(145deg, #e1f3d6, #d2eac5);
+  border: 1px solid #c5e1b8;
+  border-radius: 12px;
+  font-weight: 900;
 }
 
 .overviewNoteIcon span {
   display: grid;
   place-items: center;
-  width: 17px;
-  height: 17px;
-  border: 1.7px solid currentColor;
+  width: 19px;
+  height: 19px;
+  border: 2px solid currentColor;
   border-radius: 50%;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
 }
 
 .overviewNoteContent {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
 }
 
 .overviewNoteContent h3 {
-  margin: 1px 0 5px;
-  color: var(--green, #174b38);
-  font-size: 14px;
+  margin: 1px 0 7px;
+  color: #19492b;
+  font-size: 15px;
   line-height: 1.45;
-  font-weight: 800;
-  letter-spacing: -0.015em;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
 }
 
 .overviewNoteContent p {
-  margin: 0;
   max-width: 900px;
-  color: var(--muted, #738079);
-  font-size: 13px;
-  line-height: 1.7;
-  font-weight: 500;
+  margin: 0;
+  color: #4c6853;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Loading and empty states                                                   */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   LOADING STATE
+   ========================================================================== */
 
 .loadingArea {
   width: 100%;
-  min-height: 180px;
+  min-width: 0;
+  min-height: 200px;
   display: grid;
   place-items: center;
-  padding: 24px;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 18px;
-  background: var(--paper, #ffffff);
+  padding: 26px;
+  border: 1px solid var(--attendance-border);
+  border-radius: 17px;
+  background: var(--attendance-paper);
+  box-shadow: 0 4px 15px rgba(28, 76, 42, 0.035);
 }
+
+/* ==========================================================================
+   EMPTY STATE
+   ========================================================================== */
 
 .emptyArea {
   width: 100%;
-  padding: 32px 22px;
+  min-width: 0;
+  padding: 38px 24px;
   text-align: center;
-  border: 1px dashed var(--line, #e2e7e0);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed #bfd4bb;
+  border-radius: 17px;
+  background: #ffffff;
 }
 
 .emptyArea h3 {
-  margin: 0 0 7px;
-  color: var(--ink, #17251f);
-  font-size: 15px;
-  font-weight: 800;
+  margin: 0 0 9px;
+  color: #244a30;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
 }
 
 .emptyArea p {
-  max-width: 480px;
+  max-width: 500px;
   margin: 0 auto;
-  color: var(--muted, #738079);
-  font-size: 13px;
-  line-height: 1.65;
+  color: #5b7161;
+  font-size: 14px;
+  line-height: 1.75;
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Utility states                                                             */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   UTILITY STATES
+   ========================================================================== */
 
 .muted {
-  color: var(--muted, #738079);
+  color: #5e7564;
 }
 
 .visuallyHidden {
@@ -155,9 +202,9 @@
   border: 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Motion                                                                     */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
 
 @keyframes contentEnter {
   from {
@@ -171,9 +218,9 @@
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   LARGE DESKTOP
+   ========================================================================== */
 
 @media (min-width: 1600px) {
   .container {
@@ -181,30 +228,205 @@
   }
 
   .page {
-    padding-top: 34px;
+    padding-top: 32px;
   }
 
   .container,
   .tabContent {
-    gap: 25px;
+    gap: 26px;
+  }
+
+  .overviewNote {
+    padding: 22px 24px;
+  }
+
+  .overviewNoteContent h3 {
+    font-size: 16px;
+  }
+
+  .overviewNoteContent p {
+    font-size: 14px;
   }
 }
+
+/* ==========================================================================
+   LAPTOP — 1025px TO 1249px
+   ========================================================================== */
+
+@media (max-width: 1249px) {
+  .page {
+    padding: 23px 20px 38px;
+  }
+
+  .container,
+  .tabContent {
+    gap: 20px;
+  }
+
+  .overviewNote {
+    padding: 19px;
+  }
+}
+
+/* ==========================================================================
+   TABLET LANDSCAPE — 769px TO 1024px
+   ========================================================================== */
 
 @media (max-width: 1024px) {
   .page {
-    padding: 22px 18px 38px;
+    padding: 21px 18px 34px;
   }
 
   .container,
   .tabContent {
-    gap: 18px;
+    gap: 19px;
+  }
+
+  .overviewNote {
+    gap: 13px;
+    padding: 18px;
+  }
+
+  .overviewNoteIcon {
+    flex-basis: 37px;
+    width: 37px;
+    height: 37px;
+  }
+
+  .overviewNoteContent h3 {
+    font-size: 15px;
+  }
+
+  .overviewNoteContent p {
+    font-size: 13px;
+  }
+
+  .emptyArea {
+    padding: 32px 20px;
   }
 }
 
-@media (max-width: 680px) {
+/* ==========================================================================
+   TABLET PORTRAIT — 601px TO 768px
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .page {
+    padding: 19px 16px 30px;
+  }
+
+  .container,
+  .tabContent {
+    gap: 20px;
+  }
+
+  .overviewNote {
+    gap: 12px;
+    padding: 17px;
+    border-radius: 15px;
+  }
+
+  .overviewNoteContent h3 {
+    font-size: 15px;
+  }
+
+  .overviewNoteContent p {
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .loadingArea {
+    min-height: 180px;
+  }
+
+  .emptyArea {
+    padding: 29px 18px;
+  }
+
+  .emptyArea h3 {
+    font-size: 16px;
+  }
+
+  .emptyArea p {
+    font-size: 13px;
+  }
+}
+
+/* ==========================================================================
+   MOBILE — 381px TO 600px
+   ========================================================================== */
+
+@media (max-width: 600px) {
   .page {
     min-height: 100dvh;
-    padding: 16px 13px 28px;
+    /* padding: 16px 13px 27px; */
+    padding: 0;
+  }
+
+  .container,
+  .tabContent {
+    gap: 17px;
+  }
+
+  .overviewNote {
+    display: none;
+    gap: 11px;
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .overviewNoteIcon {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+  }
+
+  .overviewNoteIcon span {
+    width: 18px;
+    height: 18px;
+    font-size: 11px;
+  }
+
+  .overviewNoteContent h3 {
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .overviewNoteContent p {
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  .loadingArea {
+    min-height: 160px;
+    padding: 20px;
+    border-radius: 14px;
+  }
+
+  .emptyArea {
+    padding: 25px 15px;
+    border-radius: 14px;
+  }
+
+  .emptyArea h3 {
+    font-size: 15px;
+  }
+
+  .emptyArea p {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+}
+
+/* ==========================================================================
+   SMALL MOBILE — 300px TO 380px
+   ========================================================================== */
+
+@media (max-width: 380px) {
+  .page {
+    /* padding: 14px 11px 24px; */
+    padding: 0;
   }
 
   .container,
@@ -213,15 +435,14 @@
   }
 
   .overviewNote {
-    gap: 11px;
-    padding: 15px;
-    border-radius: 15px;
+    gap: 9px;
+    padding: 13px;
   }
 
   .overviewNoteIcon {
-    flex-basis: 31px;
-    width: 31px;
-    height: 31px;
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
     border-radius: 10px;
   }
 
@@ -233,21 +454,70 @@
     font-size: 12px;
     line-height: 1.65;
   }
+
+  .loadingArea {
+    min-height: 145px;
+    padding: 15px;
+  }
+
+  .emptyArea {
+    padding: 22px 12px;
+  }
+
+  .emptyArea h3 {
+    font-size: 14px;
+  }
+
+  .emptyArea p {
+    font-size: 12px;
+  }
 }
 
-@media (max-width: 380px) {
+/* ==========================================================================
+   VERY NARROW VIEWPORT — 300px
+   ========================================================================== */
+
+@media (max-width: 320px) {
   .page {
-    padding-right: 10px;
-    padding-left: 10px;
+    /* padding-right: 9px;
+    padding-left: 9px; */
+    padding: 0;
   }
 
   .overviewNote {
-    padding: 13px;
+    gap: 8px;
+    padding: 12px 10px;
+  }
+
+  .overviewNoteIcon {
+    flex-basis: 29px;
+    width: 29px;
+    height: 29px;
+  }
+
+  .overviewNoteContent h3 {
+    font-size: 12px;
+  }
+
+  .overviewNoteContent p {
+    font-size: 11px;
+  }
+
+  .emptyArea {
+    padding: 19px 10px;
   }
 }
+
+/* ==========================================================================
+   ACCESSIBILITY
+   ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   .tabContent {
     animation: none;
+  }
+
+  .overviewNote {
+    transition: none;
   }
 }

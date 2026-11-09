@@ -1,0 +1,98 @@
+/* Section heading */
+
+.sectionHeader {
+  display: flex;
+  margin: 14px 0 0 0;
+  align-items: flex-end;
+  justify-content: space-between;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+  width: 100%;
+}
+
+.sectionEyebrow {
+  color: #26724e;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+}
+
+.sectionHeader h2 {
+  margin: 5px 0 0;
+  color: var(--ink, #17251f);
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+}
+
+.sectionHeader p {
+  margin: 5px 0 0;
+  color: #5d7064;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.periodBadge {
+  flex: 0 0 auto;
+  border-radius: 9px;
+  color: #37664a;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.periodBadgeStatus {
+  padding: 7px 10px;
+  border: 1px solid #dce9d8;
+  background: #f2f8ed;
+}
+
+/* Mobile */
+
+@media (max-width: 680px) {
+  .sectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .sectionHeader h2 {
+    font-size: 17px;
+  }
+
+  .sectionHeader p {
+    font-size: 11px;
+  }
+
+  .periodBadge {
+    /* display: none; */
+    padding: 5px 8px;
+    font-size: 9px;
+  }
+}
+
+/* Small mobile */
+
+@media (max-width: 390px) {
+  .sectionHeader h2 {
+    font-size: 16px;
+  }
+}
+
+/* Very narrow mobile */
+
+@media (max-width: 320px) {
+  .sectionHeader h2 {
+    font-size: 15px;
+  }
+
+  .sectionHeader p {
+    font-size: 10px;
+  }
+
+  .periodBadge {
+    font-size: 8px;
+  }
+}

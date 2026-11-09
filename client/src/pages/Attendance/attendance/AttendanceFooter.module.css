@@ -1,31 +1,41 @@
-/* -------------------------------------------------------------------------- */
-/* Footer container                                                           */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   ATTENDANCE FOOTER — PREMIUM GREEN THEME
+========================================================= */
 
 .footer {
   display: flex;
   flex-direction: column;
-  gap: 19px;
+  gap: 18px;
   width: 100%;
   min-width: 0;
-  padding: 21px;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 18px;
-  background: #ffffff;
-  box-shadow: 0 4px 14px rgba(23, 37, 31, 0.025);
+  padding: 20px;
+  overflow: hidden;
+  border: 1px solid #dce8df;
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(76, 153, 96, 0.055),
+      transparent 38%
+    ),
+    #ffffff;
+  box-shadow:
+    0 5px 17px rgba(27, 66, 41, 0.045),
+    0 1px 3px rgba(27, 66, 41, 0.025);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Footer main                                                                */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   FOOTER MAIN
+========================================================= */
 
 .footerMain {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  padding-bottom: 17px;
-  border-bottom: 1px solid #edf0eb;
+  gap: 14px;
+  min-width: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e8efe9;
 }
 
 .footerBrand {
@@ -36,15 +46,21 @@
 }
 
 .brandIcon {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
   display: grid;
+  flex: 0 0 39px;
+  width: 39px;
+  height: 39px;
   place-items: center;
-  border: 1px solid rgba(34, 102, 75, 0.13);
+  border: 1px solid #d5e8d9;
   border-radius: 11px;
-  color: var(--green, #174b38);
-  background: #edf6e5;
+  color: #226b42;
+  background: linear-gradient(145deg, #f1faf2, #e5f3e7);
+  box-shadow: 0 3px 9px rgba(38, 111, 65, 0.07);
+}
+
+.brandIcon svg {
+  width: 19px;
+  height: 19px;
 }
 
 .footerBrand > div {
@@ -53,55 +69,60 @@
 
 .footerBrand strong {
   display: block;
-  color: var(--ink, #17251f);
+  color: #20382a;
   font-size: 12px;
   line-height: 1.4;
   font-weight: 900;
+  letter-spacing: -0.015em;
 }
 
 .footerBrand p {
   margin: 4px 0 0;
-  color: var(--muted, #738079);
+  color: #66796c;
   font-size: 10px;
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Group status                                                               */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   GROUP STATUS
+========================================================= */
 
 .footerStatus {
-  flex: 0 0 auto;
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
-  gap: 7px;
-  padding: 7px 10px;
-  border: 1px solid rgba(34, 102, 75, 0.14);
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid #cfe5d4;
   border-radius: 999px;
-  color: var(--green, #174b38);
-  background: #f0f8e9;
+  color: #226b42;
+  background: #f0f8f1;
   font-size: 10px;
-  line-height: 1.2;
+  line-height: 1.25;
   font-weight: 850;
   white-space: nowrap;
 }
 
 .statusDot {
+  flex: 0 0 7px;
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #70a94b;
+  background: #29945a;
+  box-shadow: 0 0 0 3px rgba(41, 148, 90, 0.12);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Footer details                                                             */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   FOOTER DETAILS
+========================================================= */
 
 .footerDetails {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 17px;
+  gap: 16px;
+  min-width: 0;
 }
 
 .detailItem {
@@ -112,107 +133,134 @@
 }
 
 .detailIcon {
-  flex: 0 0 33px;
-  width: 33px;
-  height: 33px;
   display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  border: 1px solid #e8eee5;
+  border: 1px solid #dce9df;
   border-radius: 10px;
-  color: var(--green-2, #22664b);
-  background: #f3f8ee;
+  color: #34764d;
+  background: #f0f7f1;
+}
+
+.detailIcon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .detailText {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   min-width: 0;
 }
 
 .detailText > span {
-  color: var(--subtle, #a0aaa4);
+  color: #66816e;
   font-size: 9px;
-  line-height: 1.35;
-  font-weight: 800;
-  letter-spacing: 0.045em;
+  line-height: 1.4;
+  font-weight: 850;
+  letter-spacing: 0.065em;
   text-transform: uppercase;
 }
 
 .detailText strong {
-  color: #34483a;
-  font-size: 10px;
-  line-height: 1.45;
+  color: #294534;
+  font-size: 11px;
+  line-height: 1.5;
   font-weight: 850;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .detailText small {
-  color: var(--muted, #738079);
+  color: #68796e;
   font-size: 9px;
-  line-height: 1.4;
-  font-weight: 600;
+  line-height: 1.5;
+  font-weight: 550;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Footer bottom                                                              */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   FOOTER BOTTOM
+========================================================= */
 
 .footerBottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  padding-top: 14px;
-  border-top: 1px solid #edf0eb;
+  gap: 14px;
+  min-width: 0;
+  padding-top: 13px;
+  border-top: 1px solid #e8efe9;
 }
 
 .footerBottom p {
+  min-width: 0;
   margin: 0;
-  color: var(--subtle, #a0aaa4);
+  color: #68796e;
   font-size: 9px;
-  line-height: 1.6;
+  line-height: 1.65;
   font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
 .footerBottom > span {
   flex: 0 0 auto;
-  color: #87938a;
+  color: #587361;
   font-size: 9px;
-  line-height: 1.4;
-  font-weight: 750;
+  line-height: 1.45;
+  font-weight: 800;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   TABLET
+========================================================= */
 
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   .footerDetails {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 17px 14px;
+    gap: 16px 18px;
+  }
+
+  .detailItem:last-child {
+    grid-column: 1 / -1;
   }
 }
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media (max-width: 600px) {
   .footer {
     gap: 15px;
-    padding: 16px;
-    border-radius: 15px;
+    padding: 15px;
+    border-radius: 14px;
   }
 
   .footerMain {
     align-items: flex-start;
     gap: 10px;
-    padding-bottom: 14px;
+    padding-bottom: 13px;
   }
 
   .brandIcon {
-    flex-basis: 34px;
-    width: 34px;
-    height: 34px;
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
     border-radius: 10px;
+  }
+
+  .brandIcon svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .footerBrand {
+    gap: 9px;
   }
 
   .footerBrand strong {
@@ -224,43 +272,196 @@
   }
 
   .footerStatus {
-    padding: 6px 8px;
+    padding: 7px 9px;
     font-size: 9px;
   }
 
   .footerDetails {
     grid-template-columns: minmax(0, 1fr);
-    gap: 14px;
+    gap: 13px;
+  }
+
+  .detailItem:last-child {
+    grid-column: auto;
   }
 
   .detailIcon {
-    flex-basis: 30px;
-    width: 30px;
-    height: 30px;
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .detailText {
+    gap: 4px;
+  }
+
+  .detailText strong {
+    font-size: 10px;
   }
 
   .footerBottom {
     align-items: flex-start;
     flex-direction: column;
     gap: 6px;
-    padding-top: 12px;
+    padding-top: 11px;
   }
 }
 
-@media (max-width: 380px) {
+/* =========================================================
+   NARROW MOBILE
+========================================================= */
+
+@media (max-width: 390px) {
   .footer {
-    padding: 13px;
+    gap: 13px;
+    padding: 12px;
   }
 
   .footerMain {
     flex-wrap: wrap;
+    gap: 9px;
   }
 
-  .footerStatus {
-    margin-left: 45px;
+  .footerBrand {
+    gap: 8px;
   }
 
   .footerBrand p {
     max-width: 220px;
+  }
+
+  .footerStatus {
+    margin-left: 43px;
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+
+  .footerDetails {
+    gap: 12px;
+  }
+
+  .detailItem {
+    gap: 9px;
+  }
+
+  .detailIcon {
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
+    border-radius: 9px;
+  }
+
+  .detailText > span {
+    font-size: 8px;
+  }
+
+  .detailText strong {
+    font-size: 10px;
+  }
+
+  .detailText small {
+    font-size: 8.5px;
+  }
+
+  .footerBottom p,
+  .footerBottom > span {
+    font-size: 8px;
+  }
+}
+
+/* =========================================================
+   VERY NARROW SCREENS — 300PX+
+========================================================= */
+
+@media (max-width: 340px) {
+  .footer {
+    gap: 12px;
+    padding: 10px;
+    border-radius: 12px;
+  }
+
+  .footerMain {
+    gap: 8px;
+    padding-bottom: 11px;
+  }
+
+  .brandIcon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .footerBrand {
+    gap: 7px;
+  }
+
+  .footerBrand strong {
+    font-size: 10px;
+  }
+
+  .footerBrand p {
+    font-size: 8px;
+  }
+
+  .footerStatus {
+    margin-left: 39px;
+    gap: 6px;
+    padding: 6px 7px;
+    font-size: 8px;
+  }
+
+  .footerDetails {
+    gap: 11px;
+  }
+
+  .detailItem {
+    gap: 8px;
+  }
+
+  .detailIcon {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+  }
+
+  .detailIcon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .detailText > span {
+    font-size: 7.5px;
+  }
+
+  .detailText strong {
+    font-size: 9px;
+    line-height: 1.45;
+  }
+
+  .detailText small {
+    font-size: 8px;
+    line-height: 1.45;
+  }
+
+  .footerBottom {
+    gap: 5px;
+    padding-top: 10px;
+  }
+
+  .footerBottom p,
+  .footerBottom > span {
+    font-size: 8px;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .footer,
+  .brandIcon,
+  .detailIcon {
+    transition: none !important;
   }
 }

@@ -577,6 +577,13 @@
     padding: 24px;
   }
 
+  .notice {
+    display: none;
+  }
+  .processBadge {
+    display: none;
+  }
+
   .steps {
     gap: 8px;
   }

@@ -1,3 +1,4 @@
+import SectionHeader from "../../../components/SectionHeader/SectionHeader";
 import styles from "./AttendanceCharts.module.css";
 
 /* -------------------------------------------------------------------------- */
@@ -376,16 +377,12 @@ export default function AttendanceCharts({
 
   return (
     <section className={styles.section} aria-label="Attendance analytics">
-      <div className={styles.sectionHeader}>
-        <div>
-          <span className={styles.sectionEyebrow}>ATTENDANCE ANALYTICS</span>
-          <h2>Your attendance trends</h2>
-
-          <p>Review your recorded sessions and submission status.</p>
-        </div>
-
-        <span className={styles.periodBadge}>Last 14 recorded days</span>
-      </div>
+      <SectionHeader
+        eye={"ATTENDANCE ANALYTICS"}
+        hds={"Your Attendance Trends"}
+        para={"Review your recorded sessions and submission status."}
+        badge={"Last 14 recorded days"}
+      />
 
       <div className={styles.chartsGrid}>
         <article className={styles.chartCard}>

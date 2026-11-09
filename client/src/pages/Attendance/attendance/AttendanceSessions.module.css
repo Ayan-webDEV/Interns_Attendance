@@ -1,139 +1,162 @@
-/* -------------------------------------------------------------------------- */
-/* Section                                                                    */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   ATTENDANCE SESSIONS — PREMIUM RESPONSIVE STYLES
+========================================================= */
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 17px;
   width: 100%;
   min-width: 0;
 }
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
 
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
+  gap: 14px;
+  min-width: 0;
 }
 
 .headingGroup {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 11px;
   min-width: 0;
-}
-
-.headingIcon {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(34, 102, 75, 0.12);
-  border-radius: 12px;
-  color: var(--green-2, #22664b);
-  background: #edf6e5;
 }
 
 .headingGroup > div {
   min-width: 0;
 }
 
+.headingIcon {
+  display: grid;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid #cce4d4;
+  border-radius: 12px;
+  color: #176b43;
+  background: linear-gradient(145deg, #f0faf2, #e3f3e8);
+  box-shadow: 0 3px 10px rgba(32, 112, 68, 0.07);
+}
+
+.headingIcon svg {
+  width: 19px;
+  height: 19px;
+}
+
 .eyebrow {
-  color: var(--green-2, #22664b);
+  display: block;
+  color: #28794d;
   font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
+  font-weight: 850;
+  letter-spacing: 0.11em;
 }
 
 .headingGroup h2 {
   margin: 4px 0 0;
-  color: var(--ink, #17251f);
+  color: #182c20;
   font-size: 19px;
   line-height: 1.3;
-  font-weight: 900;
+  font-weight: 850;
   letter-spacing: -0.035em;
 }
 
 .headingGroup p {
+  max-width: 610px;
   margin: 5px 0 0;
-  color: var(--muted, #738079);
+  color: #64756a;
   font-size: 11px;
-  line-height: 1.5;
+  line-height: 1.55;
+  font-weight: 500;
 }
 
 .sessionCount {
   flex: 0 0 auto;
   padding: 7px 11px;
-  border: 1px solid var(--line, #e2e7e0);
+  border: 1px solid #d7e8dc;
   border-radius: 9px;
-  color: var(--green, #174b38);
-  background: #ffffff;
+  color: #17613d;
+  background: #f2f9f3;
   font-size: 10px;
   font-weight: 800;
+  white-space: nowrap;
 }
 
 /* =========================================================
-   PREMIUM ATTENDANCE SUMMARY
+   DAILY SUMMARY CONTAINER
 ========================================================= */
 
 .summary {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 15px;
   width: 100%;
-  padding: 19px;
-  border: 1px solid #e8e9df;
-  border-radius: 19px;
-  background: #ffffff;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid #dfe9e1;
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(91, 163, 108, 0.055),
+      transparent 35%
+    ),
+    #ffffff;
   box-shadow:
-    0 5px 18px rgba(43, 57, 39, 0.035),
-    0 1px 3px rgba(43, 57, 39, 0.025);
+    0 5px 18px rgba(30, 58, 39, 0.045),
+    0 1px 3px rgba(30, 58, 39, 0.025);
 }
-
-/* Header */
 
 .summaryHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
 }
 
 .summaryEyebrow {
   display: block;
-  margin-bottom: 6px;
-  color: #8d9b84;
-  font-size: 8px;
-  font-weight: 900;
-  letter-spacing: 0.15em;
+  margin-bottom: 5px;
+  color: #568267;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 0.13em;
 }
 
 .summaryHeader h3 {
   margin: 0;
-  color: #26392b;
+  color: #20382a;
   font-size: 15px;
-  font-weight: 900;
-  letter-spacing: -0.035em;
+  line-height: 1.35;
+  font-weight: 850;
+  letter-spacing: -0.025em;
 }
 
 .summaryHeader p {
   margin: 5px 0 0;
-  color: #89948a;
+  color: #68796d;
   font-size: 10px;
   line-height: 1.5;
 }
 
 .summaryTotal {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 7px;
   padding: 8px 11px;
-  border: 1px solid #e8e9df;
+  border: 1px solid #dce9df;
   border-radius: 999px;
-  color: #667467;
-  background: #fafbf7;
+  color: #496452;
+  background: #f6faf6;
   font-size: 9px;
   font-weight: 800;
   white-space: nowrap;
@@ -145,143 +168,148 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #368d60;
-  box-shadow: 0 0 0 3px rgba(54, 141, 96, 0.11);
+  background: #29945a;
+  box-shadow: 0 0 0 3px rgba(41, 148, 90, 0.12);
 }
 
-/* Grid */
+/* =========================================================
+   SUMMARY GRID
+========================================================= */
 
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  gap: 11px;
+  min-width: 0;
 }
 
-/* Individual cards */
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
 
 .summaryCard {
-  --card-bg: #fbfcf8;
-  --card-border: #e7ebe2;
-  --card-accent: #526c56;
+  --card-bg: #f8fbf8;
+  --card-border: #e1ebe3;
+  --card-accent: #397451;
 
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   min-width: 0;
-  min-height: 174px;
-  padding: 15px;
+  min-height: 165px;
+  padding: 13px;
   overflow: hidden;
-
   border: 1px solid var(--card-border);
-  border-radius: 15px;
-
+  border-radius: 14px;
   background: linear-gradient(145deg, #ffffff 0%, var(--card-bg) 100%);
-
-  text-align: left;
+  color: inherit;
   font-family: inherit;
+  text-align: left;
   cursor: pointer;
-
-  box-shadow: 0 3px 9px rgba(35, 50, 37, 0.025);
-
+  box-shadow: 0 3px 10px rgba(30, 58, 39, 0.035);
   transition:
-    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
-    border-color 220ms ease,
-    box-shadow 220ms ease,
-    background 220ms ease;
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background 180ms ease;
 }
 
 .summaryCard::before {
-  content: "";
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   height: 3px;
   background: var(--card-accent);
+  content: "";
   opacity: 0.65;
-  transform: scaleX(0.28);
+  transform: scaleX(0.3);
   transform-origin: left;
   transition:
-    transform 250ms ease,
-    opacity 250ms ease;
+    transform 200ms ease,
+    opacity 200ms ease;
 }
 
 .summaryCard::after {
-  content: "";
   position: absolute;
-  width: 105px;
-  height: 105px;
-  right: -57px;
-  bottom: -65px;
+  right: -48px;
+  bottom: -58px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   background: var(--card-accent);
+  content: "";
   opacity: 0.045;
   pointer-events: none;
   transition:
-    transform 300ms ease,
-    opacity 300ms ease;
+    transform 220ms ease,
+    opacity 220ms ease;
 }
 
 .summaryCard:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   border-color: var(--card-accent);
   box-shadow:
-    0 11px 24px rgba(35, 50, 37, 0.075),
-    0 3px 7px rgba(35, 50, 37, 0.035);
+    0 9px 20px rgba(30, 58, 39, 0.075),
+    0 2px 6px rgba(30, 58, 39, 0.035);
 }
 
 .summaryCard:hover::before,
 .summaryCardActive::before {
-  transform: scaleX(1);
   opacity: 1;
+  transform: scaleX(1);
 }
 
 .summaryCard:hover::after {
-  transform: scale(1.45);
-  opacity: 0.08;
+  opacity: 0.075;
+  transform: scale(1.3);
 }
 
 .summaryCardActive {
-  transform: translateY(-2px);
   border: 1.5px solid var(--card-accent);
+  background: linear-gradient(145deg, #ffffff, var(--card-bg));
   box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--card-accent) 12%, transparent),
-    0 9px 22px rgba(35, 50, 37, 0.08);
+    0 0 0 3px rgba(43, 119, 72, 0.09),
+    0 7px 18px rgba(30, 58, 39, 0.075);
 }
 
 .summaryCard:focus-visible {
-  outline: 3px solid rgba(80, 53, 89, 0.27);
+  outline: 3px solid rgba(43, 119, 72, 0.3);
   outline-offset: 3px;
 }
 
-/* Color identity */
+/* =========================================================
+   CARD COLOR VARIANTS
+========================================================= */
 
 .approvedCard {
-  --card-bg: #f0f8f0;
-  --card-border: #dcebdd;
-  --card-accent: #28764c;
+  --card-bg: #eff8f0;
+  --card-border: #d7eadb;
+  --card-accent: #267348;
 }
 
 .pendingCard {
-  --card-bg: #fff8eb;
-  --card-border: #f0e4c8;
-  --card-accent: #a87827;
+  --card-bg: #fff8ed;
+  --card-border: #f0e2c9;
+  --card-accent: #a16b19;
 }
 
 .missedCard {
-  --card-bg: #f5eff7;
-  --card-border: #e8ddec;
-  --card-accent: #503559;
+  --card-bg: #f8f1f2;
+  --card-border: #eadcde;
+  --card-accent: #92505b;
 }
 
 .remainingCard {
-  --card-bg: #f0f4f3;
-  --card-border: #dce8e4;
-  --card-accent: #50766d;
+  --card-bg: #eff6f3;
+  --card-border: #d8e8e0;
+  --card-accent: #397568;
 }
 
-/* Card top */
+/* =========================================================
+   CARD TOP ROW AND ICONS
+========================================================= */
 
 .summaryCardTop {
   display: flex;
@@ -293,55 +321,54 @@
 
 .summaryIcon {
   display: grid;
-  flex: 0 0 37px;
-  width: 37px;
-  height: 37px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
   place-items: center;
   border: 1px solid transparent;
-  border-radius: 12px;
-
+  border-radius: 11px;
   transition:
-    transform 240ms ease,
-    box-shadow 240ms ease;
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .summaryIcon svg {
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
 }
 
 .summaryCard:hover .summaryIcon {
-  transform: translateY(-2px) rotate(-6deg) scale(1.07);
-  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.07);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(30, 58, 39, 0.08);
 }
 
-/* Icon colors */
-
 .approvedIcon {
-  color: #28764c;
-  border-color: #d0e7d2;
-  background: #e2f2e3;
+  border-color: #cce5d1;
+  color: #216b40;
+  background: #e2f2e5;
 }
 
 .pendingIcon {
-  color: #98702b;
-  border-color: #f0e0bd;
+  border-color: #ecddbd;
+  color: #8e601b;
   background: #fbf0d9;
 }
 
 .missedIcon {
-  color: #503559;
-  border-color: #e4d7e8;
-  background: #eee3f1;
+  border-color: #e8d5d9;
+  color: #884653;
+  background: #f3e7e9;
 }
 
 .remainingIcon {
-  color: #50766d;
-  border-color: #d7e5df;
-  background: #e4f0eb;
+  border-color: #d4e5dc;
+  color: #326b5c;
+  background: #e4f1eb;
 }
 
-/* Arrow indicator */
+/* =========================================================
+   CARD ARROW
+========================================================= */
 
 .summaryArrow {
   display: grid;
@@ -349,14 +376,14 @@
   height: 25px;
   place-items: center;
   border-radius: 8px;
-  color: #9ca69b;
-  background: rgba(255, 255, 255, 0.7);
+  color: #829287;
+  background: rgba(255, 255, 255, 0.82);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 850;
   transition:
-    color 180ms ease,
-    transform 180ms ease,
-    background 180ms ease;
+    color 160ms ease,
+    transform 160ms ease,
+    background 160ms ease;
 }
 
 .summaryCard:hover .summaryArrow {
@@ -369,98 +396,107 @@
   background: var(--card-accent);
 }
 
-/* Numbers and labels */
+/* =========================================================
+   CARD TEXT
+========================================================= */
 
 .summaryValue {
-  color: #24382b;
-  font-family: Manrope, sans-serif;
-  font-size: clamp(25px, 2.2vw, 31px);
+  color: #1d3828;
+  font-family: Manrope, Inter, sans-serif;
+  font-size: clamp(25px, 2.2vw, 30px);
   font-weight: 900;
-  letter-spacing: -0.06em;
-  line-height: 1;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
   font-variant-numeric: tabular-nums;
-  transition: color 180ms ease;
 }
 
 .summaryLabel {
-  margin-top: 8px;
-  color: #344a39;
+  margin-top: 7px;
+  color: #2c4936;
   font-size: 11px;
-  font-weight: 900;
-  line-height: 1.3;
+  line-height: 1.35;
+  font-weight: 850;
 }
 
 .summaryMeta {
   margin-top: 4px;
-  color: #879187;
-  font-size: 8px;
-  line-height: 1.5;
-  font-weight: 600;
+  color: #68796e;
+  font-size: 9px;
+  line-height: 1.45;
+  font-weight: 550;
 }
 
-/* Progress bar */
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
 
 .summaryProgress {
   width: 100%;
-  height: 4px;
+  height: 5px;
   margin-top: auto;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(120, 135, 120, 0.12);
+  background: rgba(91, 119, 97, 0.14);
 }
 
 .summaryProgressFill {
   display: block;
   height: 100%;
   border-radius: inherit;
-  transition: width 550ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: width 450ms ease;
 }
 
 .approvedFill {
-  background: linear-gradient(90deg, #28764c, #79b889);
+  background: linear-gradient(90deg, #267348, #75b987);
 }
 
 .pendingFill {
-  background: linear-gradient(90deg, #a87827, #e9c36e);
+  background: linear-gradient(90deg, #a16b19, #dfbd70);
 }
 
 .missedFill {
-  background: linear-gradient(90deg, #503559, #a98ab6);
+  background: linear-gradient(90deg, #92505b, #c18b95);
 }
 
 .remainingFill {
-  background: linear-gradient(90deg, #50766d, #9dbcb1);
+  background: linear-gradient(90deg, #397568, #8ebbad);
 }
 
-/* Percentage */
+/* =========================================================
+   PERCENTAGE
+========================================================= */
 
 .summaryPercentage {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 6px;
   margin-top: 7px;
-  color: #939d91;
-  font-size: 8px;
+  color: #68796e;
+  font-size: 9px;
   font-weight: 650;
 }
 
 .summaryPercentage strong {
   color: var(--card-accent);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 900;
 }
 
-/* Footer */
+/* =========================================================
+   SUMMARY FOOTER
+========================================================= */
 
 .summaryFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding-top: 3px;
-  color: #829083;
+  padding-top: 2px;
+  color: #62766a;
   font-size: 9px;
+  line-height: 1.4;
   font-weight: 650;
 }
 
@@ -468,21 +504,25 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 
 .summaryHint {
-  color: #a0a99e;
-  font-size: 8px;
+  color: #718176;
+  font-size: 9px;
+  text-align: right;
 }
 
 .clearSummaryFilter {
-  padding: 5px 9px;
-  border: 1px solid #e2e4dc;
-  border-radius: 7px;
-  color: #503559;
-  background: #f8f4f9;
-  font-size: 8px;
-  font-weight: 850;
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border: 1px solid #d8e7dc;
+  border-radius: 8px;
+  color: #236b43;
+  background: #f1f8f2;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 800;
   cursor: pointer;
   transition:
     background 160ms ease,
@@ -490,21 +530,24 @@
 }
 
 .clearSummaryFilter:hover {
-  border-color: #cdbbd3;
-  background: #eee5f1;
+  border-color: #a9ceb4;
+  background: #e6f3e9;
 }
-/* -------------------------------------------------------------------------- */
-/* Active session notice                                                      */
-/* -------------------------------------------------------------------------- */
+
+/* =========================================================
+   ACTIVE SESSION NOTICE
+========================================================= */
 
 .activeNotice {
   display: flex;
   align-items: flex-start;
   gap: 11px;
   padding: 13px 15px;
-  border: 1px solid rgba(34, 102, 75, 0.19);
-  border-radius: 13px;
-  background: #f0f8e9;
+  border: 1px solid #cfe5d4;
+  border-radius: 12px;
+  background:
+    linear-gradient(110deg, rgba(226, 244, 230, 0.75), transparent 75%), #f4faf4;
+  box-shadow: 0 3px 10px rgba(39, 119, 69, 0.035);
 }
 
 .activeNoticeDot {
@@ -513,8 +556,8 @@
   height: 9px;
   margin-top: 4px;
   border-radius: 50%;
-  background: #29945d;
-  box-shadow: 0 0 0 4px rgba(41, 148, 93, 0.11);
+  background: #249653;
+  box-shadow: 0 0 0 4px rgba(36, 150, 83, 0.12);
   animation: activePulse 1.8s ease-in-out infinite;
 }
 
@@ -524,28 +567,28 @@
 
 .activeNotice strong {
   display: block;
-  color: var(--green, #174b38);
+  color: #205c39;
   font-size: 11px;
-  line-height: 1.4;
+  line-height: 1.45;
   font-weight: 850;
 }
 
 .activeNotice p {
   margin: 4px 0 0;
-  color: #6d8373;
+  color: #587363;
   font-size: 10px;
   line-height: 1.55;
-  font-weight: 600;
+  font-weight: 550;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Session cards grid                                                         */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   SESSION CARDS GRID
+========================================================= */
 
 .sessionsGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 15px;
+  gap: 14px;
   width: 100%;
   min-width: 0;
 }
@@ -554,29 +597,30 @@
   min-width: 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Policy note                                                                */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   POLICY NOTE
+========================================================= */
 
 .policyNote {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 13px 15px;
-  border: 1px solid rgba(89, 125, 255, 0.12);
+  padding: 12px 14px;
+  border: 1px solid #dce6e1;
   border-radius: 12px;
-  background: #f5f6ff;
+  background: #f5f8f6;
 }
 
 .policyIcon {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 18px;
   display: grid;
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
   place-items: center;
-  border: 1.5px solid #7185c9;
+  border: 1px solid #a8c7b3;
   border-radius: 50%;
-  color: #5365a2;
+  color: #34714b;
+  background: #e9f4ec;
   font-size: 10px;
   line-height: 1;
   font-weight: 900;
@@ -584,74 +628,81 @@
 
 .policyNote p {
   margin: 0;
-  color: #69749a;
+  color: #596d60;
   font-size: 10px;
   line-height: 1.65;
   font-weight: 550;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Empty state                                                                */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   EMPTY STATE
+========================================================= */
 
 .emptyState {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 220px;
-  padding: 30px 20px;
-  border: 1px dashed var(--line, #e2e7e0);
-  border-radius: 17px;
+  min-width: 0;
+  min-height: 205px;
+  padding: 26px 20px;
+  border: 1px dashed #cbded0;
+  border-radius: 16px;
   background: #ffffff;
   text-align: center;
 }
 
 .emptyIcon {
-  width: 45px;
-  height: 45px;
   display: grid;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  margin-bottom: 13px;
-  border: 1px solid rgba(34, 102, 75, 0.12);
+  margin-bottom: 12px;
+  border: 1px solid #d2e7d7;
   border-radius: 13px;
-  color: var(--green-2, #22664b);
-  background: #edf6e5;
+  color: #28764b;
+  background: #edf7ef;
+}
+
+.emptyIcon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .emptyState h3 {
   margin: 0;
-  color: var(--ink, #17251f);
+  color: #20372a;
   font-size: 14px;
+  line-height: 1.4;
   font-weight: 850;
 }
 
 .emptyState p {
   max-width: 390px;
   margin: 7px 0 0;
-  color: var(--muted, #738079);
+  color: #68796e;
   font-size: 11px;
   line-height: 1.65;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Animations                                                                 */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   ANIMATION
+========================================================= */
 
 @keyframes activePulse {
   0%,
   100% {
-    box-shadow: 0 0 0 3px rgba(41, 148, 93, 0.11);
+    box-shadow: 0 0 0 3px rgba(36, 150, 83, 0.12);
   }
 
   50% {
-    box-shadow: 0 0 0 5px rgba(41, 148, 93, 0.035);
+    box-shadow: 0 0 0 5px rgba(36, 150, 83, 0.035);
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
 
 @media (max-width: 1100px) {
   .summaryGrid {
@@ -659,17 +710,32 @@
   }
 
   .summaryCard {
-    min-height: 160px;
+    min-height: 155px;
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 760px) {
+  .sessionsGrid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
   .section {
     gap: 14px;
   }
 
   .sectionHeader {
     align-items: flex-start;
+  }
+
+  .headingGroup {
+    gap: 9px;
   }
 
   .headingIcon {
@@ -679,8 +745,9 @@
     border-radius: 10px;
   }
 
-  .headingGroup {
-    gap: 9px;
+  .headingIcon svg {
+    width: 17px;
+    height: 17px;
   }
 
   .headingGroup h2 {
@@ -698,28 +765,29 @@
 
   .summary {
     gap: 13px;
-    padding: 15px;
-    border-radius: 16px;
-  }
-
-  .summaryHeader h3 {
-    font-size: 14px;
+    padding: 14px;
+    border-radius: 15px;
   }
 
   .summaryGrid {
-    gap: 10px;
+    gap: 9px;
   }
 
   .summaryCard {
-    min-height: 151px;
-    padding: 12px;
-    border-radius: 13px;
+    min-height: 148px;
+    padding: 11px;
+    border-radius: 12px;
+  }
+
+  .summaryCardTop {
+    margin-bottom: 10px;
   }
 
   .summaryIcon {
     flex-basis: 33px;
     width: 33px;
     height: 33px;
+    border-radius: 10px;
   }
 
   .summaryIcon svg {
@@ -731,12 +799,48 @@
     font-size: 25px;
   }
 
+  .summaryLabel {
+    font-size: 10px;
+  }
+
+  .summaryMeta {
+    font-size: 8px;
+  }
+
   .summaryFooter {
     font-size: 8px;
   }
+
+  .summaryHint {
+    font-size: 8px;
+  }
+
+  .policyNote {
+    display: none;
+  }
+
+  .activeNotice {
+    padding: 11px 12px;
+  }
+
+  .policyNote {
+    padding: 11px 12px;
+  }
 }
 
+/* =========================================================
+   RESPONSIVE — NARROW MOBILE
+========================================================= */
+
 @media (max-width: 420px) {
+  .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  .sessionCount {
+    margin-left: 44px;
+  }
+
   .summary {
     padding: 12px;
   }
@@ -745,17 +849,26 @@
     align-items: flex-start;
   }
 
-  .summaryTotal {
-    padding: 6px 8px;
-    font-size: 8px;
+  .summaryHeader h3 {
+    font-size: 14px;
   }
 
   .summaryHeader p {
     font-size: 9px;
   }
 
+  .summaryTotal {
+    gap: 6px;
+    padding: 6px 8px;
+    font-size: 8px;
+  }
+
+  .summaryGrid {
+    gap: 8px;
+  }
+
   .summaryCard {
-    min-height: 145px;
+    min-height: 140px;
     padding: 10px;
   }
 
@@ -768,7 +881,7 @@
   }
 
   .summaryMeta {
-    font-size: 7px;
+    font-size: 8px;
   }
 
   .summaryArrow {
@@ -779,12 +892,9 @@
   .summaryFooter {
     flex-wrap: wrap;
   }
-  .sessionsGrid {
-    gap: 11px;
-  }
 
-  .policyNote {
-    padding: 11px;
+  .summaryHint {
+    text-align: left;
   }
 
   .policyNote p {
@@ -792,49 +902,153 @@
   }
 }
 
-@media (max-width: 420px) {
-  .sectionHeader {
-    flex-wrap: wrap;
+/* =========================================================
+   RESPONSIVE — 300PX SUPPORT
+========================================================= */
+
+@media (max-width: 340px) {
+  .section {
+    gap: 12px;
+  }
+
+  .headingGroup {
+    gap: 8px;
+  }
+
+  .headingIcon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .headingGroup h2 {
+    font-size: 16px;
+  }
+
+  .headingGroup p {
+    font-size: 9px;
   }
 
   .sessionCount {
-    margin-left: 44px;
+    margin-left: 40px;
+    padding: 5px 7px;
+    font-size: 8px;
   }
 
-  /* .summary {
+  .summary {
+    gap: 11px;
+    padding: 10px;
+  }
+
+  .summaryHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 7px;
-    padding: 10px 8px;
   }
 
-  .summaryItem {
-    gap: 5px;
+  .summaryCard {
+    min-height: 135px;
+    padding: 9px;
+  }
+
+  .summaryCardTop {
+    margin-bottom: 8px;
   }
 
   .summaryIcon {
-    flex-basis: 25px;
-    width: 25px;
-    height: 25px;
+    flex-basis: 30px;
+    width: 30px;
+    height: 30px;
   }
 
-  .summaryText strong {
-    font-size: 11px;
+  .summaryValue {
+    font-size: 22px;
   }
 
-  .summaryText > span {
-    font-size: 7px;
-  } */
+  .summaryLabel {
+    font-size: 9px;
+  }
+
+  .summaryMeta {
+    font-size: 7.5px;
+  }
+
+  .summaryPercentage {
+    font-size: 8px;
+  }
+
+  .summaryPercentage strong {
+    font-size: 9px;
+  }
+
+  .summaryFooter {
+    align-items: flex-start;
+    gap: 7px;
+  }
+
+  .summaryFooter > span:first-child {
+    gap: 6px;
+  }
+
+  .clearSummaryFilter {
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .activeNotice {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  .activeNotice strong {
+    font-size: 10px;
+  }
+
+  .activeNotice p {
+    font-size: 9px;
+  }
+
+  .policyNote {
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .policyNote p {
+    font-size: 9px;
+    line-height: 1.55;
+  }
+
+  .emptyState {
+    min-height: 175px;
+    padding: 20px 12px;
+  }
+
+  .emptyState p {
+    font-size: 10px;
+  }
 }
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   .activeNoticeDot {
     animation: none;
   }
+
   .summaryCard,
   .summaryCard::before,
   .summaryCard::after,
   .summaryIcon,
   .summaryArrow,
-  .summaryProgressFill {
+  .summaryProgressFill,
+  .clearSummaryFilter {
     transition: none !important;
   }
 

@@ -12,9 +12,9 @@ import AttendancePage from "./AttendancePage";
 
 const DEFAULT_MINIMUM_SECONDS = 50;
 
-const DEFAULT_DESKTOP_ACCESS =
-  String(import.meta.env.VITE_ONLY_DESKTOP_ACCESS ?? "true").toLowerCase() !==
-  "false";
+// const DEFAULT_DESKTOP_ACCESS =
+//   String(import.meta.env.VITE_ONLY_DESKTOP_ACCESS ?? "true").toLowerCase() !==
+//   "false";
 
 /* =========================================================
    HELPERS
@@ -141,13 +141,13 @@ export default function Attendance({ user }) {
      DEVICE ACCESS CONFIGURATION
   ------------------------------------------------------- */
 
-  const [onlyDesktopAccess, setOnlyDesktopAccess] = useState(
-    DEFAULT_DESKTOP_ACCESS,
-  );
+  // const [onlyDesktopAccess, setOnlyDesktopAccess] = useState(
+  //   DEFAULT_DESKTOP_ACCESS,
+  // );
 
-  const [wideViewport, setWideViewport] = useState(getInitialWideViewport);
+  // const [wideViewport, setWideViewport] = useState(getInitialWideViewport);
 
-  const desktopAccessAllowed = !onlyDesktopAccess || wideViewport;
+  // const desktopAccessAllowed = !onlyDesktopAccess || wideViewport;
 
   /* -------------------------------------------------------
      REQUEST PROTECTION
@@ -168,32 +168,32 @@ export default function Attendance({ user }) {
      This listener keeps the setting reactive.
   ======================================================= */
 
-  useEffect(() => {
-    if (typeof window === "undefined") return undefined;
+  // useEffect(() => {
+  //   if (typeof window === "undefined") return undefined;
 
-    const media = window.matchMedia("(min-width: 1250px)");
+  //   const media = window.matchMedia("(min-width: 1250px)");
 
-    const updateViewport = () => {
-      setWideViewport(media.matches);
-    };
+  //   const updateViewport = () => {
+  //     setWideViewport(media.matches);
+  //   };
 
-    updateViewport();
+  //   updateViewport();
 
-    if (media.addEventListener) {
-      media.addEventListener("change", updateViewport);
+  //   if (media.addEventListener) {
+  //     media.addEventListener("change", updateViewport);
 
-      return () => {
-        media.removeEventListener("change", updateViewport);
-      };
-    }
+  //     return () => {
+  //       media.removeEventListener("change", updateViewport);
+  //     };
+  //   }
 
-    // Compatibility fallback for older browsers.
-    media.addListener(updateViewport);
+  //   // Compatibility fallback for older browsers.
+  //   media.addListener(updateViewport);
 
-    return () => {
-      media.removeListener(updateViewport);
-    };
-  }, []);
+  //   return () => {
+  //     media.removeListener(updateViewport);
+  //   };
+  // }, []);
 
   /* =======================================================
      LOAD ALL ATTENDANCE DATA
@@ -213,118 +213,123 @@ export default function Attendance({ user }) {
       const requestId = ++requestSequence.current;
 
       const request = (async () => {
-      if (silent) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
+        if (silent) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
 
-      setDataError("");
+        setDataError("");
 
-      const results = await Promise.allSettled([
-        api("/attendance/today"),
+        const results = await Promise.allSettled([
+          api("/attendance/today"),
 
-        api("/groups"),
+          api("/groups"),
 
-        api("/portal/config"),
+          // api("/portal/config"),
 
-        api(getHistoryQuery(from, to)),
-      ]);
+          api(getHistoryQuery(from, to)),
+        ]);
 
-      // Ignore stale responses after filters change or unmount.
-      if (requestId !== requestSequence.current) {
-        return false;
-      }
+        // Ignore stale responses after filters change or unmount.
+        if (requestId !== requestSequence.current) {
+          return false;
+        }
 
-      const [todayResult, groupsResult, configResult, historyResult] = results;
+        const [todayResult, groupsResult, historyResult] = results;
 
-      const failures = [];
+        const failures = [];
 
-      let latestToday = today;
+        let latestToday = today;
 
-      /* -----------------------------------------------
+        /* -----------------------------------------------
          TODAY'S ATTENDANCE
       ----------------------------------------------- */
 
-      if (todayResult.status === "fulfilled") {
-        latestToday = todayResult.value;
+        if (todayResult.status === "fulfilled") {
+          latestToday = todayResult.value;
 
-        setToday(latestToday);
-      } else {
-        failures.push("today's attendance");
-      }
+          setToday(latestToday);
+        } else {
+          failures.push("today's attendance");
+        }
 
-      /* -----------------------------------------------
+        /* -----------------------------------------------
          GROUP
       ----------------------------------------------- */
 
-      if (groupsResult.status === "fulfilled") {
-        const groups = Array.isArray(groupsResult.value?.groups)
-          ? groupsResult.value.groups
-          : [];
+        if (groupsResult.status === "fulfilled") {
+          const groups = Array.isArray(groupsResult.value?.groups)
+            ? groupsResult.value.groups
+            : [];
 
-        const nextGroup = groups[0] ?? latestToday?.group ?? null;
+          const nextGroup = groups[0] ?? latestToday?.group ?? null;
 
-        setGroup(nextGroup);
-      } else if (latestToday?.group) {
-        // /attendance/today also includes the user's group.
-        setGroup(latestToday.group);
-      } else {
-        failures.push("internship group");
-      }
+          setGroup(nextGroup);
+        } else if (latestToday?.group) {
+          // /attendance/today also includes the user's group.
+          setGroup(latestToday.group);
+        } else {
+          failures.push("internship group");
+        }
 
-      /* -----------------------------------------------
+        /* -----------------------------------------------
          PORTAL CONFIGURATION
       ----------------------------------------------- */
 
-      if (configResult.status === "fulfilled") {
-        const configuredValue = configResult.value?.settings?.onlyDesktopAccess;
+        // if.status === "fulfilled") {
+        //   const configuredValue =
+        // .value?.settings?.onlyDesktopAccess;
 
-        // Do not accidentally turn the restriction off when
-        // the API response doesn't contain this setting.
-        if (typeof configuredValue === "boolean") {
-          setOnlyDesktopAccess(configuredValue);
-        }
-      } else {
-        // Keep the existing environment-variable fallback.
-        console.warn("Attendance access configuration could not be refreshed.");
-      }
+        //   // Do not accidentally turn the restriction off when
+        //   // the API response doesn't contain this setting.
+        //   if (typeof configuredValue === "boolean") {
+        //     setOnlyDesktopAccess(configuredValue);
+        //   }
+        // } else {
+        //   // Keep the existing environment-variable fallback.
+        //   console.warn(
+        //     "Attendance access configuration could not be refreshed.",
+        //   );
+        // }
 
-      /* -----------------------------------------------
+        /* -----------------------------------------------
          ATTENDANCE HISTORY
       ----------------------------------------------- */
 
-      if (historyResult.status === "fulfilled") {
-        const nextRecords = Array.isArray(historyResult.value?.records)
-          ? historyResult.value.records
-          : [];
+        if (historyResult.status === "fulfilled") {
+          const nextRecords = Array.isArray(historyResult.value?.records)
+            ? historyResult.value.records
+            : [];
 
-        setHistory(nextRecords);
-      } else {
-        failures.push("attendance history");
-      }
+          setHistory(nextRecords);
+        } else {
+          failures.push("attendance history");
+        }
 
-      if (failures.length > 0) {
-        setDataError(
-          `Some attendance information could not be loaded: ${failures.join(", ")}.`,
-        );
-      }
+        if (failures.length > 0) {
+          setDataError(
+            `Some attendance information could not be loaded: ${failures.join(", ")}.`,
+          );
+        }
 
-      if (requestId === requestSequence.current) {
-        setLoading(false);
-        setRefreshing(false);
-      }
+        if (requestId === requestSequence.current) {
+          setLoading(false);
+          setRefreshing(false);
+        }
 
-      return failures.length === 0;
+        return failures.length === 0;
       })();
 
       attendanceFetchInFlightRef.current = { key: fetchKey, promise: request };
 
-      request.finally(() => {
-        if (attendanceFetchInFlightRef.current.promise === request) {
-          attendanceFetchInFlightRef.current = { key: null, promise: null };
-        }
-      }).catch(() => {});
+      request
+        .finally(() => {
+          if (attendanceFetchInFlightRef.current.promise === request) {
+            attendanceFetchInFlightRef.current = { key: null, promise: null };
+          }
+        })
+        .catch(() => {});
 
       return request;
     },
@@ -451,20 +456,20 @@ export default function Attendance({ user }) {
      COMMON ATTENDANCE PRE-CHECKS
   ======================================================= */
 
-  const canStartAttendance = useCallback(() => {
-    // The backend is the source of truth for profile requirements. It returns
-    // GENDER_REQUIRED and creates the private notification when gender is absent.
-    if (!desktopAccessAllowed) {
-      toast(
-        "Attendance is available only on a laptop or desktop with a screen width of at least 1250px.",
-        "error",
-      );
+  // const canStartAttendance = useCallback(() => {
+  //   // The backend is the source of truth for profile requirements. It returns
+  //   // GENDER_REQUIRED and creates the private notification when gender is absent.
+  //   if (!desktopAccessAllowed) {
+  //     toast(
+  //       "Attendance is available only on a laptop or desktop with a screen width of at least 1250px.",
+  //       "error",
+  //     );
 
-      return false;
-    }
+  //     return false;
+  //   }
 
-    return true;
-  }, [desktopAccessAllowed, toast]);
+  //   return true;
+  // }, [desktopAccessAllowed, toast]);
 
   /* =======================================================
      START ATTENDANCE SESSION
@@ -489,9 +494,9 @@ export default function Attendance({ user }) {
         return false;
       }
 
-      if (!canStartAttendance()) {
-        return false;
-      }
+      // if (!canStartAttendance()) {
+      //   return false;
+      // }
 
       if (busy) {
         return false;
@@ -562,7 +567,7 @@ export default function Attendance({ user }) {
       }
     },
     [
-      canStartAttendance,
+      // canStartAttendance,
       busy,
       today?.minimumSeconds,
       toast,
@@ -680,8 +685,8 @@ export default function Attendance({ user }) {
       activeSession,
       remaining,
 
-      onlyDesktopAccess,
-      desktopAccessAllowed,
+      // onlyDesktopAccess,
+      // desktopAccessAllowed,
 
       refresh,
       startAttendance,
@@ -701,8 +706,8 @@ export default function Attendance({ user }) {
       dataError,
       activeSession,
       remaining,
-      onlyDesktopAccess,
-      desktopAccessAllowed,
+      // onlyDesktopAccess,
+      // desktopAccessAllowed,
       refresh,
       startAttendance,
       markAttendance,

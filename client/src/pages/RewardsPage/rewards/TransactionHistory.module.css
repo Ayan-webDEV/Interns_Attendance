@@ -401,7 +401,7 @@
 
 @media (max-width: 640px) {
   .entryCount {
-    align-self: flex-start;
+    display: none;
   }
 
   .transactionRow {

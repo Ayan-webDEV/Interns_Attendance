@@ -1,216 +1,174 @@
-/* ============================================================
-   VELOOP REWARDS — ATTENDANCE TABS
-   Premium Forest Green + Lime Design
-
-   Primary: #15392B
-   Brand:   #1C4531
-   Active:  #DFF7A7
-============================================================ */
+/* -------------------------------------------------------------------------- */
+/* ATTENDANCE TABS — PREMIUM FOREST GREEN                                     */
+/* -------------------------------------------------------------------------- */
 
 .tabsContainer {
   --tab-dark: #15392b;
-  --tab-primary: #1c4531;
-  --tab-active: #dff7a7;
-  --tab-border: #52745d;
+  --tab-primary: #1c5137;
+  --tab-lime: #e4f7b5;
 
   position: relative;
   isolation: isolate;
-
-  font-family: "Poppins", "DM Sans", ui-sans-serif;
-
   display: flex;
-  width: 100%;
-  min-width: 0;
   flex-direction: column;
   gap: 13px;
-
+  width: 100%;
+  min-width: 0;
   margin: 0 0 19px;
+  font-family: "Poppins", "DM Sans", ui-sans-serif, sans-serif;
 }
 
-/* ============================================================
-   HEADER ABOVE TABS
-============================================================ */
+/* Header */
 
 .tabsHeader {
   display: flex;
-  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  min-width: 0;
   padding: 0 3px;
 }
 
 .tabsHeading {
   display: flex;
-  min-width: 0;
   align-items: center;
   gap: 11px;
+  min-width: 0;
 }
 
 .headingIcon {
   display: grid;
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
   place-items: center;
-
-  border: 1px solid #cddfc5;
-  border-radius: 11px;
-
-  color: #1c4531;
-  background: #eaf4e8;
-
-  box-shadow: 0 3px 8px rgba(28, 69, 49, 0.06);
+  border: 1px solid #c9dfc1;
+  border-radius: 12px;
+  color: #1c603d;
+  background: linear-gradient(145deg, #f0f8e9, #e3f1da);
+  box-shadow: 0 3px 10px rgba(28, 91, 55, 0.08);
 }
 
 .headingIcon svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
 }
 
 .headingText {
   display: flex;
-  min-width: 0;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
+  min-width: 0;
 }
 
 .headingText strong {
-  color: #183b27;
-  font-size: 14px;
-  font-weight: 750;
-  letter-spacing: 0.02em;
+  color: #173b29;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
   line-height: 1.35;
 }
 
 .headingText > span {
-  color: #65776a;
-  font-size: 10px;
+  color: #607568;
+  font-size: 11px;
   font-weight: 550;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
 .tabsBadge {
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 7px;
-
-  padding: 7px 10px;
-
-  border: 1px solid #d5e5cb;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid #d1e4c6;
   border-radius: 999px;
-
-  color: #315d3c;
-  background: #f1f7ec;
-
-  font-size: 8px;
+  color: #285d3d;
+  background: #f0f8e9;
+  font-size: 9px;
   font-weight: 850;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.09em;
 }
 
 .badgeDot {
+  flex: 0 0 7px;
   width: 7px;
   height: 7px;
-  flex: 0 0 7px;
-
   border-radius: 50%;
-  background: #4b985b;
-
-  box-shadow: 0 0 0 3px rgba(75, 152, 91, 0.13);
+  background: #50a65e;
+  box-shadow: 0 0 0 3px rgba(80, 166, 94, 0.14);
 }
 
-/* ============================================================
-   MAIN SEGMENTED TAB CONTAINER
-============================================================ */
+/* Main tab container */
 
 .tabs {
   position: relative;
   isolation: isolate;
-
   display: grid;
-  width: 100%;
-  min-width: 0;
-
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 9px;
-
+  width: 100%;
+  min-width: 0;
   padding: 9px;
-
   overflow: hidden;
-
-  border: 1px solid #365d45;
+  border: 1px solid #365e46;
   border-radius: 19px;
-
   background:
     radial-gradient(
-      circle at 3% 0%,
-      rgba(223, 247, 167, 0.12),
-      transparent 35%
+      circle at 4% 0%,
+      rgba(224, 249, 177, 0.15),
+      transparent 38%
     ),
     radial-gradient(
       circle at 100% 100%,
-      rgba(96, 155, 105, 0.13),
-      transparent 36%
+      rgba(116, 177, 111, 0.14),
+      transparent 38%
     ),
-    linear-gradient(115deg, #15392b 0%, #1c4531 58%, #214b35 100%);
-
+    linear-gradient(115deg, #15392b 0%, #1c4932 58%, #24543a 100%);
   box-shadow:
-    0 8px 21px rgba(21, 57, 43, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.09);
+    0 8px 22px rgba(21, 57, 43, 0.13),
+    0 0 16px rgba(76, 139, 82, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-/* Top highlight */
 .tabs::before {
   position: absolute;
   top: 0;
-  left: 8%;
   right: 8%;
-
+  left: 8%;
   height: 1px;
-
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(223, 247, 167, 0.35),
+    rgba(226, 250, 185, 0.4),
     transparent
   );
-
   content: "";
   pointer-events: none;
 }
 
-/* ============================================================
-   INDIVIDUAL TAB
-============================================================ */
+/* Individual tab */
 
 .tab {
   position: relative;
   isolation: isolate;
-
   display: flex;
-  width: 100%;
-  min-width: 0;
-  min-height: 80px;
-
   align-items: center;
   justify-content: flex-start;
   gap: 14px;
-
-  padding: 12px 17px;
+  width: 100%;
+  min-width: 0;
+  min-height: 82px;
+  padding: 13px 17px;
   overflow: hidden;
-
-  border: 1px solid rgba(223, 247, 167, 0.14);
+  border: 1px solid rgba(225, 247, 194, 0.16);
   border-radius: 13px;
-
-  color: #f3f8ef;
-  background: rgba(255, 255, 255, 0.045);
-
+  color: #f4f8f0;
+  background: rgba(255, 255, 255, 0.055);
   text-align: left;
   font: inherit;
-
   cursor: pointer;
-
   transition:
     color 180ms ease,
     background 180ms ease,
@@ -221,10 +179,9 @@
 
 .tab:hover:not(.activeTab) {
   transform: translateY(-2px);
-
-  border-color: rgba(223, 247, 167, 0.45);
-
-  background: rgba(223, 247, 167, 0.1);
+  border-color: rgba(226, 250, 185, 0.48);
+  background: rgba(226, 250, 185, 0.11);
+  box-shadow: 0 5px 13px rgba(0, 0, 0, 0.1);
 }
 
 .tab:active {
@@ -232,34 +189,26 @@
 }
 
 .tab:focus-visible {
-  outline: 3px solid #dff7a7;
+  outline: 3px solid #e4f7b5;
   outline-offset: 3px;
 }
 
-/* ============================================================
-   TAB ICON
-============================================================ */
+/* Icon */
 
 .tabIcon {
   position: relative;
-
   display: grid;
-  width: 45px;
-  height: 45px;
-  flex: 0 0 45px;
-
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
   place-items: center;
-
-  border: 1px solid #52745d;
+  border: 1px solid #5b8065;
   border-radius: 12px;
-
-  color: #dff7a7;
-  background: #2b4f3a;
-
+  color: #e3f8b3;
+  background: #2c563c;
   box-shadow:
     0 4px 11px rgba(0, 0, 0, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
+    inset 0 1px 0 rgba(255, 255, 255, 0.09);
   transition:
     color 180ms ease,
     background 180ms ease,
@@ -270,164 +219,132 @@
 
 .tabIcon svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
 }
 
 .tab:hover:not(.activeTab) .tabIcon {
   transform: scale(1.05);
-  border-color: #dff7a7;
-  background: #345b43;
+  border-color: #d8f3ad;
+  background: #376447;
 }
 
-/* ============================================================
-   TAB TEXT
-============================================================ */
+/* Text */
 
 .tabText {
   display: flex;
   flex: 1;
-  min-width: 0;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
+  min-width: 0;
 }
 
 .tabTopLine {
   display: flex;
-  min-height: 14px;
   align-items: center;
   gap: 8px;
+  min-height: 15px;
 }
 
 .tabNumber {
-  color: #c0d6c2;
-
-  font-size: 9px;
+  color: #c6ddc9;
+  font-size: 10px;
   font-weight: 850;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.11em;
   line-height: 1;
 }
 
 .selectedLabel {
   display: inline-flex;
   align-items: center;
-
-  padding: 3px 6px;
-
-  border: 1px solid rgba(223, 247, 167, 0.28);
-  border-radius: 4px;
-
-  color: #e8ffc2;
-  background: rgba(223, 247, 167, 0.1);
-
-  font-size: 7px;
+  padding: 4px 7px;
+  border: 1px solid rgba(226, 250, 185, 0.3);
+  border-radius: 5px;
+  color: #efffd0;
+  background: rgba(226, 250, 185, 0.12);
+  font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   line-height: 1;
 }
 
 .tabLabel {
-  color: #f5f8f2;
-
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  color: #f5f9f2;
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: 0.01em;
   line-height: 1.35;
-
   transition: color 180ms ease;
 }
 
 .tabDescription {
-  color: #c4d8c7;
-
+  color: #cbdccf;
   font-size: 11px;
   font-weight: 500;
   line-height: 1.5;
-
   transition: color 180ms ease;
 }
 
-/* ============================================================
-   ACTIVE TAB
-============================================================ */
+/* Active state */
 
 .activeTab {
   transform: translateY(-1px);
-
-  border-color: #efffd0;
-
+  border-color: #f0ffd5;
   color: #15392b;
-
-  background: linear-gradient(115deg, #efffc9 0%, #dff7a7 58%, #d5f18f 100%);
-
+  background: linear-gradient(115deg, #f1ffd3 0%, #e4f7b5 58%, #d9f29c 100%);
   box-shadow:
     0 7px 17px rgba(4, 20, 10, 0.2),
-    0 0 0 1px rgba(223, 247, 167, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    0 0 13px rgba(219, 246, 169, 0.12),
+    0 0 0 1px rgba(223, 247, 167, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .activeTab:hover {
-  background: linear-gradient(115deg, #f3ffd7, #e4ffb2, #dff7a7);
+  background: linear-gradient(115deg, #f4ffdc, #e9fabb, #e1f6ac);
 }
 
-/* Active icon tile */
 .activeTab .tabIcon {
   transform: none;
-
-  border-color: #1c4531;
-
-  color: #dff7a7;
-  background: #1c4531;
-
+  border-color: #1c5137;
+  color: #e5f8b8;
+  background: #1c5137;
   box-shadow:
-    0 4px 10px rgba(21, 57, 43, 0.19),
+    0 4px 10px rgba(21, 57, 43, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-/* Active tab number */
 .activeTab .tabNumber {
   color: #456b4d;
 }
 
-/* Active SELECTED label */
 .activeTab .selectedLabel {
-  border-color: rgba(28, 69, 49, 0.2);
-
-  color: #1c4531;
-  background: rgba(28, 69, 49, 0.09);
+  border-color: rgba(28, 81, 55, 0.2);
+  color: #1c5137;
+  background: rgba(28, 81, 55, 0.09);
 }
 
-/* Active title */
 .activeTab .tabLabel {
   color: #15392b;
 }
 
-/* Active description */
 .activeTab .tabDescription {
   color: #385d43;
 }
 
-/* Active indicator */
 .activeIndicator {
   position: absolute;
   top: 12px;
   right: 13px;
-
   width: 8px;
   height: 8px;
-
-  border: 2px solid rgba(28, 69, 49, 0.15);
+  border: 2px solid rgba(28, 81, 55, 0.16);
   border-radius: 50%;
-
-  background: #1c4531;
-
-  box-shadow: 0 0 0 3px rgba(28, 69, 49, 0.09);
+  background: #1c5137;
+  box-shadow: 0 0 0 3px rgba(28, 81, 55, 0.09);
 }
 
-/* ============================================================
-   RESPONSIVE — TABLETS
-============================================================ */
+/* Tablet */
 
 @media (max-width: 768px) {
   .tabsContainer {
@@ -442,36 +359,34 @@
   }
 
   .tab {
-    min-height: 73px;
+    min-height: 76px;
     gap: 10px;
     padding: 11px 12px;
     border-radius: 11px;
   }
 
   .tabIcon {
-    width: 39px;
-    height: 39px;
-    flex-basis: 39px;
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
     border-radius: 10px;
   }
 
   .tabIcon svg {
-    width: 18px;
-    height: 18px;
+    width: 19px;
+    height: 19px;
   }
 
   .tabLabel {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .tabDescription {
-    font-size: 9px;
+    font-size: 10px;
   }
 }
 
-/* ============================================================
-   RESPONSIVE — MOBILE
-============================================================ */
+/* Mobile */
 
 @media (max-width: 520px) {
   .tabsHeader {
@@ -479,24 +394,25 @@
   }
 
   .headingIcon {
-    width: 32px;
-    height: 32px;
-    flex-basis: 32px;
-    border-radius: 9px;
+    flex-basis: 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
   }
 
   .headingText strong {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .headingText > span {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .tabsBadge {
-    padding: 6px 7px;
-    font-size: 7px;
-    letter-spacing: 0.06em;
+    gap: 6px;
+    padding: 7px 8px;
+    font-size: 8px;
+    letter-spacing: 0.055em;
   }
 
   .tabs {
@@ -506,29 +422,26 @@
   }
 
   .tab {
-    min-height: 96px;
-
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 6px;
-
-    padding: 15px 7px 10px;
-
+    justify-content: center;
+    gap: 7px;
+    min-height: 101px;
+    padding: 14px 7px 10px;
     text-align: center;
   }
 
   .tabIcon {
-    width: 37px;
-    height: 37px;
-    flex-basis: 37px;
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
   }
 
   .tabText {
-    width: 100%;
     flex: 0 1 auto;
     align-items: center;
-    gap: 3px;
+    width: 100%;
+    gap: 4px;
   }
 
   .tabTopLine {
@@ -537,29 +450,66 @@
   }
 
   .tabLabel {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .tabDescription {
-    max-width: 155px;
-    font-size: 8px;
+    max-width: 165px;
+    font-size: 9px;
     line-height: 1.4;
   }
 
   .activeIndicator {
     top: 8px;
     right: 9px;
-
     width: 7px;
     height: 7px;
   }
 }
 
-/* ============================================================
-   EXTRA SMALL SCREENS
-============================================================ */
+/* Narrow mobile */
 
 @media (max-width: 360px) {
+  .tabsHeader {
+    align-items: flex-start;
+  }
+
+  .tabsBadge {
+    padding: 6px 7px;
+    font-size: 7px;
+  }
+
+  .tab {
+    min-height: 94px;
+    padding-right: 5px;
+    padding-left: 5px;
+  }
+
+  .tabLabel {
+    font-size: 12px;
+  }
+
+  .tabDescription {
+    font-size: 9px;
+  }
+
+  .selectedLabel {
+    padding: 3px 5px;
+    font-size: 7px;
+  }
+}
+
+/* Very narrow mobile */
+
+@media (max-width: 320px) {
+  .headingText strong {
+    font-size: 12px;
+  }
+
+  .headingText > span {
+    font-size: 9px;
+  }
+
   .tabsBadge {
     font-size: 6px;
     gap: 5px;
@@ -567,22 +517,111 @@
 
   .tab {
     min-height: 91px;
-    padding-right: 5px;
-    padding-left: 5px;
+  }
+
+  .tabIcon {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+  }
+
+  .tabLabel {
+    font-size: 11px;
   }
 
   .tabDescription {
-    font-size: 7.5px;
+    font-size: 8px;
+  }
+}
+
+/* Final responsive refinements — 300px to 520px */
+
+@media (max-width: 520px) {
+  .tabsContainer {
+    width: 100%;
+    min-width: 0;
+    gap: 10px;
+  }
+
+  .tabsHeader,
+  .tabsHeading,
+  .headingText {
+    min-width: 0;
+  }
+
+  .headingText > span {
+    overflow-wrap: anywhere;
+  }
+
+  .tabs {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tab {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .tabText,
+  .tabTopLine {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .tabLabel,
+  .tabDescription {
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 360px) {
+  .tabsHeader {
+    flex-wrap: wrap;
+  }
+
+  .tabsBadge {
+    margin-left: auto;
+  }
+
+  .tabs {
+    gap: 5px;
+    padding: 5px;
+  }
+
+  .tab {
+    min-height: 96px;
+    padding: 10px 4px;
+  }
+
+  .tabIcon {
+    width: 32px;
+    height: 32px;
+    flex-basis: 32px;
+  }
+
+  .tabIcon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .tabLabel {
+    font-size: 11px;
+  }
+
+  .tabDescription {
+    font-size: 8px;
+    line-height: 1.35;
   }
 
   .selectedLabel {
+    padding: 2px 4px;
     font-size: 6px;
   }
 }
 
-/* ============================================================
-   ACCESSIBILITY
-============================================================ */
+/* Accessibility */
 
 @media (prefers-reduced-motion: reduce) {
   .tab,

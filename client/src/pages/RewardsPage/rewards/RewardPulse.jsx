@@ -120,7 +120,7 @@ export default function RewardPulse({
 
   return (
     <section
-      className={`${styles.grid} flex w-full gap-5`}
+      className={`  md:flex w-full gap-5`}
       aria-label="Wallet activity overview"
     >
       <button
@@ -149,7 +149,7 @@ export default function RewardPulse({
       {/* Notifications */}
 
       <PulseCard
-        className={`${styles.notifications} w-[49%]`}
+        className={`${styles.notifications} w-[49%] mt-4 md:mt-0`}
         icon={Bell}
         title="New updates"
         value={unread}

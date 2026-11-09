@@ -1,6 +1,8 @@
-/* -------------------------------------------------------------------------- */
-/* Premium attendance calendar — VELoop cream, sage and plum palette          */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   VELoop Attendance Calendar
+   Original cream, sage and plum palette preserved
+   Responsive layout — calendar hidden below 500px
+   ========================================================================== */
 
 .section {
   display: flex;
@@ -10,10 +12,7 @@
   min-width: 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Section heading                                                            */
-/* -------------------------------------------------------------------------- */
-
+/* Heading */
 .sectionHeader {
   display: flex;
   align-items: center;
@@ -47,7 +46,8 @@
   min-width: 0;
 }
 
-.eyebrow {
+.eyebrow,
+.selectedEyebrow {
   color: #765b7e;
   font-size: 9px;
   font-weight: 900;
@@ -83,10 +83,7 @@
   font-weight: 850;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Main calendar card                                                         */
-/* -------------------------------------------------------------------------- */
-
+/* Main calendar card */
 .calendarCard {
   width: 100%;
   min-width: 0;
@@ -115,10 +112,7 @@
     0 17px 40px rgba(35, 48, 38, 0.065);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Month toolbar                                                              */
-/* -------------------------------------------------------------------------- */
-
+/* Month toolbar */
 .calendarToolbar {
   display: flex;
   align-items: center;
@@ -200,7 +194,10 @@
   box-shadow: 0 4px 10px rgba(80, 53, 89, 0.08);
 }
 
-.monthButton:active:not(:disabled),
+.monthButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
 .monthButton:focus-visible,
 .dayCell:focus-visible {
   outline: 3px solid rgba(80, 53, 89, 0.25);
@@ -213,10 +210,7 @@
   box-shadow: none;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Monthly summary cards                                                      */
-/* -------------------------------------------------------------------------- */
-
+/* Monthly summary */
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -370,10 +364,7 @@
   white-space: nowrap;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Calendar grid                                                              */
-/* -------------------------------------------------------------------------- */
-
+/* Calendar grid */
 .calendarGrid {
   width: 100%;
   min-width: 0;
@@ -415,10 +406,7 @@
   min-height: 82px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Calendar day cell                                                          */
-/* -------------------------------------------------------------------------- */
-
+/* Day cells */
 .dayCell {
   position: relative;
   display: flex;
@@ -472,12 +460,13 @@
   line-height: 1;
 }
 
-/* Status backgrounds for dates where both sessions match */
+/* Status colours */
 .approved {
   border-color: #a8c99f;
   color: #14532d;
   background: #d6e9d1;
 }
+
 .pending {
   border-color: #eadcb8;
   background: #fdf5e4;
@@ -576,7 +565,7 @@
   border-color: #503559;
 }
 
-/* Two session letters */
+/* Session indicators */
 .sessionStatusPair {
   position: relative;
   z-index: 1;
@@ -649,10 +638,7 @@
   opacity: 0.95;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Legend                                                                     */
-/* -------------------------------------------------------------------------- */
-
+/* Legend */
 .legend {
   display: flex;
   flex-wrap: wrap;
@@ -684,10 +670,7 @@
   box-shadow: 0 1px 2px rgba(35, 45, 36, 0.08);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Backend tracker note                                                       */
-/* -------------------------------------------------------------------------- */
-
+/* Tracker note */
 .trustNote {
   display: flex;
   align-items: flex-start;
@@ -714,10 +697,7 @@
   line-height: 1.7;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Selected day detail panel                                                  */
-/* -------------------------------------------------------------------------- */
-
+/* Selected day panel */
 .selectedDayPanel {
   display: flex;
   flex-direction: column;
@@ -739,13 +719,6 @@
   gap: 12px;
   padding-bottom: 13px;
   border-bottom: 1px solid #eceee7;
-}
-
-.selectedEyebrow {
-  color: #765b7e;
-  font-size: 9px;
-  font-weight: 950;
-  letter-spacing: 0.13em;
 }
 
 .selectedDayHeader h3 {
@@ -1002,10 +975,7 @@
   line-height: 1.65;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Calendar footer                                                             */
-/* -------------------------------------------------------------------------- */
-
+/* Footer */
 .calendarFootnote {
   margin: -2px 0 0;
   color: #89948b;
@@ -1013,6 +983,7 @@
   line-height: 1.65;
 }
 
+/* Animation */
 @keyframes revealDetails {
   from {
     opacity: 0;
@@ -1025,10 +996,7 @@
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
-
+/* Tablet */
 @media (max-width: 1050px) {
   .summaryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1039,6 +1007,7 @@
   }
 }
 
+/* Small desktop and tablet */
 @media (max-width: 680px) {
   .section {
     gap: 13px;
@@ -1070,7 +1039,7 @@
   }
 
   .monthInfo {
-    margin-left: 45px;
+    display: none;
     padding: 6px 9px;
     font-size: 9px;
   }
@@ -1197,7 +1166,7 @@
   }
 
   .dayStatus {
-    font-size: 7px;
+    display: none;
   }
 
   .todayMarker {
@@ -1263,6 +1232,22 @@
   }
 }
 
+/* Small phones — calendar grid is still visible from 500px to 390px */
+@media (max-width: 499px) {
+  .calendarGrid {
+    display: none;
+  }
+
+  .calendarCard {
+    padding: 13px;
+  }
+
+  .summaryGrid {
+    margin-bottom: 0;
+  }
+}
+
+/* Compact phone adjustments */
 @media (max-width: 390px) {
   .calendarCard {
     padding: 10px;
@@ -1307,10 +1292,6 @@
     margin-top: 0;
   }
 
-  .dayStatus {
-    font-size: 6.5px;
-  }
-
   .legend {
     gap: 8px 10px;
   }
@@ -1320,6 +1301,7 @@
   }
 }
 
+/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   .calendarCard,
   .monthButton,

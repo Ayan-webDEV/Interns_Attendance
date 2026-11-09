@@ -560,7 +560,7 @@ export default function AttendancePage({ data = {} }) {
     activeSession,
     remaining,
 
-    desktopAccessAllowed,
+    // desktopAccessAllowed,
 
     refresh,
     startAttendance,
@@ -699,7 +699,7 @@ export default function AttendancePage({ data = {} }) {
 
   const hasAnyActiveSession = hasActiveSession || Boolean(activeSession);
 
-  const desktopBlocked = desktopAccessAllowed === false;
+  // const desktopBlocked = desktopAccessAllowed === false;
 
   const commonStartBlockReason = useMemo(() => {
     if (loading) return "Loading your attendance details...";
@@ -707,9 +707,9 @@ export default function AttendancePage({ data = {} }) {
     if (dataError)
       return "Attendance details could not be loaded. Refresh and try again.";
 
-    if (desktopBlocked) {
-      return "Attendance is available only on an eligible desktop screen.";
-    }
+    // if (desktopBlocked) {
+    //   return "Attendance is available only on an eligible desktop screen.";
+    // }
 
     if (!groupIsActive) {
       return "Your internship group has not been activated yet.";
@@ -739,7 +739,7 @@ export default function AttendancePage({ data = {} }) {
   }, [
     loading,
     dataError,
-    desktopBlocked,
+    // desktopBlocked,
     groupIsActive,
     todayIsWithinGroupDates,
     groupStartDate,
@@ -1092,14 +1092,14 @@ export default function AttendancePage({ data = {} }) {
       };
     }
 
-    if (desktopBlocked) {
-      return {
-        tone: "warning",
-        title: "Desktop access required",
-        message:
-          "Open the attendance portal on an eligible desktop screen to mark your attendance.",
-      };
-    }
+    // if (desktopBlocked) {
+    //   return {
+    //     tone: "warning",
+    //     title: "Desktop access required",
+    //     message:
+    //       "Open the attendance portal on an eligible desktop screen to mark your attendance.",
+    //   };
+    // }
 
     if (!groupIsActive) {
       return {
@@ -1165,7 +1165,7 @@ export default function AttendancePage({ data = {} }) {
     };
   }, [
     dataError,
-    desktopBlocked,
+    // desktopBlocked,
     groupIsActive,
     todayIsWithinGroupDates,
     groupStartDate,
@@ -1237,12 +1237,12 @@ export default function AttendancePage({ data = {} }) {
 
               <div className={styles.overviewNoteContent}>
                 <h3>Keep your attendance consistent</h3>
+
                 <p>
-                  Your attendance rate is based on approved sessions. Submitted,
-                  rejected, and missed sessions are not counted as approved.
-                  Session 1 and Session 2 are tracked independently; missing or
-                  rejecting one does not prevent you from attending the other.
-                  You currently have {missedSessions} missed session
+                  Attendance is calculated from approved sessions only. Session
+                  1 and Session 2 are tracked independently, so missing or
+                  rejecting one doesn't affect the other. You have{" "}
+                  {missedSessions} missed session
                   {missedSessions === 1 ? "" : "s"} recorded.
                 </p>
               </div>

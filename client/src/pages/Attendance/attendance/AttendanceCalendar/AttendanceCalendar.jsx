@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import styles from "./AttendanceCalendar.module.css";
+import SectionHeader from "../../../../components/SectionHeader/SectionHeader";
 
 /* -------------------------------------------------------------------------- */
 /* Attendance status configuration                                            */
@@ -1024,14 +1025,20 @@ export default function AttendanceCalendar({
             <CalendarDays size={19} />
           </span>
 
-          <div>
+          {/* <div>
             <span className={styles.eyebrow}>INTERNSHIP TRACKER</span>
             <h2>Attendance calendar</h2>
             <p>Explore your attendance status by date and session.</p>
-          </div>
+          </div> */}
+          <SectionHeader
+            eye={"INTERNSHIP TRACKER"}
+            hds={"Attendance calendar"}
+            para={"Explore your attendance status by date and session."}
+            status={false}
+          />
         </div>
 
-        <span className={styles.monthInfo}>{getMonthLabel(displayMonth)}</span>
+        {/* <span className={styles.monthInfo}>{getMonthLabel(displayMonth)}</span> */}
       </div>
 
       <div className={styles.calendarCard}>
@@ -1334,11 +1341,11 @@ export default function AttendanceCalendar({
         </div>
       )}
 
-      <p className={styles.calendarFootnote}>
+      {/* <p className={styles.calendarFootnote}>
         Each working date shows two indicators: the first for Session 1 and the
         second for Session 2. The monthly summary counts individual sessions;
         holidays are counted by day.
-      </p>
+      </p> */}
     </section>
   );
 }

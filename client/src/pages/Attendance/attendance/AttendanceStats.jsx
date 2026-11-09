@@ -1,3 +1,4 @@
+import SectionHeader from "../../../components/SectionHeader/SectionHeader";
 import styles from "./AttendanceStats.module.css";
 
 /* -------------------------------------------------------------------------- */
@@ -245,18 +246,12 @@ export default function AttendanceStats({ stats = {}, loading = false }) {
       aria-label="Attendance statistics"
       aria-busy={loading}
     >
-      <div className={styles.sectionHeader}>
-        <div>
-          <span className={styles.sectionEyebrow}>YOUR PERFORMANCE</span>
-          <h2>Attendance at a glance</h2>
-          <p>Here is how your internship attendance is progressing.</p>
-        </div>
-
-        <div className={styles.liveIndicator}>
-          <span className={styles.liveDot} />
-          Attendance summary
-        </div>
-      </div>
+      <SectionHeader
+        eye={"YOUR PERFORMANCE"}
+        hds={"Attendance at a glance"}
+        para={"Here is how your internship attendance is progressing."}
+        badge={"Attendance summary"}
+      />
 
       {loading ? (
         <div className={styles.statsGrid}>

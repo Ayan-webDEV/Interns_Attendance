@@ -346,7 +346,8 @@ export default function Promos({ user }) {
         <div aria-hidden="true" className={styles.heroGlow} />
         <div aria-hidden="true" className={styles.heroGlowSecondary} />
 
-        <div className="relative grid gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="relative flex flex-col-reverse md:flex-row md:items-center">
+          {/* grid gap-7 lg:grid-cols-[1fr_auto] lg:items-center */}
           <div className="min-w-0">
             <div className={styles.eyebrowBadge}>
               <Sparkles size={14} />
@@ -613,7 +614,7 @@ export default function Promos({ user }) {
                     all in one place.
                   </p>
 
-                  <div className="mt-4 flex flex-wrap gap-2">
+                  <div className="hidden md:flex mt-4  flex-wrap gap-2">
                     <span className={styles.historyChip}>
                       <ShieldCheck size={14} />
                       Reward activity
@@ -762,11 +763,11 @@ function SummaryCard({ icon: Icon, label, value, description, color }) {
 
   return (
     <article className={`${styles.summaryCard} ${colorClasses[color] || ""}`}>
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-bold text-[#405344]">{label}</p>
 
-          <p className="mt-3 break-words text-2xl font-black tracking-tight text-[#172f23] sm:text-3xl">
+          <p className="pt-2.5 break-words text-2xl font-black tracking-tight text-[#172f23] sm:text-3xl">
             {value}
           </p>
 
@@ -1391,7 +1392,7 @@ function PromoFAQs() {
   return (
     <>
       <section
-        className="relative isolate mt-8 overflow-hidden rounded-3xl border border-[#cbdcc7] bg-white shadow-[0_8px_35px_rgba(31,65,39,0.07)] sm:mt-10"
+        className="relative isolate mt-6 md:mt-8 overflow-hidden rounded-3xl border border-[#cbdcc7] bg-white shadow-[0_8px_35px_rgba(31,65,39,0.07)] sm:mt-10"
         aria-labelledby="promo-faq-heading"
       >
         {/* Subtle decorative background */}
@@ -1435,7 +1436,7 @@ function PromoFAQs() {
             </div>
 
             {/* Live question count */}
-            <div className="flex w-fit shrink-0 items-center gap-3 rounded-2xl border border-emerald-200 bg-white/90 px-4 py-3 shadow-sm">
+            <div className="hidden md:flex w-fit shrink-0 items-center gap-3 rounded-2xl border border-emerald-200 bg-white/90 px-4 py-3 shadow-sm">
               <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <Ticket size={19} />
               </div>
@@ -1501,7 +1502,7 @@ function PromoFAQs() {
             </p>
 
             <div
-              className="flex gap-2 overflow-x-auto pb-1"
+              className="flex gap-2 scrollbar-none overflow-x-auto pb-1"
               role="group"
               aria-label="Filter FAQs by category"
             >
@@ -1553,7 +1554,7 @@ function PromoFAQs() {
           </div>
 
           {filteredFAQs.length > 0 ? (
-            <div className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 sm:gap-4">
+            <div className="grid grid-cols-1 items-stretch gap-5 md:gap-4 sm:grid-cols-2 sm:gap-4">
               {filteredFAQs.map((faq, index) => {
                 const FAQIcon = faq.icon;
 
@@ -1564,7 +1565,7 @@ function PromoFAQs() {
                     onClick={() => openFAQ(faq)}
                     aria-haspopup="dialog"
                     aria-label={`Read answer: ${faq.question}`}
-                    className="group relative flex min-h-[214px] w-full flex-col overflow-hidden rounded-2xl border border-[#d7e2d5] bg-gradient-to-br from-white via-white to-[#f7fbf4] p-4 text-left shadow-[0_2px_10px_rgba(27,65,38,0.035)] transition duration-200 ease-out hover:-translate-y-1 hover:border-[#92bd8b] hover:shadow-[0_14px_32px_rgba(32,93,58,0.12)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/20 sm:p-5"
+                    className="group relative flex min-h-[214px] w-full flex-col overflow-hidden rounded-2xl border border-[#d7e2d5] bg-gradient-to-br from-white via-white to-[#f7fbf4] p-4 text-left shadow-[0_7px_10px_rgba(27,65,38,0.035)] transition duration-200 ease-out hover:-translate-y-1 hover:border-[#92bd8b] hover:shadow-[0_14px_32px_rgba(32,93,58,0.12)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/20 sm:p-5"
                   >
                     {/* Hover accent bar */}
                     <span
@@ -1579,7 +1580,7 @@ function PromoFAQs() {
                     />
 
                     {/* Card top */}
-                    <div className="relative flex items-start gap-3">
+                    <div className="relative mb-3 flex items-start gap-3">
                       <div
                         className={`flex size-11 shrink-0 items-center justify-center rounded-xl border transition duration-200 group-hover:scale-105 group-hover:shadow-sm sm:size-12 ${faq.iconStyle}`}
                       >

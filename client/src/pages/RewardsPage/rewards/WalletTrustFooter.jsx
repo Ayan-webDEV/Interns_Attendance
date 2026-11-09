@@ -13,7 +13,7 @@ import styles from "./WalletTrustFooter.module.css";
 export default function WalletTrustFooter() {
   return (
     <section
-      className={`${styles.footer} mb-14`}
+      className={`${styles.footer} mb-8 lg:mb-10`}
       aria-label="VELoop Rewards information"
     >
       {/* Decorative background */}
@@ -41,9 +41,20 @@ export default function WalletTrustFooter() {
             <h2>Every milestone starts with your contribution.</h2>
 
             <p>
-              Stay consistent with your assigned work, follow the attendance
-              process, and review your wallet for recorded reward updates. Your
-              progress is built through your effort and completed milestones.
+              <span className="md:hidden">
+                Complete your tasks, stay regular, and track your rewards. Your
+                progress reflects your effort.
+              </span>
+              <span className="hidden md:block xl:hidden">
+                Stay consistent with your work, maintain attendance, and check
+                your wallet for reward updates. Every milestone counts.
+              </span>
+              <span className="hidden xl:block">
+                Stay consistent with your assigned work, follow the attendance
+                process, and review your wallet for recorded reward updates.
+                Your progress is built through your effort and completed
+                milestones.
+              </span>
             </p>
           </div>
         </div>

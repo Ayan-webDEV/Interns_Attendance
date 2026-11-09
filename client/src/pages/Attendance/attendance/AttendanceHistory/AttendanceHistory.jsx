@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 
 import styles from "./AttendanceHistory.module.css";
+import SectionHeader from "../../../../components/SectionHeader/SectionHeader";
 
 /* -------------------------------------------------------------------------- */
 /* Constants                                                                  */
@@ -718,7 +719,7 @@ export default function AttendanceHistory({
 
   return (
     <section className={styles.section} aria-label="Attendance history">
-      <div className={styles.sectionHeader}>
+      {/* <div className={styles.sectionHeader}>
         <div>
           <span className={styles.eyebrow}>YOUR RECORDS</span>
           <h2>Attendance history</h2>
@@ -728,7 +729,13 @@ export default function AttendanceHistory({
         <span className={styles.totalBadge}>
           {totalRecords} {totalRecords === 1 ? "record" : "records"}
         </span>
-      </div>
+      </div> */}
+      <SectionHeader
+        eye={"YOUR RECORDS"}
+        hds={"Attendance History"}
+        para={"Search and review your previous attendance submissions."}
+        badge={`${totalRecords} ${totalRecords === 1 ? "record" : "records"}`}
+      />
 
       {/* Summary */}
       <div className={styles.summary}>

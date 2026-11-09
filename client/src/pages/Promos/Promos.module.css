@@ -1558,6 +1558,7 @@
     align-items: flex-start;
     flex-direction: column;
     padding: 14px;
+    margin: 10px 0 0 0;
   }
 
   .emptyHistory {
@@ -1679,5 +1680,448 @@
   .skeletonDescription,
   .skeletonFooter {
     animation: none;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE-ONLY REFINEMENTS
+   Original page structure, component order and theme retained.
+   These rules only adapt sizing, wrapping and copy density.
+========================================================= */
+
+/* Prevent intrinsic content from forcing horizontal overflow. */
+.hero,
+.redemptionPanel,
+.historySection,
+.summaryCard,
+.guidancePanel,
+.historyHeader,
+.redemptionRow,
+.modal {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.hero,
+.redemptionPanel,
+.historySection {
+  overflow-wrap: anywhere;
+}
+
+.rewardIllustration,
+.rewardIcon,
+.summaryIcon,
+.formGiftIcon,
+.historyIcon,
+.transactionIcon,
+.detailRowIcon {
+  flex-shrink: 0;
+}
+
+.promoInputInner,
+.promoInputOuter,
+.historySearch,
+.historySearchInput,
+.redemptionRow > *,
+.detailRow > * {
+  min-width: 0;
+}
+
+/* Large tablets and compact laptops. */
+@media (max-width: 1024px) {
+  .hero {
+    padding: clamp(20px, 3vw, 30px);
+  }
+
+  .redemptionPanel > div:last-child {
+    gap: 26px;
+  }
+
+  .summaryCard {
+    padding: 18px;
+  }
+
+  .historyHeader {
+    padding: 20px;
+  }
+}
+
+/* Tablets: keep the original order while tightening vertical rhythm. */
+@media (max-width: 768px) {
+  .hero {
+    border-radius: 22px;
+  }
+
+  .hero p {
+    max-width: 58ch;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .trustChip {
+    min-height: 32px;
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+
+  .summaryCard {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .redemptionPanel {
+    border-radius: 22px;
+  }
+
+  .guidancePanel {
+    padding: 20px;
+  }
+
+  .guidanceNotice {
+    gap: 10px;
+  }
+
+  .guidanceNotice p {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .historyHeader {
+    padding: 18px;
+  }
+
+  .historyHeader > div,
+  .historyHeader > div > div {
+    min-width: 0;
+  }
+
+  .historyChip {
+    white-space: normal;
+  }
+
+  .redemptionRow {
+    align-items: center;
+  }
+
+  .transactionDate {
+    white-space: normal;
+  }
+}
+
+/* Phones: preserve all sections and actions; reduce secondary copy density. */
+@media (max-width: 600px) {
+  .hero {
+    padding: 19px 17px;
+    border-radius: 19px;
+  }
+
+  .hero h1 {
+    font-size: clamp(25px, 7vw, 31px);
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+  }
+
+  .hero p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .hero .trustChip {
+    min-height: 29px;
+    gap: 6px;
+    padding: 6px 8px;
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+
+  .hero .trustChip svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .summaryCard {
+    /* display: flex; */
+    /* justify-content: space-between; */
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+  }
+
+  .summaryIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .summaryCard p {
+    line-height: 1.4;
+  }
+
+  .redemptionPanel {
+    border-radius: 20px;
+  }
+
+  .redemptionPanel > div:last-child {
+    gap: 22px;
+    padding: 19px 16px;
+  }
+
+  .exclusiveBadge {
+    min-height: 30px;
+    font-size: 9px;
+    letter-spacing: 0.07em;
+  }
+
+  .redemptionPanel h2 {
+    font-size: clamp(21px, 6vw, 26px);
+    line-height: 1.15;
+  }
+
+  .redemptionPanel > div:last-child > div:first-child > div:nth-child(2) p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .formGiftIcon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .promoInputOuter,
+  .promoInputInner {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .promoInput {
+    width: 100%;
+    min-width: 0;
+    padding-right: 7px;
+    font-size: 16px;
+  }
+
+  .rewardFootnote {
+    align-items: flex-start;
+    gap: 7px;
+    margin: 25px 0 0 0;
+    font-size: 10px;
+    line-height: 1.45;
+  }
+
+  .rewardFootnote span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .guidancePanel {
+    padding: 16px;
+    border-radius: 15px;
+  }
+
+  .guidancePanel > div:nth-child(2) {
+    margin-top: 17px;
+  }
+
+  .guidancePanel > div:nth-child(2) > div {
+    gap: 10px;
+  }
+
+  .guidanceNotice {
+    padding: 12px;
+  }
+
+  .guidanceNotice p {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .historyHeader {
+    padding: 15px;
+  }
+
+  .historyHeader h2 {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .historyHeader p {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .historyChip {
+    min-height: 27px;
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+
+  .historySearch {
+    width: 100%;
+  }
+
+  .redemptionRow {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    gap: 9px;
+    padding: 13px 11px;
+  }
+
+  .redemptionRow > div:nth-child(2) {
+    min-width: 0;
+  }
+
+  .redemptionRow > div:nth-child(2) > * {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .transactionDate {
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .viewTransaction {
+    gap: 3px;
+    font-size: 10px;
+  }
+
+  .historyFooter {
+    gap: 8px;
+  }
+
+  .emptyHistory > p {
+    max-width: 34ch;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: 12px;
+    line-height: 1.55;
+  }
+
+  .modalDescription {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+/* Narrow phones. */
+@media (max-width: 380px) {
+  .hero {
+    padding: 16px 14px;
+  }
+
+  .hero .trustChip {
+    font-size: 8px;
+    padding: 5px 7px;
+  }
+
+  .summaryCard {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .redemptionPanel > div:last-child {
+    padding: 16px 13px;
+  }
+
+  .redemptionPanel h2 {
+    font-size: 21px;
+  }
+
+  .redemptionPanel > div:last-child > div:first-child > div:nth-child(2) {
+    gap: 8px;
+  }
+
+  .promoInputInner {
+    min-height: 49px;
+  }
+
+  .promoInput {
+    min-height: 47px;
+    letter-spacing: 0.015em;
+  }
+
+  .promoInput::placeholder {
+    font-size: 12px;
+  }
+
+  .historyHeader {
+    padding: 16px 14px;
+  }
+
+  .historyHeader h2 {
+    font-size: 16px;
+  }
+
+  .guidanceNotice {
+    display: none;
+  }
+
+  .redemptionRow {
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    gap: 7px;
+    padding: 12px 9px;
+  }
+
+  .transactionIcon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .transactionAmount {
+    font-size: 11px;
+  }
+
+  .viewTransaction {
+    font-size: 9px;
+  }
+}
+
+/* Very narrow devices and landscape-safe modal sizing. */
+@media (max-width: 320px) {
+  .hero h1 {
+    font-size: 24px;
+  }
+
+  .hero .trustChip {
+    gap: 4px;
+    font-size: 8px;
+  }
+
+  .redemptionRow {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .redemptionRow > div:last-child {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .transactionIcon {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-height: 520px) and (max-width: 900px) {
+  .modal {
+    max-height: 94dvh;
   }
 }

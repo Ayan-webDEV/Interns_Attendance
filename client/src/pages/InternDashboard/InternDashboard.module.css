@@ -1,141 +1,175 @@
-/* -------------------------------------------------------------------------- */
-/* Dashboard page                                                             */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   VELOOP — INTERN DASHBOARD
+   Premium responsive design system
+   Mobile: 300px–600px
+   Tablet: 601px–1024px
+   Laptop: 1025px–1249px
+   Desktop: 1250px+
+   ========================================================================== */
+
+/* ==========================================================================
+   PAGE FOUNDATION
+   ========================================================================== */
 
 .page {
+  --dash-ink: #173522;
+  --dash-heading: #173d27;
+  --dash-text: #405d48;
+  --dash-muted: #617568;
+  --dash-subtle: #77897c;
+  --dash-green: #19713d;
+  --dash-green-dark: #12552e;
+  --dash-green-bright: #299653;
+  --dash-green-soft: #eaf6e5;
+  --dash-border: #d8e6d7;
+  --dash-surface: #ffffff;
+  --dash-canvas: #f7faf5;
+  --dash-shadow: 0 5px 18px rgba(26, 64, 39, 0.055);
+
   display: flex;
   flex-direction: column;
-  gap: 21px;
+  gap: 23px;
   width: 100%;
   min-width: 0;
-  color: #192f22;
+  color: var(--dash-ink);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Welcome                                                                    */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   WELCOME SECTION
+   ========================================================================== */
 
 .welcome {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 22px;
+  gap: 24px;
+  width: 100%;
   min-width: 0;
 }
 
 .welcomeCopy {
+  flex: 1;
   min-width: 0;
 }
 
 .kicker {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin-bottom: 12px;
-  color: #52765a;
-  font-size: 9px;
+  gap: 10px;
+  margin-bottom: 13px;
+  color: #28663c;
+  font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.13em;
 }
 
 .kicker > span {
-  flex: 0 0 8px;
-  width: 8px;
-  height: 8px;
+  flex: 0 0 9px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: #38a15b;
-  box-shadow: 0 0 0 4px rgba(56, 161, 91, 0.15);
+  background: #29a65b;
+  box-shadow: 0 0 0 4px rgba(41, 166, 91, 0.16);
 }
 
 .welcome h1 {
-  margin: 0 0 9px;
-  color: #183823;
-  font-size: clamp(27px, 3vw, 38px);
+  margin: 0 0 11px;
+  color: #173b26;
+  font-size: clamp(29px, 3.1vw, 41px);
   font-weight: 900;
-  line-height: 1.13;
+  line-height: 1.15;
   letter-spacing: -0.055em;
   overflow-wrap: anywhere;
 }
 
 .welcome h1 span {
-  color: #267044;
+  color: #218348;
 }
 
 .welcome p {
-  max-width: 620px;
+  max-width: 650px;
   margin: 0;
-  color: #68796d;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.7;
+  color: #536b59;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
 }
+
+/* ==========================================================================
+   WELCOME ACTIONS
+   ========================================================================== */
 
 .welcomeActions {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 10px;
+  min-width: 0;
+}
+
+.date,
+.refreshButton {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   gap: 9px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .date {
-  min-height: 41px;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 13px;
-  border: 1px solid #d4e3d3;
-  border-radius: 11px;
-  color: #28633d;
+  border: 1px solid #cbdcca;
+  color: #245c35;
   background: #ffffff;
-  box-shadow: 0 3px 10px rgba(28, 63, 39, 0.035);
-  font-size: 10px;
-  font-weight: 800;
+  box-shadow: 0 3px 12px rgba(28, 63, 39, 0.045);
   white-space: nowrap;
 }
 
 .date svg {
   flex: 0 0 auto;
-  color: #328650;
+  color: #24844a;
 }
 
 .refreshButton {
-  min-height: 41px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 0 12px;
-  border: 1px solid #c9dfcb;
-  border-radius: 11px;
-  color: #24633d;
-  background: #f1f8ec;
+  border: 1px solid #c3dfc5;
+  color: #176638;
+  background: #edf8e9;
   font: inherit;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 850;
   cursor: pointer;
   transition:
-    background 160ms ease,
-    border-color 160ms ease,
-    transform 160ms ease,
-    opacity 160ms ease;
+    background 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .refreshButton:hover:not(:disabled) {
-  border-color: #91bf95;
-  background: #e6f4df;
-  transform: translateY(-1px);
+  border-color: #85bd91;
+  background: #e1f3dc;
+  box-shadow: 0 5px 13px rgba(38, 119, 65, 0.09);
+  transform: translateY(-2px);
+}
+
+.refreshButton:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .refreshButton:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
   cursor: wait;
 }
 
 .refreshButton:focus-visible,
 .cta:focus-visible,
 .rewardFoot a:focus-visible {
-  outline: 3px solid rgba(70, 126, 241, 0.32);
+  outline: 3px solid rgba(42, 132, 77, 0.3);
   outline-offset: 3px;
 }
 
@@ -143,498 +177,568 @@
   animation: refreshSpin 850ms linear infinite;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Error notice                                                               */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ERROR NOTICE
+   ========================================================================== */
 
 .errorNotice {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 1px solid #f0c8bd;
-  border-radius: 12px;
-  color: #9c3e30;
-  background: #fff0eb;
-  font-size: 11px;
-  line-height: 1.6;
-  font-weight: 650;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid #eabeb4;
+  border-radius: 13px;
+  color: #94382d;
+  background: #fff0ed;
+  font-size: 13px;
+  line-height: 1.65;
+  font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .errorNotice svg {
   flex: 0 0 auto;
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Group banner                                                               */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   GROUP BANNER
+   ========================================================================== */
 
 .groupBanner {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
   width: 100%;
   min-width: 0;
-  padding: 17px 19px;
-  border: 1px solid #d4e5d0;
-  border-radius: 16px;
-  background: linear-gradient(110deg, #ffffff 0%, #f7fbf2 100%);
-  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+  padding: 19px 21px;
+  border: 1px solid #cfe3ca;
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(207, 237, 194, 0.32),
+      transparent 38%
+    ),
+    linear-gradient(110deg, #ffffff, #f3faef);
+  box-shadow: var(--dash-shadow);
 }
 
 .groupIcon {
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-  border: 1px solid #d7e9c9;
-  border-radius: 13px;
-  color: #287445;
-  background: #e7f5d9;
+  border: 1px solid #c7e2bd;
+  border-radius: 14px;
+  color: #18733c;
+  background: linear-gradient(145deg, #edfae6, #dff1d5);
 }
 
 .groupText {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
 }
 
 .groupText small {
-  color: #63806a;
-  font-size: 8px;
+  color: #426f4b;
+  font-size: 10px;
   font-weight: 900;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.12em;
 }
 
 .groupText b {
+  max-width: 100%;
   overflow: hidden;
-  color: #1e402a;
+  color: #173e26;
   font-family: Manrope, sans-serif;
-  font-size: 13px;
-  font-weight: 850;
+  font-size: 15px;
+  font-weight: 900;
   letter-spacing: -0.025em;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .groupText span {
-  color: #64776a;
-  font-size: 10px;
-  line-height: 1.45;
-  font-weight: 600;
+  color: #48634f;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 650;
+  overflow-wrap: anywhere;
 }
+
+/* ==========================================================================
+   GROUP STATUS
+   ========================================================================== */
 
 .status {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  max-width: 180px;
-  padding: 7px 11px;
-  border: 1px solid #e2e8df;
+  max-width: 190px;
+  padding: 8px 12px;
+  border: 1px solid #d6e2d3;
   border-radius: 999px;
-  color: #68776b;
-  background: #f4f6f2;
-  font-size: 9px;
-  font-weight: 850;
+  color: #526456;
+  background: #f0f4ee;
+  font-size: 10px;
+  font-weight: 900;
   letter-spacing: 0.035em;
   text-align: center;
   text-transform: capitalize;
+  overflow-wrap: anywhere;
 }
 
 .status.green {
-  color: #176a39;
-  border-color: #c5e5bf;
-  background: #e5f5dc;
+  color: #126232;
+  border-color: #bce0b7;
+  background: #e2f5dc;
 }
 
 .status.completedStatus {
-  color: #355f9b;
-  border-color: #d0def4;
-  background: #eaf1ff;
+  color: #315b98;
+  border-color: #c9d9f1;
+  background: #e8f0ff;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Statistics                                                                 */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   STATISTICS GRID
+   StatCard itself retains its own component styling.
+   ========================================================================== */
 
 .stats {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 13px;
+  gap: 14px;
   min-width: 0;
+  align-items: stretch;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Main grid                                                                  */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   MAIN CONTENT GRID
+   ========================================================================== */
 
 .grid {
   display: grid;
   grid-template-columns:
     minmax(0, 1.15fr)
-    minmax(290px, 0.85fr);
-  gap: 17px;
+    minmax(300px, 0.85fr);
+  gap: 19px;
   min-width: 0;
+  align-items: stretch;
 }
 
 .panel {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
-  padding: 21px;
-  border: 1px solid #dce7da;
-  border-radius: 18px;
+  padding: 23px;
+  border: 1px solid #dce7d9;
+  border-radius: 19px;
   background: #ffffff;
-  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+  box-shadow: var(--dash-shadow);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
+
+.panel:hover {
+  border-color: #c8ddc5;
+  box-shadow: 0 9px 26px rgba(26, 64, 39, 0.075);
+}
+
+/* ==========================================================================
+   PANEL HEADINGS
+   ========================================================================== */
 
 .panelHead {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 13px;
-  margin-bottom: 18px;
+  gap: 14px;
+  min-width: 0;
+  margin-bottom: 20px;
 }
 
 .panelHead > div:first-child {
+  flex: 1;
   min-width: 0;
 }
 
 .panelKicker {
   display: block;
-  margin-bottom: 6px;
-  color: #56815a;
-  font-size: 8px;
+  margin-bottom: 7px;
+  color: #287542;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.13em;
 }
 
 .panelHead h2 {
-  margin: 0 0 6px;
-  color: #1d3b28;
-  font-size: 16px;
+  margin: 0 0 7px;
+  color: #193d27;
+  font-size: 19px;
   font-weight: 900;
+  line-height: 1.3;
   letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
 }
 
 .panelHead p {
   margin: 0;
-  color: #718075;
-  font-size: 10px;
-  line-height: 1.65;
-  font-weight: 550;
+  color: #52695a;
+  font-size: 12px;
+  line-height: 1.7;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Live indicator                                                             */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   LIVE INDICATOR
+   ========================================================================== */
 
 .live {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 8px;
-  border: 1px solid #cce6c5;
-  border-radius: 7px;
-  color: #23703c;
-  background: #eaf8e3;
-  font-size: 8px;
-  font-weight: 900;
+  gap: 7px;
+  padding: 7px 10px;
+  border: 1px solid #bde2bd;
+  border-radius: 8px;
+  color: #146536;
+  background: #e7f8e4;
+  font-size: 9px;
+  font-weight: 950;
   letter-spacing: 0.09em;
 }
 
 .live > span {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: #35a45b;
-  box-shadow: 0 0 0 3px rgba(53, 164, 91, 0.12);
+  background: #24a653;
+  box-shadow: 0 0 0 3px rgba(36, 166, 83, 0.15);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Holiday and inactive notice                                                */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   HOLIDAY / INACTIVE NOTICE
+   ========================================================================== */
 
 .holiday {
   display: flex;
   align-items: flex-start;
-  gap: 13px;
-  min-height: 102px;
-  margin-bottom: 14px;
-  padding: 18px 16px;
-  border: 1px solid #dcebc8;
-  border-radius: 13px;
-  background: #f3f9e9;
+  gap: 14px;
+  min-height: 108px;
+  min-width: 0;
+  margin-bottom: 15px;
+  padding: 19px 17px;
+  border: 1px solid #d4e7b8;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #f4fae9, #fbfdf5);
 }
 
 .holidayIcon {
-  flex: 0 0 28px;
-  width: 28px;
-  color: #86a938;
-  font-size: 23px;
-  line-height: 1;
+  flex: 0 0 30px;
+  width: 30px;
+  color: #6e9927;
+  font-size: 25px;
+  line-height: 1.1;
   text-align: center;
 }
 
 .holiday b {
-  color: #315b31;
-  font-size: 12px;
-  font-weight: 850;
+  color: #315d28;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .holiday p {
-  margin: 6px 0 0;
-  color: #657b60;
-  font-size: 10px;
-  line-height: 1.7;
+  margin: 7px 0 0;
+  color: #506b47;
+  font-size: 12px;
+  line-height: 1.75;
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Attendance session list                                                   */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ATTENDANCE SESSION LIST
+   ========================================================================== */
 
 .sessions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
+  min-width: 0;
 }
 
 .session {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   min-width: 0;
-  padding: 12px;
-  border: 1px solid #dfe9dc;
-  border-radius: 13px;
-  background: #fbfdf9;
+  padding: 14px;
+  border: 1px solid #dce8d9;
+  border-radius: 14px;
+  background: #f9fcf7;
   transition:
-    border-color 150ms ease,
-    background 150ms ease;
+    border-color 180ms ease,
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
 }
 
 .session:hover {
-  border-color: #c2ddbd;
-  background: #f6fbf2;
+  border-color: #b9d9b7;
+  background: #f2faee;
+  box-shadow: 0 4px 12px rgba(35, 104, 55, 0.055);
+  transform: translateY(-1px);
 }
 
 .sessionIcon {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
-  border: 1px solid #e0e7dd;
-  border-radius: 11px;
-  color: #728173;
-  background: #edf1eb;
+  border: 1px solid #dce7da;
+  border-radius: 12px;
+  color: #5d7461;
+  background: #edf2ea;
 }
 
 .sessionIcon.approved {
-  color: #16733c;
-  border-color: #cce6c9;
-  background: #e3f5df;
+  color: #126b35;
+  border-color: #bfe3bc;
+  background: #e0f5dc;
 }
 
 .sessionIcon.pending {
-  color: #a36a0b;
-  border-color: #f0dfb4;
-  background: #fff2d5;
+  color: #915c08;
+  border-color: #efd9a8;
+  background: #fff0cb;
 }
 
 .sessionIcon.rejected,
 .sessionIcon.missed {
-  color: #ad4036;
-  border-color: #f0d0ca;
-  background: #fff0ec;
+  color: #a5372d;
+  border-color: #efc2b9;
+  background: #ffebe7;
 }
 
 .sessionIcon.review {
-  color: #536eaa;
-  border-color: #d4def2;
-  background: #edf2ff;
+  color: #385b9c;
+  border-color: #cbd9f1;
+  background: #e9efff;
 }
+
+/* ==========================================================================
+   SESSION TEXT
+   ========================================================================== */
 
 .sessionInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
   min-width: 0;
 }
 
 .sessionInfo b {
-  color: #213e2c;
-  font-size: 11px;
-  font-weight: 850;
+  color: #1d412a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .sessionInfo span {
-  color: #687a6d;
-  font-size: 9px;
-  line-height: 1.5;
+  color: #526b59;
+  font-size: 11px;
+  line-height: 1.55;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Session badges                                                             */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   SESSION STATUS BADGES
+   ========================================================================== */
 
 .badge {
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  max-width: 140px;
-  padding: 6px 9px;
-  border: 1px solid #e3e9e0;
+  max-width: 145px;
+  padding: 7px 10px;
+  border: 1px solid #dce5d9;
   border-radius: 999px;
-  color: #647269;
-  background: #f0f3ee;
-  font-size: 8px;
-  font-weight: 850;
+  color: #536457;
+  background: #edf2eb;
+  font-size: 10px;
+  font-weight: 900;
   text-align: center;
   white-space: nowrap;
 }
 
 .badge.approved {
-  color: #176a39;
-  border-color: #c8e6c4;
-  background: #e4f6df;
+  color: #126333;
+  border-color: #bce1b8;
+  background: #e0f5da;
 }
 
 .badge.pending {
-  color: #94600a;
-  border-color: #f0dfb6;
-  background: #fff3d8;
+  color: #875507;
+  border-color: #ebd5a3;
+  background: #fff0cc;
 }
 
 .badge.rejected {
-  color: #a13b31;
-  border-color: #efc9c2;
-  background: #fff0ec;
+  color: #a0372e;
+  border-color: #ebc0b9;
+  background: #ffebe7;
 }
 
 .badge.missed {
-  color: #8c3f30;
-  border-color: #ecc8bd;
-  background: #fce9e2;
+  color: #913a2c;
+  border-color: #e8beb4;
+  background: #fbe8e2;
 }
 
 .badge.review {
-  color: #4f669f;
-  border-color: #d4def2;
-  background: #edf2ff;
+  color: #395b98;
+  border-color: #cbd9ef;
+  background: #e8efff;
 }
 
 .badge.notMarked {
-  color: #647269;
-  border-color: #e3e9e0;
-  background: #f0f3ee;
+  color: #536457;
+  border-color: #dce5d9;
+  background: #edf2eb;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Attendance button                                                          */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ATTENDANCE CTA
+   ========================================================================== */
 
 .cta {
   width: 100%;
-  min-height: 43px;
+  min-width: 0;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  margin-top: 17px;
-  border: 1px solid #194b2c;
-  border-radius: 11px;
+  gap: 10px;
+  margin-top: 19px;
+  padding: 10px 14px;
+  border: 1px solid #15552d;
+  border-radius: 12px;
   color: #ffffff;
-  background: linear-gradient(110deg, #1d6038, #267444);
-  box-shadow: 0 4px 10px rgba(27, 94, 54, 0.12);
-  font-size: 11px;
-  font-weight: 850;
+  background: linear-gradient(115deg, #176338, #27874b);
+  box-shadow: 0 5px 14px rgba(27, 94, 54, 0.16);
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
   text-decoration: none;
+  overflow-wrap: anywhere;
   transition:
-    background 160ms ease,
-    box-shadow 160ms ease,
-    transform 160ms ease;
+    background 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 }
 
 .cta:hover {
-  background: linear-gradient(110deg, #164b2b, #1c6036);
-  box-shadow: 0 6px 15px rgba(27, 94, 54, 0.19);
-  transform: translateY(-1px);
+  background: linear-gradient(115deg, #10532b, #1e753d);
+  box-shadow: 0 8px 19px rgba(27, 94, 54, 0.23);
+  transform: translateY(-2px);
 }
 
 .cta:active {
   transform: translateY(0);
 }
 
-/* -------------------------------------------------------------------------- */
-/* Rewards panel                                                              */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   REWARDS PANEL
+   ========================================================================== */
 
 .rewardIcon {
-  flex: 0 0 37px;
-  width: 37px;
-  height: 37px;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border: 1px solid #d4e9c6;
-  border-radius: 11px;
-  color: #287344;
-  background: #e8f6dc;
+  border: 1px solid #cce4bc;
+  border-radius: 13px;
+  color: #19743c;
+  background: linear-gradient(145deg, #eef9e5, #def0d1);
 }
+
+/* ==========================================================================
+   REWARD BALANCE CARD
+   ========================================================================== */
 
 .rewardBalance {
   position: relative;
-  min-height: 148px;
-  padding: 18px;
+  min-height: 165px;
+  min-width: 0;
+  padding: 21px;
   overflow: hidden;
-  border: 1px solid #17472b;
-  border-radius: 14px;
-  color: #ecf9eb;
-  background: linear-gradient(125deg, #17452b 0%, #1f663d 58%, #2a7847 100%);
-  box-shadow: 0 7px 18px rgba(22, 77, 43, 0.17);
+  border: 1px solid #124c2a;
+  border-radius: 16px;
+  color: #f0fff0;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(131, 216, 123, 0.27),
+      transparent 45%
+    ),
+    linear-gradient(125deg, #123e25 0%, #17643a 55%, #23864b 100%);
+  box-shadow:
+    0 8px 22px rgba(22, 77, 43, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .rewardBalance::before,
 .rewardBalance::after {
   position: absolute;
   content: "";
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 50%;
   pointer-events: none;
 }
 
 .rewardBalance::before {
-  top: -65px;
-  right: -35px;
-  width: 155px;
-  height: 155px;
+  top: -70px;
+  right: -40px;
+  width: 175px;
+  height: 175px;
   box-shadow:
-    0 0 0 18px rgba(255, 255, 255, 0.035),
-    0 0 0 38px rgba(255, 255, 255, 0.025);
+    0 0 0 20px rgba(255, 255, 255, 0.035),
+    0 0 0 43px rgba(255, 255, 255, 0.025);
 }
 
 .rewardBalance::after {
-  right: 48px;
-  bottom: -92px;
-  width: 135px;
-  height: 135px;
+  right: 42px;
+  bottom: -105px;
+  width: 150px;
+  height: 150px;
 }
 
 .rewardBalance > span {
   position: relative;
   z-index: 1;
   display: block;
-  margin-bottom: 9px;
-  color: #c5e3c8;
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 0.09em;
+  margin-bottom: 11px;
+  color: #d5f1d5;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
 }
 
 .rewardBalance strong {
@@ -643,100 +747,108 @@
   display: block;
   color: #ffffff;
   font-family: Manrope, sans-serif;
-  font-size: clamp(29px, 3vw, 35px);
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: -0.065em;
+  font-size: clamp(32px, 3vw, 41px);
+  font-weight: 950;
+  line-height: 1.12;
+  letter-spacing: -0.06em;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .rewardBalance strong small {
-  margin-left: 4px;
-  color: #d5f59c;
-  font-size: 13px;
-  font-weight: 850;
+  margin-left: 5px;
+  color: #d7f89e;
+  font-size: 15px;
+  font-weight: 900;
   letter-spacing: 0;
 }
 
 .rewardBalance p {
   position: relative;
   z-index: 1;
-  max-width: 280px;
-  margin: 11px 0 0;
-  color: #d0e5d0;
-  font-size: 9px;
-  line-height: 1.6;
-  font-weight: 550;
+  max-width: 310px;
+  margin: 13px 0 0;
+  color: #e0f2df;
+  font-size: 11px;
+  line-height: 1.65;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
+
+/* ==========================================================================
+   REWARD FOOTER LINKS
+   ========================================================================== */
 
 .rewardFoot {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 9px;
-  padding: 13px 2px 0;
-  color: #486b50;
-  font-size: 10px;
+  gap: 12px;
+  min-width: 0;
+  padding: 15px 2px 0;
+  color: #365d40;
+  font-size: 12px;
 }
 
 .rewardFoot > div,
 .rewardFoot a {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
 }
 
 .rewardFoot > div {
-  color: #57715c;
-  font-weight: 650;
+  color: #42634a;
+  font-weight: 750;
+  overflow-wrap: anywhere;
 }
 
 .rewardFoot svg {
   flex: 0 0 auto;
-  color: #36834b;
+  color: #258148;
 }
 
 .rewardFoot a {
   flex: 0 0 auto;
-  color: #21683a;
-  font-size: 9px;
+  color: #176839;
+  font-size: 11px;
   font-weight: 900;
   text-decoration: none;
   white-space: nowrap;
 }
 
 .rewardFoot a:hover {
-  color: #123f25;
+  color: #0c4828;
   text-decoration: underline;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Certificate panel                                                          */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   CERTIFICATE PANEL
+   ========================================================================== */
 
 .certPanel {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   min-width: 0;
-  padding: 16px 19px;
-  border: 1px solid #dce7da;
-  border-radius: 16px;
+  padding: 19px 21px;
+  border: 1px solid #d8e5d6;
+  border-radius: 17px;
   background: #ffffff;
-  box-shadow: var(--shadow-sm, 0 4px 15px rgba(25, 55, 35, 0.05));
+  box-shadow: var(--dash-shadow);
 }
 
 .certIcon {
-  flex: 0 0 40px;
-  width: 40px;
-  height: 40px;
+  flex: 0 0 45px;
+  width: 45px;
+  height: 45px;
   display: grid;
   place-items: center;
-  border: 1px solid #e3e9df;
-  border-radius: 12px;
-  color: #728173;
-  background: #f0f3ed;
+  border: 1px solid #d6e3d2;
+  border-radius: 13px;
+  color: #55745a;
+  background: #eff5eb;
 }
 
 .certCopy {
@@ -745,17 +857,21 @@
 }
 
 .certCopy h2 {
-  margin: 0 0 5px;
-  color: #25432e;
-  font-size: 13px;
+  margin: 0 0 7px;
+  color: #1d4029;
+  font-size: 16px;
   font-weight: 900;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
 }
 
 .certCopy p {
   margin: 0;
-  color: #66776b;
-  font-size: 10px;
-  line-height: 1.65;
+  color: #536b59;
+  font-size: 12px;
+  line-height: 1.7;
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
 .certStatus {
@@ -763,26 +879,28 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 7px 10px;
-  border: 1px solid #e4e9e1;
+  gap: 7px;
+  max-width: 180px;
+  padding: 9px 12px;
+  border: 1px solid #dce4d8;
   border-radius: 999px;
-  color: #68766c;
-  background: #f1f3ef;
-  font-size: 9px;
-  font-weight: 850;
+  color: #5c6c60;
+  background: #f0f3ee;
+  font-size: 10px;
+  font-weight: 900;
+  text-align: center;
   white-space: nowrap;
 }
 
 .certUnlocked {
-  color: #176a39;
-  border-color: #c9e5c4;
-  background: #e5f5df;
+  color: #126536;
+  border-color: #bce1b8;
+  background: #e2f5dc;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Bottom trust panel                                                         */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   TRUST PANEL
+   ========================================================================== */
 
 .bottomPanel {
   display: flex;
@@ -790,30 +908,36 @@
   justify-content: space-between;
   gap: 20px;
   min-width: 0;
-  padding: 16px 19px;
-  border: 1px solid #d4e5d0;
-  border-radius: 15px;
-  background: linear-gradient(110deg, #f2f9eb, #ffffff);
+  padding: 19px 21px;
+  border: 1px solid #cfe3c9;
+  border-radius: 16px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(204, 234, 192, 0.3),
+      transparent 40%
+    ),
+    linear-gradient(110deg, #eff8e9, #ffffff);
 }
 
 .bottomMessage {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 13px;
   min-width: 0;
 }
 
 .bottomIcon {
-  flex: 0 0 38px;
-  width: 38px;
-  height: 38px;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border: 1px solid #d5e8c9;
-  border-radius: 11px;
-  color: #287545;
-  background: #e6f4da;
+  border: 1px solid #cde4c3;
+  border-radius: 13px;
+  color: #1d7540;
+  background: #e4f4da;
 }
 
 .bottomMessage > div:last-child {
@@ -822,42 +946,45 @@
 
 .bottomMessage b {
   display: block;
-  margin-bottom: 5px;
-  color: #254a2e;
-  font-size: 11px;
+  margin-bottom: 6px;
+  color: #1b472a;
+  font-size: 13px;
   font-weight: 900;
+  overflow-wrap: anywhere;
 }
 
 .bottomMessage p {
-  max-width: 650px;
+  max-width: 680px;
   margin: 0;
-  color: #647867;
-  font-size: 9px;
-  line-height: 1.65;
+  color: #4d6853;
+  font-size: 11px;
+  line-height: 1.7;
+  font-weight: 550;
+  overflow-wrap: anywhere;
 }
 
 .bottomTrust {
   flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 8px 10px;
-  border: 1px solid #d7e8d1;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid #c9e1c4;
   border-radius: 999px;
-  color: #347047;
+  color: #1d6738;
   background: #ffffff;
-  font-size: 9px;
-  font-weight: 850;
+  font-size: 10px;
+  font-weight: 900;
   white-space: nowrap;
 }
 
 .bottomTrust svg {
-  color: #328450;
+  color: #25834a;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Animations                                                                 */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   ANIMATION
+   ========================================================================== */
 
 @keyframes refreshSpin {
   to {
@@ -865,40 +992,452 @@
   }
 }
 
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
+/* ==========================================================================
+   LARGE LAPTOPS AND COMPACT DESKTOPS
+   ========================================================================== */
 
-@media (max-width: 1100px) {
+@media (max-width: 1200px) {
+  .page {
+    gap: 21px;
+  }
+
   .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .grid {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    grid-template-columns:
+      minmax(0, 1.05fr)
+      minmax(280px, 0.95fr);
+    gap: 15px;
+  }
+
+  .panel {
+    padding: 20px;
   }
 }
 
-@media (max-width: 850px) {
+/* ==========================================================================
+   LAPTOPS AND TABLET LANDSCAPE
+   ========================================================================== */
+
+@media (max-width: 1024px) {
   .welcome {
     align-items: flex-start;
+    gap: 17px;
+  }
+
+  .welcome h1 {
+    font-size: clamp(30px, 4vw, 37px);
+  }
+
+  .welcome p {
+    font-size: 14px;
+  }
+
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  .panel {
+    padding: 22px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+  }
+
+  .groupBanner {
+    padding: 18px;
+  }
+}
+
+/* ==========================================================================
+   TABLET PORTRAIT
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .page {
+    gap: 20px;
+  }
+
+  .welcome {
     flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .welcome h1 {
+    font-size: clamp(29px, 5vw, 36px);
+  }
+
+  .welcome p {
+    max-width: 100%;
+    font-size: 14px;
   }
 
   .welcomeActions {
     justify-content: flex-start;
   }
 
-  .grid {
-    grid-template-columns: minmax(0, 1fr);
+  .date,
+  .refreshButton {
+    min-height: 45px;
+    font-size: 12px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .groupBanner {
+    gap: 13px;
+    padding: 17px;
+  }
+
+  .groupText b {
+    font-size: 15px;
+  }
+
+  .groupText span {
+    font-size: 12px;
   }
 
   .panel {
+    padding: 21px;
+    border-radius: 17px;
+  }
+
+  .panelHead h2 {
+    font-size: 19px;
+  }
+
+  .panelHead p {
+    font-size: 12px;
+  }
+
+  .holiday {
+    padding: 17px;
+  }
+
+  .holiday b {
+    font-size: 14px;
+  }
+
+  .holiday p {
+    font-size: 12px;
+  }
+
+  .session {
+    padding: 14px;
+  }
+
+  .sessionInfo b {
+    font-size: 13px;
+  }
+
+  .sessionInfo span {
+    font-size: 11px;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+
+  .cta {
+    min-height: 49px;
+    font-size: 13px;
+  }
+
+  .rewardBalance {
+    min-height: 160px;
+  }
+
+  .rewardBalance strong {
+    font-size: 36px;
+  }
+
+  .certPanel {
     padding: 18px;
+  }
+
+  .certCopy h2 {
+    font-size: 16px;
+  }
+
+  .certCopy p {
+    font-size: 12px;
+  }
+
+  .bottomPanel {
+    padding: 17px;
+  }
+
+  .bottomMessage b {
+    font-size: 13px;
+  }
+
+  .bottomMessage p {
+    font-size: 11px;
   }
 }
 
+/* ==========================================================================
+   MOBILE DEVICES
+   ========================================================================== */
+
 @media (max-width: 600px) {
+  .page {
+    gap: 17px;
+  }
+
+  .kicker {
+    margin-bottom: 11px;
+    font-size: 10px;
+  }
+
+  .welcome h1 {
+    font-size: clamp(27px, 7vw, 33px);
+    line-height: 1.2;
+  }
+
+  .welcome p {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .welcomeActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+    gap: 9px;
+  }
+
+  .date {
+    justify-content: flex-start;
+    min-width: 0;
+    padding: 0 11px;
+    font-size: 11px;
+    white-space: normal;
+  }
+
+  .date span {
+    overflow-wrap: anywhere;
+  }
+
+  .refreshButton {
+    min-width: 100px;
+    padding: 0 12px;
+  }
+
+  .groupBanner {
+    gap: 12px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .groupIcon {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .groupText small {
+    font-size: 9px;
+  }
+
+  .groupText b {
+    font-size: 14px;
+  }
+
+  .groupText span {
+    font-size: 11px;
+  }
+
+  .status {
+    max-width: 155px;
+    padding: 7px 9px;
+    font-size: 9px;
+  }
+
+  .stats {
+    gap: 10px;
+  }
+
+  .panel {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  .panelHead {
+    gap: 10px;
+    margin-bottom: 17px;
+  }
+
+  .panelKicker {
+    font-size: 9px;
+  }
+
+  .panelHead h2 {
+    font-size: 18px;
+  }
+
+  .panelHead p {
+    font-size: 11px;
+  }
+
+  .live {
+    padding: 7px 9px;
+    font-size: 9px;
+  }
+
+  .holiday {
+    gap: 11px;
+    min-height: auto;
+    padding: 15px 13px;
+  }
+
+  .holidayIcon {
+    flex-basis: 26px;
+    width: 26px;
+    font-size: 22px;
+  }
+
+  .holiday b {
+    font-size: 13px;
+  }
+
+  .holiday p {
+    font-size: 11px;
+  }
+
+  .session {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .sessionIcon {
+    flex-basis: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .sessionInfo b {
+    font-size: 12px;
+  }
+
+  .sessionInfo span {
+    font-size: 10px;
+  }
+
+  .badge {
+    max-width: 125px;
+    padding: 7px 9px;
+    font-size: 9px;
+  }
+
+  .cta {
+    min-height: 47px;
+    margin-top: 16px;
+    font-size: 12px;
+  }
+
+  .rewardIcon {
+    flex-basis: 38px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .rewardBalance {
+    min-height: 150px;
+    padding: 18px;
+  }
+
+  .rewardBalance > span {
+    font-size: 10px;
+  }
+
+  .rewardBalance strong {
+    font-size: 34px;
+  }
+
+  .rewardBalance p {
+    font-size: 11px;
+  }
+
+  .rewardFoot {
+    padding-top: 14px;
+    font-size: 11px;
+  }
+
+  .rewardFoot a {
+    font-size: 10px;
+  }
+
+  .certPanel {
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .certIcon {
+    flex-basis: 39px;
+    width: 39px;
+    height: 39px;
+  }
+
+  .certCopy h2 {
+    font-size: 14px;
+  }
+
+  .certCopy p {
+    font-size: 11px;
+  }
+
+  .certStatus {
+    padding: 8px 10px;
+    font-size: 9px;
+  }
+
+  .bottomPanel {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    padding: 15px;
+  }
+
+  .bottomMessage {
+    align-items: flex-start;
+    gap: 11px;
+  }
+
+  .bottomIcon {
+    flex-basis: 37px;
+    width: 37px;
+    height: 37px;
+  }
+
+  .bottomMessage b {
+    font-size: 12px;
+  }
+
+  .bottomMessage p {
+    font-size: 10px;
+  }
+
+  .bottomTrust {
+    margin-left: 48px;
+    font-size: 10px;
+  }
+}
+
+/* ==========================================================================
+   SMALL MOBILE
+   ========================================================================== */
+
+@media (max-width: 430px) {
   .page {
     gap: 16px;
   }
@@ -907,33 +1446,22 @@
     font-size: 28px;
   }
 
-  .welcome p {
-    font-size: 11px;
-  }
-
-  .kicker {
-    margin-bottom: 10px;
-    font-size: 8px;
-  }
-
   .welcomeActions {
-    width: 100%;
-    flex-wrap: wrap;
+    grid-template-columns: minmax(0, 1fr) 105px;
   }
 
   .date {
-    min-height: 39px;
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .refreshButton {
-    min-height: 39px;
+    min-width: 0;
+    font-size: 11px;
   }
 
   .groupBanner {
-    gap: 10px;
+    /* flex-wrap: wrap; */
     padding: 14px;
-    border-radius: 14px;
   }
 
   .groupIcon {
@@ -943,89 +1471,291 @@
   }
 
   .groupText {
-    min-width: 0;
-  }
-
-  .groupText b {
-    font-size: 11px;
+    flex: 1 1 calc(100% - 50px);
   }
 
   .groupText small {
-    font-size: 7px;
+    font-size: 8px;
+  }
+
+  .groupText b {
+    font-size: 13px;
   }
 
   .groupText span {
-    font-size: 9px;
-  }
-
-  .status {
-    padding: 6px 8px;
-    font-size: 8px;
-  }
-
-  .stats {
-    gap: 9px;
-  }
-
-  .grid {
-    gap: 12px;
-  }
-
-  .panel {
-    padding: 15px;
-    border-radius: 15px;
-  }
-
-  .panelHead {
-    margin-bottom: 14px;
-  }
-
-  .panelHead h2 {
-    font-size: 15px;
-  }
-
-  .panelHead p {
-    font-size: 9px;
-  }
-
-  .holiday {
-    padding: 14px 12px;
-  }
-
-  .session {
-    gap: 9px;
-    padding: 10px;
-  }
-
-  .sessionIcon {
-    flex-basis: 32px;
-    width: 32px;
-    height: 32px;
-  }
-
-  .sessionInfo b {
     font-size: 10px;
   }
 
-  .sessionInfo span {
+  .status {
+    max-width: calc(100% - 48px);
+    /* margin-left: 50px; */
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+
+  .panelHead {
+    flex-wrap: wrap;
+  }
+
+  .panelHead h2 {
+    font-size: 17px;
+  }
+
+  .live {
     font-size: 8px;
   }
 
+  .session {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .sessionInfo {
+    flex: 1 1 calc(100% - 48px);
+  }
+
+  .sessionInfo b {
+    font-size: 12px;
+  }
+
+  .session .badge {
+    margin-left: 45px;
+  }
+
   .badge {
-    max-width: 115px;
-    padding: 5px 7px;
-    font-size: 7px;
+    max-width: 100%;
+    white-space: normal;
   }
 
   .rewardBalance {
-    min-height: 138px;
+    min-height: 145px;
     padding: 16px;
+  }
+
+  .rewardBalance strong {
+    font-size: 31px;
+  }
+
+  .rewardFoot {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+
+  .rewardFoot > div {
+    font-size: 10px;
+  }
+
+  .rewardFoot a {
+    font-size: 9px;
   }
 
   .certPanel {
     align-items: flex-start;
+    flex-wrap: wrap;
     gap: 10px;
     padding: 14px;
+  }
+
+  .certCopy {
+    flex: 1 1 calc(100% - 50px);
+  }
+
+  .certCopy h2 {
+    font-size: 13px;
+  }
+
+  .certCopy p {
+    font-size: 10px;
+  }
+
+  .certStatus {
+    max-width: calc(100% - 45px);
+    margin-left: 45px;
+    white-space: normal;
+  }
+
+  .bottomPanel {
+    padding: 13px;
+  }
+
+  .bottomMessage {
+    gap: 9px;
+  }
+
+  .bottomMessage b {
+    font-size: 11px;
+  }
+
+  .bottomMessage p {
+    font-size: 10px;
+  }
+
+  .bottomTrust {
+    margin-left: 45px;
+  }
+}
+
+/* ==========================================================================
+   COMPACT MOBILE — 300px TO 350px
+   ========================================================================== */
+
+@media (max-width: 350px) {
+  .page {
+    gap: 14px;
+  }
+
+  .kicker {
+    gap: 8px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  .welcome h1 {
+    font-size: 25px;
+  }
+
+  .welcome p {
+    font-size: 12px;
+  }
+
+  .welcomeActions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .date,
+  .refreshButton {
+    width: 100%;
+    min-height: 43px;
+    justify-content: center;
+    font-size: 11px;
+  }
+
+  .groupBanner {
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .groupIcon {
+    flex-basis: 35px;
+    width: 35px;
+    height: 35px;
+  }
+
+  .groupText {
+    flex-basis: calc(100% - 45px);
+  }
+
+  .groupText b {
+    font-size: 12px;
+  }
+
+  .groupText span {
+    font-size: 10px;
+  }
+
+  .status {
+    max-width: 100%;
+    margin-left: 44px;
+    font-size: 9px;
+  }
+
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .panel {
+    padding: 12px;
+    border-radius: 14px;
+  }
+
+  .panelHead {
+    gap: 8px;
+  }
+
+  .panelHead h2 {
+    font-size: 16px;
+  }
+
+  .panelHead p {
+    font-size: 10px;
+  }
+
+  .holiday {
+    padding: 12px 10px;
+  }
+
+  .holiday b {
+    font-size: 12px;
+  }
+
+  .holiday p {
+    font-size: 10px;
+  }
+
+  .session {
+    padding: 10px;
+  }
+
+  .sessionIcon {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+  }
+
+  .sessionInfo b {
+    font-size: 11px;
+  }
+
+  .sessionInfo span {
+    font-size: 9px;
+  }
+
+  .session .badge {
+    margin-left: 42px;
+  }
+
+  .rewardBalance {
+    min-height: 140px;
+    padding: 14px;
+  }
+
+  .rewardBalance > span {
+    font-size: 9px;
+  }
+
+  .rewardBalance strong {
+    font-size: 29px;
+  }
+
+  .rewardBalance p {
+    font-size: 10px;
+  }
+
+  .rewardFoot {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .rewardFoot > div {
+    font-size: 10px;
+  }
+
+  .rewardFoot a {
+    font-size: 10px;
+  }
+
+  .certPanel {
+    padding: 12px;
   }
 
   .certIcon {
@@ -1035,111 +1765,50 @@
   }
 
   .certCopy h2 {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .certCopy p {
-    font-size: 9px;
+    font-size: 10px;
   }
 
   .certStatus {
-    padding: 6px 8px;
-    font-size: 8px;
+    margin-left: 43px;
+    font-size: 9px;
   }
 
   .bottomPanel {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 13px;
-    padding: 14px;
+    padding: 12px;
   }
 
   .bottomMessage {
-    align-items: flex-start;
-  }
-
-  .bottomTrust {
-    margin-left: 50px;
-  }
-}
-
-@media (max-width: 440px) {
-  .stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
 
-  .welcome h1 {
-    font-size: 26px;
+  .bottomIcon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
   }
 
-  .date {
-    max-width: 100%;
-    white-space: normal;
+  .bottomMessage b {
+    font-size: 11px;
   }
 
-  .groupBanner {
-    flex-wrap: wrap;
-  }
-
-  .groupText {
-    flex: 1 1 calc(100% - 52px);
-  }
-
-  .status {
-    margin-left: 48px;
-  }
-
-  .session {
-    align-items: center;
-  }
-
-  .sessionInfo {
-    flex-basis: calc(100% - 150px);
-  }
-
-  .badge {
-    white-space: normal;
-  }
-
-  .certPanel {
-    flex-wrap: wrap;
-  }
-
-  .certStatus {
-    margin-left: 44px;
-  }
-
-  .rewardFoot {
-    align-items: flex-start;
-  }
-
-  .rewardFoot > div {
+  .bottomMessage p {
     font-size: 9px;
   }
 
-  .rewardFoot a {
-    font-size: 8px;
+  .bottomTrust {
+    margin-left: 40px;
+    font-size: 9px;
+    white-space: normal;
   }
 }
 
-@media (max-width: 350px) {
-  .date {
-    width: 100%;
-  }
-
-  .refreshButton {
-    width: 100%;
-  }
-
-  .stats {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .badge {
-    margin-left: 41px;
-  }
-}
+/* ==========================================================================
+   ACCESSIBILITY AND MOTION
+   ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   .refreshing {
@@ -1148,7 +1817,14 @@
 
   .refreshButton,
   .session,
+  .panel,
   .cta {
     transition: none;
+  }
+
+  .refreshButton:hover,
+  .session:hover,
+  .cta:hover {
+    transform: none;
   }
 }

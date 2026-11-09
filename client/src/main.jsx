@@ -32,13 +32,11 @@ function App() {
   const location = useLocation();
 
   // Minimum screen-width detection
-  const [isBelow1250, setIsBelow1250] = useState(
-    () => window.innerWidth < 1250,
-  );
+  const [isBelow300, setIsBelow300] = useState(() => window.innerWidth < 300);
 
   useEffect(() => {
     const checkScreenWidth = () => {
-      setIsBelow1250(window.innerWidth < 1250);
+      setIsBelow300(window.innerWidth < 300);
     };
 
     window.addEventListener("resize", checkScreenWidth);
@@ -79,18 +77,14 @@ function App() {
 
   if (checking) return <Loader label="Preparing your secure workspace…" />;
 
-  // Only the admin role bypasses the screen-width restriction.
   const isAdmin = user?.role === "admin";
 
-  // Login and policy pages remain accessible.
   const isAllowedPublicPage =
     location.pathname === "/login" || location.pathname === "/policies";
 
-  // Block authenticated non-admin users below 1250px.
   const shouldShowCompatibilityError =
-    Boolean(user) && !isAdmin && isBelow1250 && !isAllowedPublicPage;
+    Boolean(user) && !isAdmin && isBelow300 && !isAllowedPublicPage;
 
-  // Display the compatibility page instead of the dashboard.
   if (shouldShowCompatibilityError) {
     return <CompatibilityErrorPage />;
   }
@@ -119,7 +113,7 @@ function App() {
       <Route
         path="/login"
         element={
-          user && !(isBelow1250 && !isAdmin) ? (
+          user && !(isBelow300 && !isAdmin) ? (
             <Navigate to={home} replace />
           ) : (
             login

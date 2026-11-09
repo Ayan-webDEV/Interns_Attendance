@@ -1,24 +1,29 @@
 /* -------------------------------------------------------------------------- */
-/* Section                                                                    */
+/* ATTENDANCE STATISTICS — PREMIUM GREEN, COMPACT RESPONSIVE                  */
 /* -------------------------------------------------------------------------- */
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   width: 100%;
   min-width: 0;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Section heading                                                            */
+/* -------------------------------------------------------------------------- */
+
 .sectionHeader {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
+  min-width: 0;
 }
 
 .sectionHeader h2 {
-  margin: 5px 0 0;
+  margin: 4px 0 0;
   color: var(--ink, #17251f);
   font-size: 19px;
   line-height: 1.3;
@@ -27,15 +32,16 @@
 }
 
 .sectionHeader p {
-  margin: 6px 0 0;
-  color: var(--muted, #738079);
+  margin: 5px 0 0;
+  color: #5d7064;
   font-size: 12px;
   line-height: 1.5;
+  font-weight: 500;
 }
 
 .sectionEyebrow {
-  color: var(--green-2, #22664b);
-  font-size: 9px;
+  color: #26724e;
+  font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.11em;
 }
@@ -46,13 +52,14 @@
 
 .liveIndicator {
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 7px;
   padding: 7px 10px;
-  border: 1px solid rgba(34, 102, 75, 0.12);
+  border: 1px solid rgba(34, 102, 75, 0.16);
   border-radius: 999px;
-  color: var(--green-2, #22664b);
-  background: #f1f8eb;
+  color: #205f3e;
+  background: #f0f8e9;
   font-size: 10px;
   line-height: 1.2;
   font-weight: 800;
@@ -60,11 +67,12 @@
 }
 
 .liveDot {
+  flex: 0 0 7px;
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #70a94b;
-  box-shadow: 0 0 0 3px rgba(112, 169, 75, 0.12);
+  background: #63a94c;
+  box-shadow: 0 0 0 3px rgba(99, 169, 76, 0.13);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -74,26 +82,30 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
+  gap: 12px;
   width: 100%;
+  min-width: 0;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Individual stat card                                                       */
+/* Individual statistic card                                                  */
 /* -------------------------------------------------------------------------- */
 
 .statCard {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 158px;
-  padding: 17px;
+  min-height: 145px;
+  padding: 15px;
   overflow: hidden;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 17px;
+  border: 1px solid #e0e9df;
+  border-radius: 15px;
   background: var(--paper, #ffffff);
-  box-shadow: 0 4px 14px rgba(23, 37, 31, 0.025);
+  box-shadow:
+    0 3px 11px rgba(23, 55, 37, 0.035),
+    0 0 10px rgba(80, 143, 78, 0.018);
   transition:
     border-color 170ms ease,
     box-shadow 170ms ease,
@@ -102,50 +114,55 @@
 
 .statCard::after {
   position: absolute;
-  right: -23px;
-  bottom: -35px;
-  width: 100px;
-  height: 100px;
+  z-index: -1;
+  right: -30px;
+  bottom: -38px;
+  width: 105px;
+  height: 105px;
   border-radius: 50%;
-  background: var(--card-glow, rgba(223, 247, 167, 0.35));
+  background: var(--card-glow, rgba(223, 247, 167, 0.28));
   content: "";
   pointer-events: none;
 }
 
 .statCard:hover {
-  border-color: rgba(34, 102, 75, 0.2);
-  box-shadow: 0 8px 20px rgba(23, 37, 31, 0.055);
   transform: translateY(-2px);
+  border-color: rgba(34, 102, 75, 0.23);
+  box-shadow:
+    0 7px 17px rgba(23, 55, 37, 0.065),
+    0 0 12px rgba(80, 143, 78, 0.035);
 }
+
+/* Card accent variations */
 
 .rateCard {
   --card-accent: #22664b;
   --card-icon-bg: #eaf5df;
-  --card-glow: rgba(223, 247, 167, 0.4);
+  --card-glow: rgba(169, 211, 112, 0.2);
 }
 
 .daysCard {
-  --card-accent: #5473c5;
+  --card-accent: #526bb1;
   --card-icon-bg: #edf0ff;
-  --card-glow: rgba(89, 125, 255, 0.1);
+  --card-glow: rgba(89, 125, 255, 0.075);
 }
 
 .approvedCard {
   --card-accent: #218456;
   --card-icon-bg: #e7f5ec;
-  --card-glow: rgba(70, 177, 112, 0.1);
+  --card-glow: rgba(70, 177, 112, 0.09);
 }
 
 .pendingCard {
-  --card-accent: #b17a20;
+  --card-accent: #a66e16;
   --card-icon-bg: #fff3dc;
-  --card-glow: rgba(238, 140, 85, 0.1);
+  --card-glow: rgba(238, 175, 85, 0.09);
 }
 
 .missedCard {
-  --card-accent: #8256b6;
+  --card-accent: #7650a6;
   --card-icon-bg: #f1eafb;
-  --card-glow: rgba(130, 86, 182, 0.12);
+  --card-glow: rgba(130, 86, 182, 0.09);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -158,27 +175,35 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 9px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .statIcon {
-  flex: 0 0 39px;
-  width: 39px;
-  height: 39px;
   display: grid;
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
   place-items: center;
-  border: 1px solid color-mix(in srgb, var(--card-accent) 12%, transparent);
-  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--card-accent) 15%, transparent);
+  border-radius: 11px;
   color: var(--card-accent);
   background: var(--card-icon-bg);
 }
 
+.statIcon svg {
+  width: 19px;
+  height: 19px;
+}
+
 .statCategory {
-  color: var(--muted, #738079);
+  min-width: 0;
+  color: #53685b;
   font-size: 10px;
-  line-height: 1.4;
+  line-height: 1.35;
   font-weight: 800;
   text-align: right;
+  overflow-wrap: anywhere;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -190,21 +215,24 @@
   z-index: 1;
   display: flex;
   align-items: baseline;
-  gap: 6px;
-  margin-top: 18px;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+  margin-top: 14px;
 }
 
 .statValue {
-  color: var(--ink, #17251f);
-  font-size: clamp(25px, 2.6vw, 32px);
-  line-height: 1;
+  color: #17291f;
+  font-size: clamp(23px, 2.4vw, 30px);
+  line-height: 1.05;
   font-weight: 900;
   letter-spacing: -0.055em;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
 .statSuffix {
-  color: var(--muted, #738079);
+  color: #65766b;
   font-size: 11px;
   font-weight: 750;
 }
@@ -217,18 +245,20 @@
   position: relative;
   z-index: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  gap: 8px;
+  gap: 7px;
+  min-width: 0;
   margin-top: auto;
-  padding-top: 13px;
+  padding-top: 11px;
 }
 
 .statDescription {
-  color: var(--subtle, #a0aaa4);
+  color: #617267;
   font-size: 10px;
   line-height: 1.45;
-  font-weight: 650;
+  font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -238,62 +268,71 @@
 .secondaryStats {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 20px;
   width: 100%;
-  min-height: 65px;
-  padding: 12px 17px;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 15px;
+  min-width: 0;
+  min-height: 59px;
+  padding: 10px 15px;
+  border: 1px solid #e0e9df;
+  border-radius: 13px;
   background: #ffffff;
+  box-shadow: 0 2px 9px rgba(23, 55, 37, 0.025);
 }
 
 .streakItem,
 .rejectedItem {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   min-width: 0;
 }
 
 .streakIcon {
-  flex: 0 0 34px;
-  width: 34px;
-  height: 34px;
   display: grid;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
   place-items: center;
   border: 1px solid rgba(238, 140, 85, 0.17);
-  border-radius: 10px;
-  color: #d77a39;
+  border-radius: 9px;
+  color: #c86e31;
   background: #fff3e9;
 }
 
+.streakIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
 .rejectedDot {
-  flex: 0 0 9px;
-  width: 9px;
-  height: 9px;
-  margin: 0 12px;
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin: 0 7px;
   border-radius: 50%;
-  background: #d66c5d;
-  box-shadow: 0 0 0 4px rgba(214, 108, 93, 0.1);
+  background: #cf6659;
+  box-shadow: 0 0 0 3px rgba(207, 102, 89, 0.1);
 }
 
 .secondaryText {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
+  min-width: 0;
 }
 
 .secondaryLabel {
-  color: var(--subtle, #a0aaa4);
+  color: #68796e;
   font-size: 9px;
   line-height: 1.3;
   font-weight: 850;
-  letter-spacing: 0.055em;
+  letter-spacing: 0.045em;
   text-transform: uppercase;
 }
 
 .secondaryText strong {
-  color: var(--ink, #17251f);
+  color: #20382a;
   font-size: 13px;
   line-height: 1.3;
   font-weight: 900;
@@ -301,23 +340,25 @@
 }
 
 .secondaryDivider {
+  flex: 0 0 1px;
   width: 1px;
-  height: 32px;
-  background: var(--line, #e2e7e0);
+  height: 30px;
+  background: #e3ebe1;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Skeleton loading                                                           */
+/* Loading skeleton                                                           */
 /* -------------------------------------------------------------------------- */
 
 .skeletonCard {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  min-height: 158px;
-  padding: 17px;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 17px;
+  min-height: 145px;
+  padding: 15px;
+  overflow: hidden;
+  border: 1px solid #e0e9df;
+  border-radius: 15px;
   background: #ffffff;
 }
 
@@ -325,30 +366,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .skeletonTop span:first-child {
-  width: 39px;
-  height: 39px;
-  border-radius: 12px;
+  width: 37px;
+  height: 37px;
+  border-radius: 11px;
 }
 
 .skeletonTop span:last-child {
-  width: 75px;
+  width: 65px;
   height: 10px;
   border-radius: 8px;
 }
 
 .skeletonValue {
-  width: 95px;
-  height: 29px;
-  margin-top: 18px;
+  width: 85px;
+  height: 27px;
+  margin-top: 15px;
   border-radius: 7px;
 }
 
 .skeletonBottom {
-  width: 72%;
+  width: 75%;
   height: 9px;
   margin-top: auto;
   border-radius: 7px;
@@ -357,13 +398,13 @@
 .skeletonTop span,
 .skeletonValue,
 .skeletonBottom {
-  background: linear-gradient(90deg, #edf0eb 25%, #f6f8f4 50%, #edf0eb 75%);
+  background: linear-gradient(90deg, #edf2eb 25%, #f6f8f4 50%, #edf2eb 75%);
   background-size: 200% 100%;
   animation: skeletonShimmer 1.4s ease-in-out infinite;
 }
 
 /* -------------------------------------------------------------------------- */
-/* Animations                                                                 */
+/* Skeleton animation                                                         */
 /* -------------------------------------------------------------------------- */
 
 @keyframes skeletonShimmer {
@@ -377,32 +418,36 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
+/* Medium desktop and tablet                                                  */
 /* -------------------------------------------------------------------------- */
 
 @media (max-width: 1100px) {
   .statsGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 11px;
   }
 
   .statCard {
-    min-height: 150px;
+    min-height: 137px;
   }
 
   .statValue {
-    font-size: 30px;
+    font-size: 28px;
   }
 }
 
+/* -------------------------------------------------------------------------- */
+/* Tablet and mobile                                                          */
+/* -------------------------------------------------------------------------- */
+
 @media (max-width: 680px) {
   .section {
-    gap: 14px;
+    gap: 12px;
   }
 
   .sectionHeader {
     align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+    gap: 9px;
   }
 
   .sectionHeader h2 {
@@ -413,28 +458,33 @@
     font-size: 11px;
   }
 
+  .liveIndicator {
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+
   .statsGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 9px;
   }
 
   .statCard,
   .skeletonCard {
-    min-height: 137px;
-    padding: 13px;
-    border-radius: 14px;
+    min-height: 125px;
+    padding: 11px;
+    border-radius: 12px;
   }
 
   .statIcon {
-    flex-basis: 33px;
-    width: 33px;
-    height: 33px;
-    border-radius: 10px;
+    flex-basis: 31px;
+    width: 31px;
+    height: 31px;
+    border-radius: 9px;
   }
 
   .statIcon svg {
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
   }
 
   .statCategory {
@@ -442,11 +492,20 @@
   }
 
   .statValueRow {
-    margin-top: 15px;
+    gap: 4px;
+    margin-top: 12px;
   }
 
   .statValue {
     font-size: 25px;
+  }
+
+  .statSuffix {
+    font-size: 10px;
+  }
+
+  .cardBottom {
+    padding-top: 9px;
   }
 
   .statDescription {
@@ -454,27 +513,48 @@
   }
 
   .secondaryStats {
-    min-height: 59px;
-    gap: 12px;
-    padding: 10px 12px;
+    min-height: 53px;
+    gap: 13px;
+    padding: 16px;
+  }
+
+  .streakItem,
+  .rejectedItem {
+    gap: 7px;
   }
 
   .streakIcon {
-    flex-basis: 30px;
-    width: 30px;
-    height: 30px;
+    flex-basis: 29px;
+    width: 29px;
+    height: 29px;
+  }
+
+  .secondaryText strong {
+    font-size: 12px;
   }
 }
 
-@media (max-width: 390px) {
+/* -------------------------------------------------------------------------- */
+/* Small mobile                                                               */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 430px) {
+  .sectionHeader {
+    flex-wrap: wrap;
+  }
+
+  .liveIndicator {
+    margin-top: 2px;
+  }
+
   .statsGrid {
     gap: 8px;
   }
 
   .statCard,
   .skeletonCard {
-    min-height: 132px;
-    padding: 11px;
+    min-height: 119px;
+    padding: 10px;
   }
 
   .statCategory {
@@ -486,18 +566,103 @@
   }
 
   .statDescription {
-    font-size: 8px;
+    font-size: 9px;
+    line-height: 1.35;
   }
 
   .secondaryStats {
-    gap: 8px;
-    padding: 10px;
+    gap: 9px;
+    padding: 12px 14px;
   }
 
   .secondaryLabel {
     font-size: 8px;
   }
+
+  .rejectedDot {
+    margin: 0 4px;
+  }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Very narrow mobile                                                         */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 340px) {
+  .sectionHeader h2 {
+    font-size: 16px;
+  }
+
+  .sectionHeader p {
+    font-size: 10px;
+  }
+
+  .liveIndicator {
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .statsGrid {
+    gap: 7px;
+  }
+
+  .statCard,
+  .skeletonCard {
+    min-height: 112px;
+    padding: 8px;
+    border-radius: 10px;
+  }
+
+  .statIcon {
+    flex-basis: 27px;
+    width: 27px;
+    height: 27px;
+  }
+
+  .statIcon svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .statCategory {
+    font-size: 8px;
+  }
+
+  .statValue {
+    font-size: 21px;
+  }
+
+  .statDescription {
+    font-size: 8px;
+  }
+
+  .secondaryStats {
+    gap: 7px;
+    padding: 8px;
+  }
+
+  .streakIcon {
+    flex-basis: 25px;
+    width: 25px;
+    height: 25px;
+  }
+
+  .secondaryLabel {
+    font-size: 7px;
+  }
+
+  .secondaryText strong {
+    font-size: 11px;
+  }
+
+  .secondaryDivider {
+    height: 25px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Accessibility                                                              */
+/* -------------------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
   .statCard,
@@ -506,5 +671,9 @@
   .skeletonBottom {
     animation: none;
     transition: none;
+  }
+
+  .statCard:hover {
+    transform: none;
   }
 }

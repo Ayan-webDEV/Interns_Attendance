@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 
 import AttendanceSessionCard from "../AttendanceSessionCard";
 import styles from "./AttendanceSessions.module.css";
+import SectionHeader from "../../../components/SectionHeader/SectionHeader";
 
 /* -------------------------------------------------------------------------- */
 /* Helpers                                                                    */
@@ -385,26 +386,19 @@ export default function AttendanceSessions({
       aria-label="Today's attendance sessions"
     >
       <div className={styles.sectionHeader}>
-        <div className={styles.headingGroup}>
-          <span className={styles.headingIcon}>
-            <SessionsIcon />
-          </span>
+        <SectionHeader
+          eye={"DAILY ATTENDANCE"}
+          hds={"Your Sessions"}
+          para={
+            "Each session has its own attendance window. Missing or having one session rejected does not block the other."
+          }
+          badge={"2 Sessions"}
+        />
 
-          <div>
-            <span className={styles.eyebrow}>DAILY ATTENDANCE</span>
-            <h2>Your sessions</h2>
-
-            <p>
-              Each session has its own attendance window. Missing or having one
-              session rejected does not block the other.
-            </p>
-          </div>
-        </div>
-
-        <span className={styles.sessionCount}>
+        {/* <span className={styles.sessionCount}>
           {safeSessions.length}{" "}
           {safeSessions.length === 1 ? "session" : "sessions"}
-        </span>
+        </span> */}
       </div>
 
       <SessionSummary summary={summary} />

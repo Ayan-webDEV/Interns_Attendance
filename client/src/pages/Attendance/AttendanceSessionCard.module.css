@@ -1,16 +1,25 @@
-/* -------------------------------------------------------------------------- */
-/* Session card                                                               */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   ATTENDANCE SESSION CARD — PREMIUM GREEN THEME
+========================================================= */
 
 .card {
   position: relative;
+  width: 100%;
   min-width: 0;
-  padding: 22px;
+  padding: 20px;
   overflow: hidden;
-  border: 1px solid var(--line, #e2e7e0);
-  border-radius: 20px;
-  background: var(--paper, #ffffff);
-  box-shadow: 0 5px 18px rgba(23, 37, 31, 0.035);
+  border: 1px solid #dce8df;
+  border-radius: 17px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(76, 153, 96, 0.055),
+      transparent 36%
+    ),
+    #ffffff;
+  box-shadow:
+    0 5px 17px rgba(27, 66, 41, 0.045),
+    0 1px 3px rgba(27, 66, 41, 0.025);
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
@@ -18,56 +27,84 @@
 }
 
 .card:hover {
-  border-color: rgba(34, 102, 75, 0.24);
-  box-shadow: 0 9px 25px rgba(23, 37, 31, 0.065);
-  transform: translateY(-1px);
+  border-color: #b8d6c0;
+  box-shadow:
+    0 9px 23px rgba(27, 66, 41, 0.075),
+    0 2px 5px rgba(27, 66, 41, 0.025);
+  transform: translateY(-2px);
 }
 
 .activeCard {
-  border-color: rgba(34, 102, 75, 0.42);
-  background: linear-gradient(145deg, rgba(223, 247, 167, 0.2), #ffffff 44%);
+  border-color: #80bd91;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(65, 157, 91, 0.11),
+      transparent 42%
+    ),
+    #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(49, 139, 77, 0.075),
+    0 7px 20px rgba(27, 66, 41, 0.06);
 }
 
 .approvedCard {
-  border-color: rgba(34, 102, 75, 0.2);
+  border-color: #c8e2ce;
 }
 
 .rejectedCard {
-  border-color: rgba(213, 91, 73, 0.22);
+  border-color: #e9ceca;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Header                                                                     */
-/* -------------------------------------------------------------------------- */
+.missedCard {
+  border-color: #e2d2e9;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgba(133, 84, 158, 0.07),
+      transparent 40%
+    ),
+    #ffffff;
+}
+
+.missedCard:hover {
+  border-color: #c9add6;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 .cardHeader {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+  min-width: 0;
 }
 
 .sessionIdentity {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 11px;
   min-width: 0;
 }
 
 .sessionNumber {
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
   display: grid;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
   place-items: center;
-  border: 1px solid rgba(34, 102, 75, 0.12);
-  border-radius: 14px;
-  color: var(--green, #174b38);
-  background: var(--mint-2, #edf9d5);
+  border: 1px solid #d4e7d8;
+  border-radius: 12px;
+  color: #216b42;
+  background: linear-gradient(145deg, #f0faf2, #e4f3e7);
+  box-shadow: 0 3px 8px rgba(38, 111, 65, 0.055);
 }
 
 .sessionNumber span {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
   letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
@@ -81,61 +118,63 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 9px;
+  gap: 8px;
 }
 
 .titleLine h3 {
   margin: 0;
-  color: var(--ink, #17251f);
+  color: #20382a;
   font-size: 16px;
-  line-height: 1.35;
-  font-weight: 850;
+  line-height: 1.4;
+  font-weight: 900;
   letter-spacing: -0.025em;
 }
 
 .sessionHeading > p {
   margin: 5px 0 0;
-  color: var(--muted, #738079);
-  font-size: 12px;
+  color: #64766a;
+  font-size: 11px;
   line-height: 1.5;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Live badge                                                                 */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   LIVE BADGE
+========================================================= */
 
 .liveBadge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   padding: 5px 9px;
-  border: 1px solid rgba(34, 102, 75, 0.16);
+  border: 1px solid #cce5d2;
   border-radius: 999px;
-  color: var(--green, #174b38);
-  background: rgba(223, 247, 167, 0.48);
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 850;
+  color: #216b42;
+  background: #eff8f0;
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 900;
   white-space: nowrap;
 }
 
 .liveDot {
   width: 7px;
   height: 7px;
+  flex: 0 0 7px;
   border-radius: 50%;
-  background: #24965e;
-  box-shadow: 0 0 0 3px rgba(36, 150, 94, 0.12);
+  background: #269653;
+  box-shadow: 0 0 0 3px rgba(38, 150, 83, 0.12);
   animation: livePulse 1.8s ease-in-out infinite;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Status badge                                                               */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   STATUS BADGES
+========================================================= */
 
 .statusBadge {
-  flex: 0 0 auto;
   display: inline-flex;
+  flex: 0 0 auto;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -143,95 +182,106 @@
   padding: 7px 10px;
   border: 1px solid transparent;
   border-radius: 999px;
-  font-size: 11px;
-  line-height: 1.2;
-  font-weight: 800;
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 850;
   white-space: nowrap;
 }
 
 .statusBadge svg {
   flex: 0 0 auto;
+  width: 14px;
+  height: 14px;
 }
 
 .approved {
+  border-color: #cce6d3;
   color: #176340;
-  border-color: rgba(34, 125, 76, 0.15);
-  background: #e9f7ee;
+  background: #eaf7ed;
 }
 
 .pending {
-  color: #8b620e;
-  border-color: rgba(197, 145, 39, 0.18);
-  background: #fff6df;
+  border-color: #eeddbb;
+  color: #895e17;
+  background: #fff6e3;
 }
 
 .rejected {
-  color: #a53c32;
-  border-color: rgba(213, 91, 73, 0.18);
+  border-color: #edcfca;
+  color: #9c4439;
   background: #fff0ed;
 }
 
 .review {
-  color: #5365a2;
-  border-color: rgba(89, 125, 255, 0.18);
-  background: #eff2ff;
+  border-color: #d9def1;
+  color: #4f6098;
+  background: #f0f2fb;
 }
 
 .notStarted {
-  color: #64736b;
-  border-color: rgba(115, 128, 121, 0.14);
-  background: #f2f5f2;
+  border-color: #dce5de;
+  color: #5d7063;
+  background: #f2f6f2;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Session details                                                            */
-/* -------------------------------------------------------------------------- */
+.missed {
+  border-color: #e2cfe9;
+  color: #77418e;
+  background: #f5eafa;
+}
+
+/* =========================================================
+   SESSION DETAILS
+========================================================= */
 
 .sessionDetails {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 21px;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .detailItem {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 7px;
   min-width: 0;
-  padding: 12px 13px;
-  border: 1px solid rgba(226, 231, 224, 0.9);
-  border-radius: 12px;
-  background: #fafbf9;
+  padding: 12px;
+  border: 1px solid #e3ebe4;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #ffffff, #f8faf8);
 }
 
 .detailLabel {
-  color: var(--subtle, #a0aaa4);
-  font-size: 10px;
-  line-height: 1.3;
-  font-weight: 800;
-  letter-spacing: 0.055em;
+  color: #718176;
+  font-size: 9px;
+  line-height: 1.35;
+  font-weight: 850;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
 .detailValue {
   max-width: 100%;
-  color: var(--ink, #17251f);
-  font-size: 12px;
-  line-height: 1.4;
-  font-weight: 750;
+  color: #294333;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 800;
   overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .windowValue {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  color: var(--muted, #738079);
-  font-size: 12px;
-  line-height: 1.4;
+  gap: 8px;
+  min-width: 0;
+  color: #617368;
+  font-size: 10px;
+  line-height: 1.45;
   font-weight: 750;
+  overflow-wrap: anywhere;
 }
 
 .windowDot {
@@ -239,7 +289,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #9ba59f;
+  background: #a1ada4;
 }
 
 .windowOpen {
@@ -259,80 +309,113 @@
   background: #d47b61;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Status description                                                         */
-/* -------------------------------------------------------------------------- */
+/* =========================================================
+   STATUS DESCRIPTION
+========================================================= */
 
 .statusDescription {
   display: flex;
   align-items: flex-start;
-  gap: 9px;
-  margin-top: 15px;
-  padding: 11px 12px;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #e5ece6;
   border-radius: 11px;
-  background: #f7f9f6;
+  background: #f7faf7;
 }
 
 .statusDescriptionIcon {
-  flex: 0 0 17px;
-  width: 17px;
-  height: 17px;
   display: grid;
+  flex: 0 0 19px;
+  width: 19px;
+  height: 19px;
   place-items: center;
   margin-top: 1px;
-  color: var(--green-2, #22664b);
+  color: #34764d;
 }
 
 .statusDescriptionIcon svg {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
 }
 
-.statusDescription p {
+.statusDescriptionContent {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.statusDescriptionContent p {
   min-width: 0;
   margin: 0;
-  color: var(--muted, #738079);
-  font-size: 11px;
-  line-height: 1.65;
+  color: #596e60;
+  font-size: 10px;
+  line-height: 1.7;
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Footer and action                                                          */
-/* -------------------------------------------------------------------------- */
+.missedMeta {
+  display: block;
+  margin-top: 7px;
+  color: #805b8e;
+  font-size: 9px;
+  line-height: 1.5;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.missedReason {
+  display: block;
+  margin-top: 5px;
+  color: #765b7e;
+  font-size: 9px;
+  line-height: 1.6;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   FOOTER AND ACTION
+========================================================= */
 
 .cardFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  margin-top: 18px;
+  gap: 13px;
+  margin-top: 16px;
 }
 
 .footerHint {
   max-width: 58%;
-  color: var(--subtle, #a0aaa4);
-  font-size: 10px;
-  line-height: 1.55;
+  color: #68796e;
+  font-size: 9px;
+  line-height: 1.6;
   font-weight: 650;
 }
 
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
 .actionButton {
+  display: inline-flex;
   flex: 0 0 auto;
   min-height: 40px;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0 16px;
-  border: 1px solid var(--green, #174b38);
-  border-radius: 11px;
+  padding: 0 15px;
+  border: 1px solid #216b42;
+  border-radius: 10px;
   color: #ffffff;
-  background: var(--green, #174b38);
-  font: inherit;
-  font-size: 11px;
+  background: linear-gradient(105deg, #205f3b, #287b4b);
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 1.3;
   font-weight: 850;
   cursor: pointer;
+  box-shadow: 0 3px 9px rgba(33, 107, 66, 0.11);
   transition:
     background 160ms ease,
     border-color 160ms ease,
@@ -342,9 +425,9 @@
 }
 
 .actionButton:hover:not(:disabled) {
-  border-color: var(--green-2, #22664b);
-  background: var(--green-2, #22664b);
-  box-shadow: 0 5px 13px rgba(23, 75, 56, 0.16);
+  border-color: #185a35;
+  background: linear-gradient(105deg, #185b36, #216d40);
+  box-shadow: 0 5px 13px rgba(23, 75, 56, 0.17);
   transform: translateY(-1px);
 }
 
@@ -353,57 +436,59 @@
 }
 
 .actionButton:focus-visible {
-  outline: 3px solid rgba(89, 125, 255, 0.35);
+  outline: 3px solid rgba(45, 133, 79, 0.3);
   outline-offset: 3px;
 }
 
 .actionButton:disabled {
   cursor: not-allowed;
-  opacity: 0.62;
+  opacity: 0.72;
 }
 
 .actionButton svg {
   flex: 0 0 auto;
+  width: 15px;
+  height: 15px;
 }
 
-.approvedButton {
-  border-color: #d8eee0;
-  color: #176340;
-  background: #e9f7ee;
-  box-shadow: none;
-  opacity: 1;
-}
+/* Approved action */
 
+.approvedButton,
 .approvedButton:disabled {
+  border-color: #cce6d3;
   color: #176340;
-  background: #e9f7ee;
-  opacity: 1;
-}
-
-.submittedButton {
-  border-color: #f3e2b7;
-  color: #8b620e;
-  background: #fff6df;
+  background: #eaf7ed;
   box-shadow: none;
   opacity: 1;
 }
 
+/* Submitted action */
+
+.submittedButton,
 .submittedButton:disabled {
-  color: #8b620e;
-  background: #fff6df;
-  opacity: 1;
-}
-
-.activeButton {
-  border-color: #dcebdc;
-  color: var(--green, #174b38);
-  background: #edf5eb;
+  border-color: #eeddbb;
+  color: #895e17;
+  background: #fff6e3;
   box-shadow: none;
   opacity: 1;
 }
+
+/* Active session action */
+
+.activeButton,
+.activeButton:disabled {
+  border-color: #cfe4d3;
+  color: #216b42;
+  background: #eff7f0;
+  box-shadow: none;
+  opacity: 1;
+}
+
+/* Retry action */
 
 .retryButton {
   border-color: #a94a3e;
+  color: #ffffff;
   background: #a94a3e;
 }
 
@@ -412,202 +497,11 @@
   background: #913b31;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Button indicators                                                          */
-/* -------------------------------------------------------------------------- */
-
-.buttonArrow {
-  display: inline-grid;
-  place-items: center;
-  width: 16px;
-  height: 16px;
-  font-size: 17px;
-  line-height: 1;
-}
-
-.buttonSpinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: buttonSpin 700ms linear infinite;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Animations                                                                 */
-/* -------------------------------------------------------------------------- */
-
-@keyframes livePulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 3px rgba(36, 150, 94, 0.1);
-  }
-
-  50% {
-    box-shadow: 0 0 0 5px rgba(36, 150, 94, 0.04);
-  }
-}
-
-@keyframes buttonSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Responsive                                                                 */
-/* -------------------------------------------------------------------------- */
-
-@media (max-width: 700px) {
-  .card {
-    padding: 17px;
-    border-radius: 17px;
-  }
-
-  .cardHeader {
-    gap: 10px;
-  }
-
-  .sessionIdentity {
-    gap: 10px;
-  }
-
-  .sessionNumber {
-    flex-basis: 39px;
-    width: 39px;
-    height: 39px;
-    border-radius: 12px;
-  }
-
-  .titleLine h3 {
-    font-size: 14px;
-  }
-
-  .statusBadge {
-    gap: 5px;
-    padding: 6px 8px;
-    font-size: 10px;
-  }
-
-  .sessionDetails {
-    margin-top: 17px;
-    gap: 9px;
-  }
-
-  .detailItem {
-    padding: 10px;
-  }
-
-  .cardFooter {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .footerHint {
-    max-width: 100%;
-  }
-
-  .actionButton {
-    width: 100%;
-    min-height: 42px;
-  }
-}
-
-@media (max-width: 430px) {
-  .card {
-    padding: 14px;
-  }
-
-  .cardHeader {
-    flex-wrap: wrap;
-  }
-
-  .statusBadge {
-    margin-left: 49px;
-  }
-
-  .sessionDetails {
-    grid-template-columns: 1fr;
-  }
-
-  .detailItem {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-
-  .detailValue,
-  .windowValue {
-    text-align: right;
-  }
-
-  .statusDescription {
-    padding: 10px;
-  }
-
-  .statusDescription p {
-    font-size: 10px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .actionButton,
-  .liveDot,
-  .buttonSpinner {
-    animation: none;
-    transition: none;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Missed-session state                                                       */
-/* -------------------------------------------------------------------------- */
-
-.missedCard {
-  border-color: rgba(133, 84, 158, 0.3);
-  background: linear-gradient(145deg, rgba(246, 237, 250, 0.72), #ffffff 48%);
-}
-
-.missedCard:hover {
-  border-color: rgba(133, 84, 158, 0.42);
-}
-
-.missed {
-  color: #77418e;
-  border-color: rgba(133, 84, 158, 0.2);
-  background: #f5eafa;
-}
-
-.statusDescriptionContent {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-.missedMeta {
-  display: block;
-  margin-top: 7px;
-  color: #805b8e;
-  font-size: 10px;
-  line-height: 1.5;
-  font-weight: 750;
-}
-
-.missedReason {
-  display: block;
-  margin-top: 5px;
-  color: #765b7e;
-  font-size: 10px;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
+/* Missed action */
 
 .missedButton,
 .missedButton:disabled {
-  border-color: #e8d8ee;
+  border-color: #e2cfe9;
   color: #77418e;
   background: #f5eafa;
   box-shadow: none;
@@ -620,9 +514,335 @@
   box-shadow: none;
 }
 
+/* =========================================================
+   BUTTON INDICATORS
+========================================================= */
+
+.buttonArrow {
+  display: inline-grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  font-size: 17px;
+  line-height: 1;
+}
+
+.buttonSpinner {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 14px;
+  border: 2px solid rgba(255, 255, 255, 0.38);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: buttonSpin 700ms linear infinite;
+}
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes livePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(36, 150, 94, 0.12);
+  }
+
+  50% {
+    box-shadow: 0 0 0 5px rgba(36, 150, 94, 0.035);
+  }
+}
+
+@keyframes buttonSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
+  .card {
+    padding: 17px;
+  }
+
+  .sessionDetails {
+    gap: 9px;
+  }
+
+  .detailItem {
+    padding: 10px;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+  .card {
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .cardHeader {
+    gap: 10px;
+  }
+
+  .sessionIdentity {
+    gap: 9px;
+  }
+
+  .sessionNumber {
+    flex-basis: 37px;
+    width: 37px;
+    height: 37px;
+    border-radius: 11px;
+  }
+
+  .titleLine h3 {
+    font-size: 14px;
+  }
+
+  .sessionHeading > p {
+    font-size: 10px;
+  }
+
+  .statusBadge {
+    gap: 5px;
+    padding: 6px 8px;
+    font-size: 9px;
+  }
+
+  .sessionDetails {
+    margin-top: 15px;
+    gap: 8px;
+  }
+
+  .detailItem {
+    padding: 10px;
+  }
+
+  .detailLabel {
+    font-size: 8px;
+  }
+
+  .detailValue {
+    font-size: 10px;
+  }
+
+  .windowValue {
+    font-size: 9px;
+  }
+
+  .statusDescription {
+    gap: 8px;
+    margin-top: 12px;
+    padding: 10px;
+  }
+
+  .statusDescriptionContent p {
+    font-size: 10px;
+  }
+
+  .cardFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 11px;
+    margin-top: 14px;
+  }
+
+  .footerHint {
+    max-width: 100%;
+  }
+
+  .actionButton {
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+/* =========================================================
+   NARROW MOBILE
+========================================================= */
+
 @media (max-width: 430px) {
+  .card {
+    padding: 13px;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+  }
+
+  .statusBadge {
+    margin-left: 46px;
+  }
+
+  .sessionDetails {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .detailItem {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .detailLabel {
+    flex: 0 0 auto;
+  }
+
+  .detailValue,
+  .windowValue {
+    max-width: 65%;
+    text-align: right;
+    justify-content: flex-end;
+  }
+
+  .statusDescription {
+    padding: 10px;
+  }
+
   .missedMeta,
   .missedReason {
     font-size: 9px;
+  }
+}
+
+/* =========================================================
+   VERY NARROW SCREENS — 300PX+
+========================================================= */
+
+@media (max-width: 340px) {
+  .card {
+    padding: 11px;
+    border-radius: 13px;
+  }
+
+  .sessionIdentity {
+    gap: 8px;
+  }
+
+  .sessionNumber {
+    flex-basis: 33px;
+    width: 33px;
+    height: 33px;
+    border-radius: 9px;
+  }
+
+  .sessionNumber span {
+    font-size: 11px;
+  }
+
+  .titleLine {
+    gap: 6px;
+  }
+
+  .titleLine h3 {
+    font-size: 13px;
+  }
+
+  .sessionHeading > p {
+    font-size: 9px;
+  }
+
+  .liveBadge {
+    gap: 5px;
+    padding: 4px 7px;
+    font-size: 8px;
+  }
+
+  .statusBadge {
+    margin-left: 41px;
+    padding: 5px 7px;
+    font-size: 8px;
+  }
+
+  .sessionDetails {
+    gap: 7px;
+    margin-top: 13px;
+  }
+
+  .detailItem {
+    gap: 7px;
+    padding: 9px;
+  }
+
+  .detailLabel {
+    font-size: 7.5px;
+  }
+
+  .detailValue {
+    font-size: 9px;
+  }
+
+  .windowValue {
+    gap: 6px;
+    font-size: 8px;
+  }
+
+  .statusDescription {
+    gap: 7px;
+    margin-top: 10px;
+    padding: 9px;
+  }
+
+  .statusDescriptionIcon {
+    flex-basis: 16px;
+    width: 16px;
+    height: 16px;
+  }
+
+  .statusDescriptionIcon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .statusDescriptionContent p {
+    font-size: 9px;
+    line-height: 1.6;
+  }
+
+  .missedMeta,
+  .missedReason {
+    font-size: 8px;
+  }
+
+  .cardFooter {
+    gap: 9px;
+    margin-top: 12px;
+  }
+
+  .footerHint {
+    font-size: 8px;
+  }
+
+  .actionButton {
+    min-height: 40px;
+    gap: 7px;
+    padding: 0 9px;
+    font-size: 9px;
+  }
+}
+
+/* =========================================================
+   ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .actionButton,
+  .liveDot,
+  .buttonSpinner {
+    animation: none;
+    transition: none;
+  }
+
+  .card:hover,
+  .actionButton:hover:not(:disabled) {
+    transform: none;
   }
 }
