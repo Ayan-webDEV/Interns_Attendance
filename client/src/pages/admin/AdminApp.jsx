@@ -69,6 +69,8 @@ import AdminSidebar from "./components/AdminSidebar.jsx";
 import AdminHeader from "./components/AdminHeader.jsx";
 import AdminMobileNavigation from "./components/AdminMobileNavigation.jsx";
 
+// console.log("just trigring the re-deployemnt in vercel")
+
 const NAV = [
   ["overview", "Overview", LayoutDashboard],
   ["groups", "Groups & invites", Users],
@@ -113,13 +115,7 @@ const csvDownload = async (path, token, method = "GET") => {
   a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 };
-function AdminApp({
-  session,
-  tab,
-  setTab,
-  notify,
-  onLogout,
-}) {
+function AdminApp({ session, tab, setTab, notify, onLogout }) {
   const [overview, setOverview] = useState(null),
     [groups, setGroups] = useState([]),
     [interns, setInterns] = useState([]),
@@ -817,7 +813,13 @@ function AdminApp({
               />
             )}
             {tab === "wallet" && (
-              <WalletPage session={session} groups={groups} interns={allInterns} notify={notify} onAdjusted={() => refresh(true)} />
+              <WalletPage
+                session={session}
+                groups={groups}
+                interns={allInterns}
+                notify={notify}
+                onAdjusted={() => refresh(true)}
+              />
             )}
             {tab === "promos" && (
               <PromosPage
@@ -883,7 +885,9 @@ function AdminApp({
             }
           >
             <div className="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4 text-sm leading-6 text-[var(--muted)]">
-              Two different admin accounts must approve group completion. The second approval closes attendance, unlocks certification status and triggers an updated cumulative CSV archive.
+              Two different admin accounts must approve group completion. The
+              second approval closes attendance, unlocks certification status
+              and triggers an updated cumulative CSV archive.
             </div>
             <Field label="Confirm your admin password">
               <input
