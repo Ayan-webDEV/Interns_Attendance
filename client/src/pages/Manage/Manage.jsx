@@ -72,6 +72,18 @@ export default function Manage({ user }) {
     [sessionFilter, setSessionFilter] = useState(""),
     [selected, setSelected] = useState([]),
     [form, setForm] = useState(blankGroup),
+    [deletePassword, setDeletePassword] = useState(""),
+    [deleteFirstApproved, setDeleteFirstApproved] = useState(false),
+    [manualIntern, setManualIntern] = useState({
+      name: "",
+      email: "",
+      internId: "",
+      password: "",
+      domain: "",
+      whatsappNumber: "",
+      gender: "",
+      internshipStartDate: "",
+    }),
     [editing, setEditing] = useState(null),
     [modal, setModal] = useState(""),
     [target, setTarget] = useState(null),
@@ -328,30 +340,127 @@ export default function Manage({ user }) {
       return;
     }
 
-    if (action === "attendanceExport") {
+    // if (action === "attendanceExport") {
+    //   await run(async () => {
+    //     const blob = await api(`/groups/${g._id}/attendance-export`);
+
+    //     saveBlob(
+    //       blob,
+    //       `VELOop-${g.name.replace(/[^a-z0-9-_]/gi, "-")}-Attendance-${new Date().toISOString().slice(0, 10)}.xlsx`,
+    //     );
+    //   }, "Group attendance Excel file downloaded.");
+
+    //   return;
+    // }
+
+    if (
+      ["attendanceExport", "attendanceToday", "attendanceYesterday"].includes(
+        action,
+      )
+    ) {
       await run(async () => {
-        const blob = await api(`/groups/${g._id}/attendance-export`);
+        const exportType =
+          action === "attendanceToday"
+            ? "today"
+            : action === "attendanceYesterday"
+              ? "yesterday"
+              : null;
+
+        const endpoint = exportType
+          ? `/groups/${g._id}/attendance-export/${exportType}`
+          : `/groups/${g._id}/attendance-export`;
+
+        const blob = await api(endpoint);
+
+        const today = new Date();
+        const targetDate = new Date(today);
+
+        if (exportType === "yesterday") {
+          targetDate.setDate(targetDate.getDate() - 1);
+        }
+
+        const dateKey = new Intl.DateTimeFormat("en-CA", {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(targetDate);
+
+        const label =
+          exportType === "today"
+            ? "Today"
+            : exportType === "yesterday"
+              ? "Yesterday"
+              : "Full";
 
         saveBlob(
           blob,
-          `VELOop-${g.name.replace(/[^a-z0-9-_]/gi, "-")}-Attendance-${new Date().toISOString().slice(0, 10)}.xlsx`,
+          `VELOop-${g.name.replace(/[^a-z0-9-_]/gi, "-")}-${label}-Attendance-${dateKey}.xlsx`,
         );
-      }, "Group attendance Excel file downloaded.");
+      }, "Attendance Excel file downloaded.");
 
       return;
     }
 
+    // if (action === "delete") {
+    //   if (
+    //     !confirm(
+    //       "Permanently delete this completed group and its live records? Ensure the CSV archive has been downloaded first.",
+    //     )
+    //   )
+    //     return;
+    //   await run(
+    //     () => api(`/groups/${g._id}`, { method: "DELETE" }),
+    //     "Group deleted after archive verification.",
+    //   );
+    // }
+    // if (action === "delete") {
+    //   const isCompleted = g.status === "completed";
+    //   const internCount = Number(g.internCount || 0);
+
+    //   if (!isCompleted && internCount > 0) {
+    //     toast(
+    //       "This group has interns. Transfer or remove them before deleting the group.",
+    //       "error",
+    //     );
+    //     return;
+    //   }
+
+    //   const message = isCompleted
+    //     ? "Permanently delete this completed group and its live records? Ensure the CSV archive has been downloaded first."
+    //     : "Permanently delete this empty internship group? This action cannot be undone.";
+
+    //   if (!confirm(message)) return;
+
+    //   await run(
+    //     () => api(`/groups/${g._id}`, { method: "DELETE" }),
+    //     isCompleted
+    //       ? "Completed group deleted after archive verification."
+    //       : "Empty group deleted successfully.",
+    //   );
+
+    //   return;
+    // }
     if (action === "delete") {
-      if (
-        !confirm(
-          "Permanently delete this completed group and its live records? Ensure the CSV archive has been downloaded first.",
-        )
-      )
+      const isCompleted = g.status === "completed";
+      const internCount = Number(g.internCount || 0);
+
+      // Only empty, non-completed groups can be deleted.
+      if (!isCompleted && internCount > 0) {
+        toast(
+          "This group has interns. Transfer or remove them before deleting the group.",
+          "error",
+        );
         return;
-      await run(
-        () => api(`/groups/${g._id}`, { method: "DELETE" }),
-        "Group deleted after archive verification.",
-      );
+      }
+
+      // Open the custom two-admin approval modal.
+      setTarget(g);
+      setDeletePassword("");
+      setDeleteFirstApproved(false);
+      setModal("deleteGroup");
+
+      return;
     }
   };
   const submitGroup = (e) => {
@@ -365,6 +474,92 @@ export default function Manage({ user }) {
       editing ? "Group details updated." : "Group created.",
     );
   };
+
+  const openManualIntern = (group) => {
+    setTarget(group);
+    setManualIntern({
+      name: "",
+      email: "",
+      internId: "",
+      password: "",
+      domain: "",
+      whatsappNumber: "",
+      gender: "",
+      internshipStartDate: "",
+    });
+    setModal("addIntern");
+  };
+
+  const submitManualIntern = async (e) => {
+    e.preventDefault();
+
+    if (!target?._id) {
+      toast("Please select an internship group.", "error");
+      return;
+    }
+
+    setBusy(true);
+
+    try {
+      await api(`/groups/${target._id}/interns`, {
+        method: "POST",
+        body: manualIntern,
+      });
+
+      toast("Intern added to the group successfully.");
+
+      setModal("");
+
+      // Refresh group counts and the group intern list.
+      await load();
+
+      const response = await api(`/groups/${target._id}/interns`);
+      setGroupInterns(response.interns || []);
+    } catch (e) {
+      toast(e.message, "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const submitDeleteGroup = async (e) => {
+    e.preventDefault();
+
+    if (!target?._id || !deletePassword) {
+      toast("Enter the admin password.", "error");
+      return;
+    }
+
+    setBusy(true);
+
+    try {
+      const response = await api(`/groups/${target._id}`, {
+        method: "DELETE",
+        body: { password: deletePassword },
+      });
+
+      if (response.approvalRequired) {
+        setDeleteFirstApproved(true);
+        setDeletePassword("");
+        toast(
+          "First approval recorded. A different admin must provide the second approval.",
+        );
+        return;
+      }
+
+      toast("Group deleted successfully.");
+      setModal("");
+      setDeletePassword("");
+      setDeleteFirstApproved(false);
+      setTarget(null);
+      await load();
+    } catch (e) {
+      toast(e.message, "error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const approve = async (all = false) =>
     run(
       async () => {
@@ -469,6 +664,11 @@ export default function Manage({ user }) {
                   </div>
                 </div>
                 <div className={styles.cardActions}>
+                  {!["completed", "completion_pending"].includes(g.status) && (
+                    <button onClick={() => openManualIntern(g)}>
+                      <Plus size={14} /> Add Intern
+                    </button>
+                  )}
                   <button
                     onClick={async () => {
                       setTarget(g);
@@ -496,9 +696,26 @@ export default function Manage({ user }) {
                     Export Excel
                   </button>
 
+                  <button
+                    onClick={() => groupAction("attendanceToday", g)}
+                    title="Export only today's attendance"
+                  >
+                    <Download size={14} />
+                    Export Today
+                  </button>
+
+                  <button
+                    onClick={() => groupAction("attendanceYesterday", g)}
+                    title="Export only yesterday's attendance"
+                  >
+                    <Download size={14} />
+                    Export Yesterday
+                  </button>
+
                   <button onClick={() => openGroup(g)}>
                     <Edit3 size={14} /> Edit
                   </button>
+
                   <button onClick={() => groupAction("reset", g)}>
                     <RefreshCw size={14} /> Reset link
                   </button>
@@ -527,18 +744,17 @@ export default function Manage({ user }) {
                     </button>
                   )}
                   {g.status === "completed" && (
-                    <>
-                      <button onClick={() => groupAction("export", g)}>
-                        <Download size={14} /> Export full CSV
-                      </button>
-                      <button
-                        className={styles.dangerBtn}
-                        onClick={() => groupAction("delete", g)}
-                      >
-                        <Trash2 size={14} /> Delete group
-                      </button>
-                    </>
+                    <button onClick={() => groupAction("export", g)}>
+                      <Download size={14} /> Export full CSV
+                    </button>
                   )}
+
+                  <button
+                    className={styles.dangerBtn}
+                    onClick={() => groupAction("delete", g)}
+                  >
+                    <Trash2 size={14} /> Delete group
+                  </button>
                 </div>
               </article>
             ))}
@@ -637,6 +853,277 @@ export default function Manage({ user }) {
             </form>
           </Modal>
         )}
+
+        {modal === "addIntern" && (
+          <Modal title="Add Intern to Group" close={() => setModal("")}>
+            <p className={styles.modalSub}>
+              Add an intern manually to <b>{target?.name}</b>. Offer-letter
+              verification is not required.
+            </p>
+
+            <form className={styles.formGrid} onSubmit={submitManualIntern}>
+              <label>
+                Full name
+                <input
+                  required
+                  minLength={2}
+                  value={manualIntern.name}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      name: e.target.value,
+                    })
+                  }
+                  placeholder="Enter full name"
+                />
+              </label>
+
+              <label>
+                Email address
+                <input
+                  type="email"
+                  required
+                  value={manualIntern.email}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      email: e.target.value,
+                    })
+                  }
+                  placeholder="intern@example.com"
+                />
+              </label>
+
+              <label>
+                Intern ID
+                <input
+                  required
+                  value={manualIntern.internId}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      internId: e.target.value.toUpperCase(),
+                    })
+                  }
+                  placeholder="VLRINT20269XXXX"
+                />
+              </label>
+
+              <label>
+                Login password
+                <input
+                  type="password"
+                  required
+                  minLength={10}
+                  value={manualIntern.password}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      password: e.target.value,
+                    })
+                  }
+                  placeholder="Minimum 10 characters"
+                />
+              </label>
+
+              {/* <label>
+                Internship domain
+                <input
+                  required
+                  value={manualIntern.domain}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      domain: e.target.value,
+                    })
+                  }
+                  placeholder="Frontend Development"
+                />
+              </label> */}
+              <label>
+                Internship domain
+                <select
+                  required
+                  value={manualIntern.domain}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      domain: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Select internship domain</option>
+                  <option value="Frontend Development">
+                    Frontend Development
+                  </option>
+                  <option value="Backend Development">
+                    Backend Development
+                  </option>
+                  <option value="Full Stack Development">
+                    Full Stack Development
+                  </option>
+                  <option value="UI/UX Design">UI/UX Design</option>
+                  <option value="Graphic Design">Graphic Design</option>
+                  <option value="App Development">App Development</option>
+                  <option value="Data Analytics">Data Analytics</option>
+                  <option value="Digital Marketing">Digital Marketing</option>
+                  <option value="Content Writing">Content Writing</option>
+                </select>
+              </label>
+
+              <label>
+                WhatsApp number
+                <input
+                  value={manualIntern.whatsappNumber}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      whatsappNumber: e.target.value,
+                    })
+                  }
+                  placeholder="Enter phone number"
+                />
+              </label>
+
+              <label>
+                Gender
+                <select
+                  value={manualIntern.gender}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      gender: e.target.value,
+                    })
+                  }
+                >
+                  <option value="">Prefer not to specify</option>
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </label>
+
+              <label>
+                Internship start date
+                <input
+                  type="date"
+                  value={manualIntern.internshipStartDate}
+                  onChange={(e) =>
+                    setManualIntern({
+                      ...manualIntern,
+                      internshipStartDate: e.target.value,
+                    })
+                  }
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  onClick={() => setModal("")}
+                  disabled={busy}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.primary}
+                  disabled={busy}
+                >
+                  <Plus size={15} />
+                  {busy ? "Adding..." : "Add Intern"}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {modal === "deleteGroup" && (
+          <Modal
+            title="Delete Internship Group"
+            close={() => {
+              if (busy) return;
+              setModal("");
+              setDeletePassword("");
+              setDeleteFirstApproved(false);
+            }}
+          >
+            <div className={styles.modalSub}>
+              <p>
+                You are requesting permanent deletion of <b>{target?.name}</b>.
+              </p>
+
+              <p>
+                {deleteFirstApproved
+                  ? "First approval completed. A different authorized admin must now enter their password."
+                  : "This action requires approval from two different administrators."}
+              </p>
+
+              {target?.status !== "completed" && (
+                <p>
+                  Only an empty group can be deleted. Groups containing interns
+                  cannot be deleted.
+                </p>
+              )}
+
+              {target?.status === "completed" && (
+                <p>
+                  The completed group's archive must already exist before
+                  deletion.
+                </p>
+              )}
+            </div>
+
+            <form className={styles.formGrid} onSubmit={submitDeleteGroup}>
+              <label className={styles.full}>
+                {deleteFirstApproved
+                  ? "Second administrator password"
+                  : "First administrator password"}
+
+                <input
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  placeholder="Enter your admin password"
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  disabled={busy}
+                  onClick={() => {
+                    setModal("");
+                    setDeletePassword("");
+                    setDeleteFirstApproved(false);
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.dangerBtn}
+                  disabled={busy}
+                >
+                  <Trash2 size={15} />
+                  {busy
+                    ? "Processing..."
+                    : deleteFirstApproved
+                      ? "Confirm with second admin"
+                      : "Submit first approval"}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
         {modal === "invite" && (
           <Modal title="Group registration link" close={() => setModal("")}>
             <p className={styles.modalSub}>
@@ -742,8 +1229,19 @@ export default function Manage({ user }) {
 
                     return (
                       <tr key={i._id}>
-                        <td>
+                        {/* <td>
                           <b>{i.name}</b>
+                          <small>{i.email}</small>
+                        </td> */}
+                        <td>
+                          <div className={styles.internNameCell}>
+                            <b>{i.name}</b>
+
+                            {i.offerSentStatus === "manual_admin_addition" && (
+                              <span className={styles.addedTag}>Added</span>
+                            )}
+                          </div>
+
                           <small>{i.email}</small>
                         </td>
 
