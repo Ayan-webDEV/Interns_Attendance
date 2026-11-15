@@ -1134,6 +1134,316 @@ router.get(
     res.end();
   }),
 );
+
+/* -------------------------------------------------------------------------- */
+/* Admin: export attendance for a single day (today / yesterday)              */
+/* -------------------------------------------------------------------------- */
+
+const exportSingleDayAttendance = async (req, res, dayOffset) => {
+  const group = await InternshipGroup.findById(req.params.id);
+
+  if (!group) {
+    throw new HttpError(404, "Group not found.");
+  }
+
+  // Get the current date in India (IST).
+  const todayKey = groupDateKey(new Date());
+  const targetDate = parseGroupDate(todayKey);
+
+  // Yesterday = one calendar day before today in IST.
+  targetDate.setDate(targetDate.getDate() - dayOffset);
+
+  const dateKey = groupDateKey(targetDate);
+  const displayDate = dateKey.split("-").reverse().join("/");
+
+  const interns = await User.find({
+    group: group._id,
+    role: "intern",
+  })
+    .select("name email internId domain status")
+    .sort({ name: 1 })
+    .lean();
+
+  const internIds = interns.map((intern) => intern._id);
+
+  // Only fetch attendance records for the requested date.
+  const attendance = await Attendance.find({
+    group: group._id,
+    intern: { $in: internIds },
+    dateKey,
+  }).lean();
+
+  const attendanceByIntern = new Map();
+
+  for (const record of attendance) {
+    const key = String(record.intern);
+
+    if (!attendanceByIntern.has(key)) {
+      attendanceByIntern.set(key, []);
+    }
+
+    attendanceByIntern.get(key).push(record);
+  }
+
+  // Check whether this date belongs to the group's scheduled duration.
+  // Sundays and dates outside the internship duration are not scheduled.
+  const workingDates = getGroupWorkingDates(
+    group.actualStartDate || group.plannedStartDate,
+    group.durationDays,
+  );
+
+  const isScheduledDay = workingDates.includes(dateKey);
+
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = "VELOop Rewards";
+  workbook.created = new Date();
+
+  const sheet = workbook.addWorksheet("Daily Attendance", {
+    views: [{ state: "frozen", ySplit: 5, xSplit: 3 }],
+  });
+
+  sheet.mergeCells("A1:H1");
+  sheet.getCell("A1").value = "VELOOP REWARDS — DAILY ATTENDANCE";
+  sheet.getCell("A1").font = {
+    bold: true,
+    size: 16,
+    color: { argb: "FFFFFFFF" },
+  };
+  sheet.getCell("A1").fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FF183D31" },
+  };
+  sheet.getCell("A1").alignment = {
+    horizontal: "center",
+    vertical: "middle",
+  };
+  sheet.getRow(1).height = 32;
+
+  sheet.mergeCells("A2:H2");
+  sheet.getCell("A2").value = `Group: ${group.name}`;
+
+  sheet.mergeCells("A3:H3");
+  sheet.getCell("A3").value = `Attendance Date: ${displayDate} (IST)`;
+
+  sheet.mergeCells("A4:H4");
+  sheet.getCell("A4").value = isScheduledDay
+    ? "Scheduled Working Day"
+    : "NOT SCHEDULED — This date is outside the group's working days";
+
+  sheet.getCell("A4").font = {
+    bold: true,
+    color: {
+      argb: isScheduledDay ? "FF16834A" : "FFDC3545",
+    },
+  };
+
+  const headers = [
+    "Intern Name",
+    "Intern ID",
+    "Masked Email",
+    "Domain",
+    "First Session",
+    "Re-attendance",
+    "Today's Status",
+    "Intern Status",
+  ];
+
+  sheet.addRow(headers);
+
+  const header = sheet.getRow(5);
+  header.height = 30;
+
+  header.eachCell((cell) => {
+    cell.font = {
+      bold: true,
+      color: { argb: "FFFFFFFF" },
+    };
+    cell.fill = {
+      type: "pattern",
+      pattern: "solid",
+      fgColor: { argb: "FF183D31" },
+    };
+    cell.alignment = {
+      horizontal: "center",
+      vertical: "middle",
+      wrapText: true,
+    };
+  });
+
+  const getSessionStatus = (record) => {
+    if (!isScheduledDay) return "Not Scheduled";
+    if (!record) return "Not Marked";
+
+    if (["approved", "admin_corrected_present"].includes(record.status)) {
+      return "Present";
+    }
+
+    if (record.status === "pending") return "Pending";
+
+    if (
+      ["rejected", "missed", "admin_corrected_absent"].includes(record.status)
+    ) {
+      return "Absent";
+    }
+
+    return "Not Recorded";
+  };
+
+  let fullPresent = 0;
+  let partialPresent = 0;
+  let absentCount = 0;
+  let pendingCount = 0;
+  let notMarkedCount = 0;
+  let notScheduledCount = 0;
+
+  for (const intern of interns) {
+    const records = attendanceByIntern.get(String(intern._id)) || [];
+
+    const firstSessionRecord = records.find(
+      (record) => Number(record.sessionNumber) === 1,
+    );
+
+    const secondSessionRecord = records.find(
+      (record) => Number(record.sessionNumber) === 2,
+    );
+
+    const firstStatus = getSessionStatus(firstSessionRecord);
+    const secondStatus = getSessionStatus(secondSessionRecord);
+
+    let dailyStatus = "Not Marked";
+
+    if (!isScheduledDay) {
+      dailyStatus = "Not Scheduled";
+      notScheduledCount += 1;
+    } else if (firstStatus === "Pending" || secondStatus === "Pending") {
+      dailyStatus = "Pending Review";
+      pendingCount += 1;
+    } else if (firstStatus === "Present" && secondStatus === "Present") {
+      dailyStatus = "Full Present";
+      fullPresent += 1;
+    } else if (firstStatus === "Present" || secondStatus === "Present") {
+      dailyStatus = "Partial Present";
+      partialPresent += 1;
+    } else if (firstStatus === "Absent" || secondStatus === "Absent") {
+      dailyStatus = "Absent";
+      absentCount += 1;
+    } else {
+      dailyStatus = "Not Marked";
+      notMarkedCount += 1;
+    }
+
+    const row = sheet.addRow([
+      intern.name || "—",
+      intern.internId || "—",
+      maskEmail(intern.email),
+      intern.domain || "—",
+      firstStatus,
+      secondStatus,
+      dailyStatus,
+      intern.status || "active",
+    ]);
+
+    row.height = 24;
+    row.alignment = {
+      vertical: "middle",
+      horizontal: "center",
+    };
+
+    row.getCell(1).alignment = {
+      vertical: "middle",
+      horizontal: "left",
+    };
+
+    const statusCell = row.getCell(7);
+
+    const statusColors = {
+      "Full Present": "FF16834A",
+      "Partial Present": "FFD97706",
+      Absent: "FFDC3545",
+      "Pending Review": "FF2563EB",
+      "Not Marked": "FF64748B",
+      "Not Scheduled": "FF64748B",
+    };
+
+    statusCell.font = {
+      bold: true,
+      color: {
+        argb: statusColors[dailyStatus] || "FF64748B",
+      },
+    };
+  }
+
+  sheet.columns = [
+    { width: 26 },
+    { width: 20 },
+    { width: 30 },
+    { width: 22 },
+    { width: 20 },
+    { width: 20 },
+    { width: 22 },
+    { width: 18 },
+  ];
+
+  // Summary section
+  sheet.addRow([]);
+  sheet.addRow(["ATTENDANCE SUMMARY"]);
+  sheet.addRow(["Total Interns", interns.length]);
+  sheet.addRow(["Full Present", fullPresent]);
+  sheet.addRow(["Partial Present", partialPresent]);
+  sheet.addRow(["Absent", absentCount]);
+  sheet.addRow(["Pending Review", pendingCount]);
+  sheet.addRow(["Not Marked", notMarkedCount]);
+  sheet.addRow(["Not Scheduled", notScheduledCount]);
+
+  const summaryTitle = sheet.getRow(sheet.rowCount - 7);
+  summaryTitle.getCell(1).font = {
+    bold: true,
+    color: { argb: "FF183D31" },
+  };
+
+  sheet.autoFilter = {
+    from: { row: 5, column: 1 },
+    to: { row: 5, column: headers.length },
+  };
+
+  const safeGroupName = group.name.replace(/[^a-z0-9-_]/gi, "-");
+  const dayLabel = dayOffset === 0 ? "Today" : "Yesterday";
+
+  res.setHeader(
+    "Content-Type",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  );
+
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="VELOop-${safeGroupName}-${dayLabel}-Attendance-${dateKey}.xlsx"`,
+  );
+
+  await workbook.xlsx.write(res);
+  res.end();
+};
+
+/* Export today's attendance */
+router.get(
+  "/:id/attendance-export/today",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    await exportSingleDayAttendance(req, res, 0);
+  }),
+);
+
+/* Export yesterday's attendance */
+router.get(
+  "/:id/attendance-export/yesterday",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    await exportSingleDayAttendance(req, res, 1);
+  }),
+);
+
 router.post(
   "/:id/transfer-intern",
   requireAuth,
@@ -1306,59 +1616,361 @@ router.post(
     res.send("\uFEFF" + buildCsv(archives));
   }),
 );
+// router.delete(
+//   "/:id",
+//   requireAuth,
+//   requireAdmin,
+//   asyncHandler(async (req, res) => {
+//     const group = await InternshipGroup.findById(req.params.id);
+//     if (!group) throw new HttpError(404, "Group not found.");
+//     if (group.status !== "completed")
+//       throw new HttpError(409, "Only completed groups can be deleted.");
+//     const archived = await GroupArchive.findOne({
+//       originalGroupId: String(group._id),
+//     });
+//     if (!archived || !group.archivedAt)
+//       throw new HttpError(
+//         409,
+//         "Export and archive the latest group details before deleting it. If you edited the group after archiving, update the archive first.",
+//       );
+//     const session = await mongoose.startSession();
+//     try {
+//       await session.withTransaction(async () => {
+//         const users = await User.find({ group: group._id, role: "intern" })
+//           .select("_id")
+//           .session(session);
+//         const ids = users.map((u) => u._id);
+//         await Attendance.deleteMany({ group: group._id }, { session });
+//         await AttendanceSession.deleteMany({ group: group._id }, { session });
+//         await WalletTransaction.deleteMany(
+//           {
+//             $or: [
+//               { group: group._id },
+//               { group: { $exists: false }, intern: { $in: ids } },
+//             ],
+//           },
+//           { session },
+//         );
+//         await PromoCode.deleteMany({ group: group._id }, { session });
+//         await Notification.deleteMany({ targetGroup: group._id }, { session });
+//         await AuditLog.deleteMany(
+//           { $or: [{ group: group._id }, { relatedGroup: group._id }] },
+//           { session },
+//         );
+//         await User.deleteMany({ _id: { $in: ids } }, { session });
+//         await InternshipGroup.deleteOne({ _id: group._id }, { session });
+//       });
+//     } finally {
+//       await session.endSession();
+//     }
+//     res.json({
+//       message:
+//         "Archived group and its live records deleted. The cumulative archive remains available.",
+//     });
+//   }),
+// );
+
+// router.delete(
+//   "/:id",
+//   requireAuth,
+//   requireAdmin,
+//   asyncHandler(async (req, res) => {
+//     const group = await InternshipGroup.findById(req.params.id);
+
+//     if (!group) {
+//       throw new HttpError(404, "Group not found.");
+//     }
+
+//     const isCompleted = group.status === "completed";
+
+//     // Completed groups must have an up-to-date archive.
+//     if (isCompleted) {
+//       const archived = await GroupArchive.findOne({
+//         originalGroupId: String(group._id),
+//       });
+
+//       if (!archived || !group.archivedAt) {
+//         throw new HttpError(
+//           409,
+//           "Export and archive the latest group details before deleting it.",
+//         );
+//       }
+//     } else {
+//       // Uncompleted groups can only be deleted when they have zero interns.
+//       const internCount = await User.countDocuments({
+//         group: group._id,
+//         role: "intern",
+//       });
+
+//       if (internCount > 0) {
+//         throw new HttpError(
+//           409,
+//           `This group has ${internCount} intern(s). Transfer or remove all interns before deleting it.`,
+//         );
+//       }
+//     }
+
+//     const session = await mongoose.startSession();
+
+//     try {
+//       await session.withTransaction(async () => {
+//         const users = await User.find({
+//           group: group._id,
+//           role: "intern",
+//         })
+//           .select("_id")
+//           .session(session);
+
+//         const ids = users.map((u) => u._id);
+
+//         await Attendance.deleteMany({ group: group._id }, { session });
+
+//         await AttendanceSession.deleteMany({ group: group._id }, { session });
+
+//         await WalletTransaction.deleteMany(
+//           {
+//             $or: [
+//               { group: group._id },
+//               {
+//                 group: { $exists: false },
+//                 intern: { $in: ids },
+//               },
+//             ],
+//           },
+//           { session },
+//         );
+
+//         await PromoCode.deleteMany({ group: group._id }, { session });
+
+//         await Notification.deleteMany({ targetGroup: group._id }, { session });
+
+//         await AuditLog.deleteMany(
+//           {
+//             $or: [{ group: group._id }, { relatedGroup: group._id }],
+//           },
+//           { session },
+//         );
+
+//         await User.deleteMany({ _id: { $in: ids } }, { session });
+
+//         await InternshipGroup.deleteOne({ _id: group._id }, { session });
+//       });
+//     } finally {
+//       await session.endSession();
+//     }
+
+//     res.json({
+//       message: isCompleted
+//         ? "Archived group and its live records deleted. The cumulative archive remains available."
+//         : "Empty internship group and its associated records deleted successfully.",
+//     });
+//   }),
+// );
+
 router.delete(
   "/:id",
   requireAuth,
   requireAdmin,
   asyncHandler(async (req, res) => {
     const group = await InternshipGroup.findById(req.params.id);
-    if (!group) throw new HttpError(404, "Group not found.");
-    if (group.status !== "completed")
-      throw new HttpError(409, "Only completed groups can be deleted.");
-    const archived = await GroupArchive.findOne({
-      originalGroupId: String(group._id),
-    });
-    if (!archived || !group.archivedAt)
+
+    if (!group) {
+      throw new HttpError(404, "Group not found.");
+    }
+
+    // Completed groups must already have an archive.
+    if (group.status === "completed") {
+      const archived = await GroupArchive.findOne({
+        originalGroupId: String(group._id),
+      });
+
+      if (!archived || !group.archivedAt) {
+        throw new HttpError(
+          409,
+          "Export and archive the latest group details before deleting it.",
+        );
+      }
+    } else {
+      // Only empty, unfinished groups can be deleted.
+      const internCount = await User.countDocuments({
+        group: group._id,
+        role: "intern",
+      });
+
+      if (internCount > 0) {
+        throw new HttpError(
+          409,
+          `This group has ${internCount} intern(s). Transfer or remove all interns before deleting it.`,
+        );
+      }
+    }
+
+    // Verify the current administrator's password.
+    const admin = await User.findById(req.user._id).select("+passwordHash");
+
+    if (
+      !admin ||
+      !admin.passwordHash ||
+      !(await bcrypt.compare(
+        String(req.body.password || ""),
+        admin.passwordHash,
+      ))
+    ) {
+      throw new HttpError(401, "Your admin password is incorrect.");
+    }
+
+    // Find the first approval, if one exists.
+    let firstApproval = await AuditLog.findOne({
+      group: group._id,
+      action: "group_deletion_approval_pending",
+    }).sort({ createdAt: -1 });
+
+    // Expire first approvals after 24 hours.
+    if (
+      firstApproval &&
+      Date.now() - new Date(firstApproval.createdAt).getTime() >
+        24 * 60 * 60 * 1000
+    ) {
+      await AuditLog.deleteMany({
+        group: group._id,
+        action: "group_deletion_approval_pending",
+      });
+
+      firstApproval = null;
+    }
+
+    // FIRST ADMIN APPROVAL
+    if (!firstApproval) {
+      await AuditLog.create({
+        action: "group_deletion_approval_pending",
+        group: group._id,
+        actor: req.user._id,
+        details: {
+          groupName: group.name,
+          approvalStep: 1,
+          requestedAt: new Date(),
+        },
+      });
+
+      return res.status(202).json({
+        approvalRequired: true,
+        message:
+          "First approval recorded. A different administrator must approve deletion.",
+      });
+    }
+
+    // SECOND APPROVAL MUST COME FROM A DIFFERENT ADMIN.
+    if (String(firstApproval.actor) === String(req.user._id)) {
       throw new HttpError(
         409,
-        "Export and archive the latest group details before deleting it. If you edited the group after archiving, update the archive first.",
+        "A different administrator must provide the second approval.",
       );
+    }
+
+    const firstAdminId = firstApproval.actor;
+
     const session = await mongoose.startSession();
+
     try {
       await session.withTransaction(async () => {
-        const users = await User.find({ group: group._id, role: "intern" })
+        // Recheck the group and intern count inside the transaction.
+        const currentGroup = await InternshipGroup.findById(group._id).session(
+          session,
+        );
+
+        if (!currentGroup) {
+          throw new HttpError(404, "Group not found.");
+        }
+
+        if (currentGroup.status !== "completed") {
+          const count = await User.countDocuments({
+            group: currentGroup._id,
+            role: "intern",
+          }).session(session);
+
+          if (count > 0) {
+            throw new HttpError(
+              409,
+              "Interns have been added to this group. Deletion is blocked.",
+            );
+          }
+        }
+
+        const users = await User.find({
+          group: currentGroup._id,
+          role: "intern",
+        })
           .select("_id")
           .session(session);
+
         const ids = users.map((u) => u._id);
-        await Attendance.deleteMany({ group: group._id }, { session });
-        await AttendanceSession.deleteMany({ group: group._id }, { session });
+
+        await Attendance.deleteMany({ group: currentGroup._id }, { session });
+
+        await AttendanceSession.deleteMany(
+          { group: currentGroup._id },
+          { session },
+        );
+
         await WalletTransaction.deleteMany(
           {
             $or: [
-              { group: group._id },
-              { group: { $exists: false }, intern: { $in: ids } },
+              { group: currentGroup._id },
+              {
+                group: { $exists: false },
+                intern: { $in: ids },
+              },
             ],
           },
           { session },
         );
-        await PromoCode.deleteMany({ group: group._id }, { session });
-        await Notification.deleteMany({ targetGroup: group._id }, { session });
-        await AuditLog.deleteMany(
-          { $or: [{ group: group._id }, { relatedGroup: group._id }] },
+
+        await PromoCode.deleteMany({ group: currentGroup._id }, { session });
+
+        await Notification.deleteMany(
+          { targetGroup: currentGroup._id },
           { session },
         );
+
+        await AuditLog.deleteMany(
+          {
+            $or: [
+              { group: currentGroup._id },
+              { relatedGroup: currentGroup._id },
+            ],
+          },
+          { session },
+        );
+
         await User.deleteMany({ _id: { $in: ids } }, { session });
-        await InternshipGroup.deleteOne({ _id: group._id }, { session });
+
+        await InternshipGroup.deleteOne({ _id: currentGroup._id }, { session });
       });
     } finally {
       await session.endSession();
     }
+
+    // Preserve a final record of who approved the deletion.
+    await AuditLog.create({
+      action: "group_deleted",
+      actor: req.user._id,
+      details: {
+        groupId: String(group._id),
+        groupName: group.name,
+        firstApprovedBy: String(firstAdminId),
+        secondApprovedBy: String(req.user._id),
+        deletedAt: new Date(),
+      },
+    });
+
     res.json({
+      approvalRequired: false,
       message:
-        "Archived group and its live records deleted. The cumulative archive remains available.",
+        "Group deleted after approval from two different administrators.",
     });
   }),
 );
+
 router.get(
   "/admin/archive/download",
   requireAuth,
