@@ -1920,3 +1920,136 @@
     min-height: 46px;
   }
 }
+
+.terminationOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(8, 15, 13, 0.76);
+  backdrop-filter: blur(10px);
+}
+
+.terminationModal {
+  width: min(100%, 470px);
+  padding: 30px;
+  border: 1px solid rgba(220, 53, 69, 0.25);
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  animation: terminationAppear 0.2s ease-out;
+}
+
+.terminationIcon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 17px;
+  border-radius: 20px;
+  color: #dc3545;
+  background: #fff0f1;
+}
+
+.terminationEyebrow {
+  color: #dc3545;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.terminationModal h2 {
+  margin: 9px 0 12px;
+  color: #18251f;
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.terminationModal > p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.7;
+}
+
+.terminationReason {
+  display: grid;
+  gap: 6px;
+  margin-top: 18px;
+  padding: 13px;
+  border: 1px solid #fee2e2;
+  border-radius: 13px;
+  background: #fff7f7;
+  text-align: left;
+}
+
+.terminationReason strong {
+  color: #b42332;
+  font-size: 0.75rem;
+}
+
+.terminationReason span {
+  color: #475569;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.terminationModal > small {
+  display: block;
+  margin-top: 12px;
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+.terminationSupport {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  color: #475569;
+  background: #f1f5f9;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.terminationButton {
+  width: 100%;
+  min-height: 47px;
+  margin-top: 20px;
+  border: 0;
+  border-radius: 12px;
+  color: white;
+  background: #183d31;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.terminationButton:hover {
+  background: #245a47;
+}
+
+@keyframes terminationAppear {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 480px) {
+  .terminationModal {
+    padding: 23px 18px;
+    border-radius: 20px;
+  }
+
+  .terminationModal h2 {
+    font-size: 1.25rem;
+  }
+}

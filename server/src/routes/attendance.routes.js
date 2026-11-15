@@ -185,16 +185,34 @@ const buildWindows = (schedule, secondsNow) => {
   const validated = validateSchedule(schedule);
   const minimumSeconds = getMinimumSeconds(schedule);
 
+  // const makeWindow = (start, end) => {
+  //   const startTime = `${Math.floor(start / 60)}:${String(start % 60).padStart(2, "0")}`;
+
+  //   const endTime = `${Math.floor(end / 60)}:${String(end % 60).padStart(2, "0")}`;
+
+  //   return {
+  //     start,
+  //     end,
+  //     label: `${prettyTime(startTime)} – ${prettyTime(endTime)}`,
+  //     open: secondsNow >= start * 60 && secondsNow + minimumSeconds <= end * 60,
+  //   };
+  // };
   const makeWindow = (start, end) => {
     const startTime = `${Math.floor(start / 60)}:${String(start % 60).padStart(2, "0")}`;
-
     const endTime = `${Math.floor(end / 60)}:${String(end % 60).padStart(2, "0")}`;
+
+    const inClockWindow = secondsNow >= start * 60 && secondsNow < end * 60;
+
+    const enoughTimeToComplete =
+      secondsNow >= start * 60 && secondsNow + minimumSeconds <= end * 60;
 
     return {
       start,
       end,
       label: `${prettyTime(startTime)} – ${prettyTime(endTime)}`,
-      open: secondsNow >= start * 60 && secondsNow + minimumSeconds <= end * 60,
+      open: inClockWindow,
+      canStart: enoughTimeToComplete,
+      closingSoon: inClockWindow && !enoughTimeToComplete,
     };
   };
 
@@ -205,18 +223,88 @@ const buildWindows = (schedule, secondsNow) => {
   };
 };
 
+// const activeDate = (group, key) => {
+//   if (!group?.actualStartDate) return false;
+
+//   const start = dateKey(group.actualStartDate);
+
+//   const fallbackEnd = new Date(group.actualStartDate);
+
+//   fallbackEnd.setDate(fallbackEnd.getDate() + Number(group.durationDays || 28));
+
+//   const end = dateKey(group.actualEndDate || fallbackEnd);
+
+//   return key >= start && key <= end;
+// };
+// const activeDate = (group, key) => {
+//   if (!group?.actualStartDate) return false;
+
+//   const duration = Number(group.durationDays || 28);
+
+//   if (!Number.isInteger(duration) || duration < 1) return false;
+
+//   const cursor = new Date(group.actualStartDate);
+//   cursor.setHours(12, 0, 0, 0);
+
+//   let workingDays = 0;
+
+//   while (workingDays < duration) {
+//     const currentKey = dateKey(cursor);
+//     const currentDate = new Date(`${currentKey}T12:00:00+05:30`);
+
+//     if (currentDate.getDay() !== 0) {
+//       workingDays += 1;
+
+//       if (currentKey === key) return true;
+//     }
+
+//     if (currentKey > key) return false;
+
+//     cursor.setDate(cursor.getDate() + 1);
+//   }
+
+//   return false;
+// };
+
 const activeDate = (group, key) => {
-  if (!group?.actualStartDate) return false;
+  if (!group?.actualStartDate || !key) return false;
 
-  const start = dateKey(group.actualStartDate);
+  const startKey = dateKey(new Date(group.actualStartDate));
 
-  const fallbackEnd = new Date(group.actualStartDate);
+  // Prefer the actual end date saved in the database.
+  if (group.actualEndDate) {
+    const endKey = dateKey(new Date(group.actualEndDate));
 
-  fallbackEnd.setDate(fallbackEnd.getDate() + Number(group.durationDays || 28));
+    if (startKey > endKey) return false;
 
-  const end = dateKey(group.actualEndDate || fallbackEnd);
+    return key >= startKey && key <= endKey;
+  }
 
-  return key >= start && key <= end;
+  // Fallback for older groups without actualEndDate.
+  const duration = Number(group.durationDays || 28);
+
+  if (!Number.isInteger(duration) || duration < 1) return false;
+
+  const cursor = new Date(`${startKey}T12:00:00+05:30`);
+
+  let workingDays = 0;
+
+  while (workingDays < duration) {
+    const currentKey = dateKey(cursor);
+    const currentDate = new Date(`${currentKey}T12:00:00+05:30`);
+
+    if (currentDate.getDay() !== 0) {
+      workingDays++;
+
+      if (currentKey === key) return true;
+    }
+
+    if (currentKey > key) return false;
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return false;
 };
 
 const eligibleStatus = ["approved", "admin_corrected_present"];
@@ -345,7 +433,58 @@ router.get(
 
     const minimumSeconds = getMinimumSeconds(schedule);
 
+    // const windows = buildWindows(schedule, istSeconds());
+
+    // const summary = recordSummary(records);
     const windows = buildWindows(schedule, istSeconds());
+
+    const groupEligibleToday = Boolean(
+      group &&
+      group.status === "active" &&
+      activeDate(group, key) &&
+      !isSunday(key),
+    );
+
+    const getSessionAvailability = (sessionNumber) => {
+      const window = windows[sessionNumber];
+      const record = records.find(
+        (item) => Number(item.sessionNumber) === sessionNumber,
+      );
+
+      let reason = "";
+
+      if (!group) {
+        reason = "You are not assigned to an internship group.";
+      } else if (group.status !== "active") {
+        reason = "Your internship group is not active.";
+      } else if (!groupEligibleToday) {
+        reason = isSunday(key)
+          ? "Sunday is a scheduled holiday."
+          : "Your internship period has ended or has not started.";
+      } else if (record && !["rejected"].includes(record.status)) {
+        reason = `Session already has a ${record.status.replaceAll("_", " ")} record.`;
+      } else if (!window.open) {
+        reason = "This session's clock-time window is closed.";
+      } else if (!window.canStart) {
+        reason =
+          "The session is closing. There is not enough time to complete the attendance wait.";
+      }
+
+      return {
+        ...window,
+        canStart: Boolean(
+          groupEligibleToday &&
+          window.canStart &&
+          (!record || record.status === "rejected"),
+        ),
+        availabilityReason: reason,
+      };
+    };
+
+    const sessionAvailability = {
+      first: getSessionAvailability(1),
+      second: getSessionAvailability(2),
+    };
 
     const summary = recordSummary(records);
 
@@ -380,10 +519,11 @@ router.get(
 
       minimumSeconds,
 
-      windows: {
-        first: windows[1],
-        second: windows[2],
-      },
+      // windows: {
+      //   first: windows[1],
+      //   second: windows[2],
+      // },
+      windows: sessionAvailability,
 
       serverTimeIST: new Intl.DateTimeFormat("en-IN", {
         timeZone: IST,

@@ -152,20 +152,93 @@ function getSessionWindows(schedule) {
  * Keeping it consistent prevents the missed tracker from generating
  * records for dates the existing attendance routes consider invalid.
  */
+// function isGroupActiveOnDate(group, key) {
+//   if (!group?.actualStartDate) return false;
+
+//   const start = getISTDateKey(new Date(group.actualStartDate));
+
+//   const fallbackEnd = new Date(group.actualStartDate);
+
+//   fallbackEnd.setDate(fallbackEnd.getDate() + Number(group.durationDays || 28));
+
+//   const end = group.actualEndDate
+//     ? getISTDateKey(new Date(group.actualEndDate))
+//     : getISTDateKey(fallbackEnd);
+
+//   return key >= start && key <= end;
+// }
+// function isGroupActiveOnDate(group, key) {
+//   if (!group?.actualStartDate) return false;
+
+//   const duration = Number(group.durationDays || 28);
+
+//   if (!Number.isInteger(duration) || duration < 1) return false;
+
+//   const cursor = new Date(group.actualStartDate);
+//   cursor.setHours(12, 0, 0, 0);
+
+//   let workingDays = 0;
+
+//   while (workingDays < duration) {
+//     const currentKey = getISTDateKey(cursor);
+//     const currentDate = new Date(`${currentKey}T12:00:00+05:30`);
+
+//     if (currentDate.getDay() !== 0) {
+//       workingDays += 1;
+
+//       if (currentKey === key) return true;
+//     }
+
+//     if (currentKey > key) return false;
+
+//     cursor.setDate(cursor.getDate() + 1);
+//   }
+
+//   return false;
+// }
+
 function isGroupActiveOnDate(group, key) {
-  if (!group?.actualStartDate) return false;
+  if (!group?.actualStartDate || !key) return false;
 
-  const start = getISTDateKey(new Date(group.actualStartDate));
+  const startKey = getISTDateKey(new Date(group.actualStartDate));
 
-  const fallbackEnd = new Date(group.actualStartDate);
+  // Use the same actual end date as the attendance API.
+  if (group.actualEndDate) {
+    const endKey = getISTDateKey(new Date(group.actualEndDate));
 
-  fallbackEnd.setDate(fallbackEnd.getDate() + Number(group.durationDays || 28));
+    if (startKey > endKey) return false;
 
-  const end = group.actualEndDate
-    ? getISTDateKey(new Date(group.actualEndDate))
-    : getISTDateKey(fallbackEnd);
+    return key >= startKey && key <= endKey;
+  }
 
-  return key >= start && key <= end;
+  // Fallback for older groups.
+  const duration = Number(group.durationDays || 28);
+
+  if (!Number.isInteger(duration) || duration < 1) {
+    return false;
+  }
+
+  const cursor = new Date(`${startKey}T12:00:00+05:30`);
+
+  let workingDays = 0;
+
+  while (workingDays < duration) {
+    const currentKey = getISTDateKey(cursor);
+
+    const currentDate = new Date(`${currentKey}T12:00:00+05:30`);
+
+    if (currentDate.getDay() !== 0) {
+      workingDays++;
+
+      if (currentKey === key) return true;
+    }
+
+    if (currentKey > key) return false;
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return false;
 }
 
 /* -------------------------------------------------------------------------- */

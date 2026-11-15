@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    /* ---------------------------------------------------------------------- */
-    /* User identity and authentication                                       */
-    /* ---------------------------------------------------------------------- */
-
     role: {
       type: String,
       enum: ["intern", "admin"],
@@ -48,10 +44,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false,
     },
-
-    /* ---------------------------------------------------------------------- */
-    /* Intern details                                                          */
-    /* ---------------------------------------------------------------------- */
 
     whatsappNumber: {
       type: String,
@@ -130,10 +122,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
-    /* ---------------------------------------------------------------------- */
-    /* Group information                                                       */
-    /* ---------------------------------------------------------------------- */
-
     group: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "InternshipGroup",
@@ -146,27 +134,12 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    /* ---------------------------------------------------------------------- */
-    /* InternCash wallet                                                       */
-    /* ---------------------------------------------------------------------- */
-
     internCashBalance: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    /* ---------------------------------------------------------------------- */
-    /* Missed attendance tracking                                             */
-    /* ---------------------------------------------------------------------- */
-
-    /**
-     * References to automatically generated or administrator-recorded
-     * missed attendance documents.
-     *
-     * The actual missed-session information remains stored in the
-     * Attendance collection.
-     */
     missedAttendanceRecords: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -174,26 +147,69 @@ const userSchema = new mongoose.Schema(
       },
     ],
 
-    /**
-     * Denormalized missed-session count.
-     *
-     * This will be incremented only when a new missed Attendance document
-     * is successfully created and linked to this user.
-     */
     missedAttendanceCount: {
       type: Number,
       default: 0,
       min: 0,
     },
 
-    /* ---------------------------------------------------------------------- */
-    /* Account status                                                          */
-    /* ---------------------------------------------------------------------- */
-
+    /*
+     * Account status:
+     * active      -> normal access
+     * suspended   -> temporarily blocked
+     * terminated -> internship access revoked by an administrator
+     */
     status: {
       type: String,
-      enum: ["active", "suspended"],
+      enum: ["active", "suspended", "terminated"],
       default: "active",
+      index: true,
+    },
+
+    /*
+     * Termination is retained as history.
+     * Do not delete this information when an intern is reinstated.
+     */
+    termination: {
+      isTerminated: {
+        type: Boolean,
+        default: false,
+      },
+      reason: {
+        type: String,
+        trim: true,
+        maxlength: 1000,
+        default: "",
+      },
+      terminatedAt: {
+        type: Date,
+        default: null,
+      },
+      terminatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      },
+      groupAtTermination: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "InternshipGroup",
+        default: null,
+      },
+      reinstatedAt: {
+        type: Date,
+        default: null,
+      },
+      reinstatedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        default: null,
+      },
+      reinstatementNote: {
+        type: String,
+        trim: true,
+        maxlength: 1000,
+        default: "",
+      },
     },
 
     lastLoginAt: Date,
@@ -203,13 +219,14 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-/* -------------------------------------------------------------------------- */
-/* Indexes                                                                     */
-/* -------------------------------------------------------------------------- */
-
 userSchema.index({
   group: 1,
   role: 1,
+});
+
+userSchema.index({
+  status: 1,
+  "termination.isTerminated": 1,
 });
 
 export default mongoose.model("User", userSchema);

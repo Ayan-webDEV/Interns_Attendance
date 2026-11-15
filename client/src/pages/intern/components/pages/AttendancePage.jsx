@@ -571,8 +571,13 @@ export default function AttendancePage({ data }) {
                         today?.windows?.first?.label || "9:30 AM – 12:30 PM"
                       } IST`}
                       record={firstRecord}
+                      // open={today?.windows?.first?.open}
+                      // disabled={!today?.windows?.first?.open}
                       open={today?.windows?.first?.open}
-                      disabled={!today?.windows?.first?.open}
+                      disabled={!today?.windows?.first?.canStart}
+                      availabilityReason={
+                        today?.windows?.first?.availabilityReason
+                      }
                       reward={1}
                       onStart={() => startAttendance(1)}
                       note="Complete your session successfully to earn 1 InternCash, subject to admin approval and verification."
@@ -585,8 +590,13 @@ export default function AttendancePage({ data }) {
                         today?.windows?.second?.label || "1:00 PM – 3:30 PM"
                       } IST`}
                       record={secondRecord}
+                      // open={today?.windows?.second?.open}
+                      // disabled={!today?.windows?.second?.open}
                       open={today?.windows?.second?.open}
-                      disabled={!today?.windows?.second?.open}
+                      disabled={!today?.windows?.second?.canStart}
+                      availabilityReason={
+                        today?.windows?.second?.availabilityReason
+                      }
                       reward={3}
                       onStart={() => startAttendance(2)}
                       note="Missed the first session? You can still request re-attendance. Earn 3 InternCash after admin approval."

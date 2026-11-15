@@ -92,6 +92,32 @@ const keyDate = (date) =>
     day: "2-digit",
   }).format(date);
 
+const getWorkingDates = (startDate, durationDays) => {
+  if (!startDate || !durationDays) return [];
+
+  const dates = [];
+  const cursor = new Date(startDate);
+  cursor.setHours(12, 0, 0, 0);
+
+  while (dates.length < Number(durationDays) && dates.length < 365) {
+    const key = keyDate(cursor);
+    const istDate = new Date(`${key}T12:00:00+05:30`);
+
+    if (istDate.getDay() !== 0) {
+      dates.push(key);
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return dates;
+};
+
+const getWorkingEndDate = (startDate, durationDays) => {
+  const dates = getWorkingDates(startDate, durationDays);
+  return dates.length ? dates[dates.length - 1] : null;
+};
+
 function InternApp({ session, tab, setTab, notify, theme, onToggleTheme }) {
   const [me, setMe] = useState(session.user),
     [group, setGroup] = useState(null),
@@ -144,6 +170,16 @@ function InternApp({ session, tab, setTab, notify, theme, onToggleTheme }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Automatically refresh attendance availability every 60 seconds.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      refresh(true);
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [refresh]);
+
   const run = async (label, fn) => {
     setBusyLabel(label);
     try {
@@ -347,21 +383,40 @@ function InternApp({ session, tab, setTab, notify, theme, onToggleTheme }) {
       .filter((r) => approvedStatus.includes(r.status))
       .map((r) => r.dateKey),
   ).size;
+  // // const dateStart = group?.actualStartDate
+  // //   ? keyDate(new Date(group.actualStartDate))
+  // //   : null;
+  // const dateStart = group?.actualStartDate
+  //   ? keyDate(new Date(group.actualStartDate))
+  //   : null;
+  // const fallbackEnd = group?.actualStartDate
+  //   ? new Date(new Date(group.actualStartDate).getTime())
+  //   : null;
+  // if (fallbackEnd)
+  //   fallbackEnd.setDate(
+  //     fallbackEnd.getDate() + Number(group.durationDays || 28),
+  //   );
+  // // const dateEnd = group?.actualEndDate
+  // //   ? keyDate(new Date(group.actualEndDate))
+  // //   : fallbackEnd
+  // //     ? keyDate(fallbackEnd)
+  // //     : null;
+  // const dateEnd = getWorkingEndDate(
+  //   group?.actualStartDate,
+  //   group?.durationDays || 28,
+  // );
   const dateStart = group?.actualStartDate
     ? keyDate(new Date(group.actualStartDate))
     : null;
-  const fallbackEnd = group?.actualStartDate
-    ? new Date(new Date(group.actualStartDate).getTime())
-    : null;
-  if (fallbackEnd)
-    fallbackEnd.setDate(
-      fallbackEnd.getDate() + Number(group.durationDays || 28),
-    );
+
+  // const dateEnd = getWorkingEndDate(
+  //   group?.actualStartDate,
+  //   group?.durationDays || 28,
+  // );
   const dateEnd = group?.actualEndDate
     ? keyDate(new Date(group.actualEndDate))
-    : fallbackEnd
-      ? keyDate(fallbackEnd)
-      : null;
+    : getWorkingEndDate(group?.actualStartDate, group?.durationDays || 28);
+
   const monthDate =
     calendarMonth ||
     (group?.actualStartDate ? new Date(group.actualStartDate) : new Date());
@@ -372,9 +427,25 @@ function InternApp({ session, tab, setTab, notify, theme, onToggleTheme }) {
   const calendar = useMemo(() => {
     if (!group?.actualStartDate) return { offset: 0, items: [] };
     const start = new Date(group.actualStartDate);
-    const end = group.actualEndDate
-      ? new Date(group.actualEndDate)
-      : new Date(start.getTime() + Number(group.durationDays || 28) * 86400000);
+    // const end = group.actualEndDate
+    //   ? new Date(group.actualEndDate)
+    //   : new Date(start.getTime() + Number(group.durationDays || 28) * 86400000);
+    // const effectiveEndKey = getWorkingEndDate(
+    //   group.actualStartDate,
+    //   group.durationDays || 28,
+    // );
+
+    // const end = effectiveEndKey
+    //   ? new Date(`${effectiveEndKey}T12:00:00+05:30`)
+    //   : start;
+    const effectiveEndKey = group.actualEndDate
+      ? keyDate(new Date(group.actualEndDate))
+      : getWorkingEndDate(group.actualStartDate, group.durationDays || 28);
+
+    const end = effectiveEndKey
+      ? new Date(`${effectiveEndKey}T12:00:00+05:30`)
+      : start;
+
     const y = monthDate.getFullYear(),
       m = monthDate.getMonth();
     const first = new Date(y, m, 1);

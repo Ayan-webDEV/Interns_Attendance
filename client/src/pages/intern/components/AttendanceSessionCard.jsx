@@ -20,6 +20,7 @@ export default function AttendanceSessionCard({
   window,
   record,
   open,
+  availabilityReason,
   disabled,
   reward,
   onStart,
@@ -194,7 +195,7 @@ export default function AttendanceSessionCard({
                 </span>
 
                 <div className={styling.noticeCopy}>
-                  <strong>
+                  {/* <strong>
                     {open ? "Ready when you are" : "Check-in unavailable"}
                   </strong>
 
@@ -202,6 +203,20 @@ export default function AttendanceSessionCard({
                     {open
                       ? "Submit your attendance for admin approval."
                       : "This session's check-in window is closed."}
+                  </span> */}
+                  <strong>
+                    {open && !buttonDisabled
+                      ? "Ready when you are"
+                      : open && buttonDisabled
+                        ? "Window open · Check-in unavailable"
+                        : "Check-in unavailable"}
+                  </strong>
+
+                  <span>
+                    {buttonDisabled
+                      ? availabilityReason ||
+                        "This session is currently unavailable."
+                      : "Submit your attendance for admin approval."}
                   </span>
                 </div>
               </div>

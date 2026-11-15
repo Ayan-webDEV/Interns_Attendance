@@ -58,6 +58,9 @@ export default function Manage({ user }) {
     : rawPath;
   const path =
     normalizedPath === "/notification" ? "/notifications" : normalizedPath;
+  const [walletInterns, setWalletInterns] = useState([]);
+  const [walletInternSearch, setWalletInternSearch] = useState("");
+  const [walletDetailIntern, setWalletDetailIntern] = useState(null);
   const [data, setData] = useState([]),
     [groups, setGroups] = useState([]),
     [loading, setLoading] = useState(true),
@@ -97,7 +100,13 @@ export default function Manage({ user }) {
       maxRedemptions: 30,
       expiresAt: "",
     }),
-    [adjust, setAdjust] = useState({ internId: "", amount: 1, reason: "" }),
+    // [adjust, setAdjust] = useState({ internId: "", amount: 1, reason: "" }),
+    [adjust, setAdjust] = useState({
+      internId: "",
+      amount: 1,
+      mode: "credit",
+      reason: "",
+    }),
     [correction, setCorrection] = useState({
       internId: "",
       date: "",
@@ -153,6 +162,23 @@ export default function Manage({ user }) {
       else if (path === "/account") endpoint = "/auth/me";
       else endpoint = "/wallet/mine";
       const res = await api(endpoint);
+      if (path === "/admin/wallet") {
+        const internParams = new URLSearchParams();
+
+        if (groupFilter) {
+          internParams.set("groupId", groupFilter);
+        }
+
+        const internResponse = await api(
+          `/admin/interns${
+            internParams.toString() ? `?${internParams.toString()}` : ""
+          }`,
+        );
+
+        setWalletInterns(internResponse.interns || []);
+      } else {
+        setWalletInterns([]);
+      }
       const arr =
         res.groups ||
         res.interns ||
@@ -283,7 +309,7 @@ export default function Manage({ user }) {
         });
         saveBlob(
           blob,
-          `VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
+          `VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
         );
       }, "Group completed and the cumulative CSV archive was downloaded.");
       return;
@@ -296,11 +322,25 @@ export default function Manage({ user }) {
         });
         saveBlob(
           blob,
-          `VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
+          `VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
         );
       }, "Archive exported.");
       return;
     }
+
+    if (action === "attendanceExport") {
+      await run(async () => {
+        const blob = await api(`/groups/${g._id}/attendance-export`);
+
+        saveBlob(
+          blob,
+          `VELOop-${g.name.replace(/[^a-z0-9-_]/gi, "-")}-Attendance-${new Date().toISOString().slice(0, 10)}.xlsx`,
+        );
+      }, "Group attendance Excel file downloaded.");
+
+      return;
+    }
+
     if (action === "delete") {
       if (
         !confirm(
@@ -447,6 +487,15 @@ export default function Manage({ user }) {
                   <button onClick={() => groupAction("invite", g)}>
                     <LinkIcon size={14} /> Get link
                   </button>
+
+                  <button
+                    onClick={() => groupAction("attendanceExport", g)}
+                    title="Export this group's attendance to Excel"
+                  >
+                    <Download size={14} />
+                    Export Excel
+                  </button>
+
                   <button onClick={() => openGroup(g)}>
                     <Edit3 size={14} /> Edit
                   </button>
@@ -635,7 +684,7 @@ export default function Manage({ user }) {
             <h3 style={{ fontSize: 12, margin: "20px 0 8px" }}>
               Interns in this group ({groupInterns.length})
             </h3>
-            <div className={styles.tableWrap} style={{ marginBottom: 14 }}>
+            {/* <div className={styles.tableWrap} style={{ marginBottom: 14 }}>
               <table style={{ minWidth: 420 }}>
                 <thead>
                   <tr>
@@ -664,7 +713,106 @@ export default function Manage({ user }) {
                   Loading group interns or no interns have joined yet.
                 </div>
               )}
+            </div> */}
+
+            <div className={styles.tableWrap} style={{ marginBottom: 14 }}>
+              <table style={{ minWidth: 850 }}>
+                <thead>
+                  <tr>
+                    <th>Intern</th>
+                    <th>Intern ID</th>
+                    <th>Domain</th>
+                    <th>Attended</th>
+                    <th>Missed</th>
+                    <th>Attendance %</th>
+                    <th>Missed %</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {groupInterns.map((i) => {
+                    const summary = i.attendanceSummary || {};
+                    const percentage = Number(
+                      summary.attendancePercentage || 0,
+                    );
+                    const terminated =
+                      i.status === "terminated" ||
+                      i.termination?.isTerminated === true;
+
+                    return (
+                      <tr key={i._id}>
+                        <td>
+                          <b>{i.name}</b>
+                          <small>{i.email}</small>
+                        </td>
+
+                        <td className={styles.code}>{i.internId}</td>
+
+                        <td>{i.domain || "—"}</td>
+
+                        <td>
+                          <b style={{ color: "#16834A" }}>
+                            {summary.attended ?? 0}
+                          </b>
+                          {" / "}
+                          <span style={{ color: "#2563EB" }}>
+                            {summary.total ?? 0}
+                          </span>
+                        </td>
+
+                        <td>
+                          <b style={{ color: "#DC3545" }}>
+                            {summary.missed ?? 0}
+                          </b>
+                        </td>
+
+                        <td>
+                          <b
+                            style={{
+                              color: percentage >= 75 ? "#16834A" : "#DC3545",
+                            }}
+                          >
+                            {percentage.toFixed(2)}%
+                          </b>
+                        </td>
+
+                        <td>
+                          <b style={{ color: "#DC3545" }}>
+                            {Number(summary.missedPercentage || 0).toFixed(2)}%
+                          </b>
+                        </td>
+
+                        <td>
+                          <span
+                            style={{
+                              color: terminated ? "#DC3545" : "#16834A",
+                              fontWeight: 700,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {terminated ? "Terminated" : "Active"}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+
+              {!groupInterns.length && (
+                <div
+                  style={{
+                    padding: 15,
+                    fontSize: 10,
+                    color: "var(--muted)",
+                  }}
+                >
+                  Loading group interns or no interns have joined yet.
+                </div>
+              )}
             </div>
+
             <button
               className={styles.primary}
               onClick={() => {
@@ -1057,170 +1205,939 @@ export default function Manage({ user }) {
     return <CertificatePage user={user} />;
   }
 
-  if (path === "/admin/wallet" || path === "/wallet")
+  // if (path === "/admin/wallet" || path === "/wallet")
+  //   return (
+  //     <div className={styles.page}>
+  //       <Head
+  //         title={path === "/wallet" ? "My InternCash wallet" : title}
+  //         sub={
+  //           path === "/wallet"
+  //             ? "Your current balance and every credit or debit in one place."
+  //             : "Review credit and debit logs for all interns."
+  //         }
+  //         action={
+  //           <div style={{ display: "flex", gap: 8 }}>
+  //             {admin && (
+  //               <button
+  //                 className={styles.primary}
+  //                 onClick={() => setModal("adjust")}
+  //               >
+  //                 <Plus size={15} /> Adjust balance
+  //               </button>
+  //             )}
+  //             <button className={styles.ghost} onClick={load}>
+  //               <RefreshCw size={15} /> Refresh
+  //             </button>
+  //           </div>
+  //         }
+  //       />
+
+  //       {/* {path === "/wallet" && (
+  //         // <div className={styles.balance}>
+  //         //   <small>Available balance</small>
+  //         //   <strong>
+  //         //     {extra.balance ?? user?.internCashBalance ?? 0} <span>IC</span>
+  //         //   </strong>
+  //         //   <p>
+  //         //     1 InternCash ≈ ₹{extra.conversion ?? 0.5}. Rewards are recorded
+  //         //     after approval.
+  //         //   </p>
+  //         // </div>
+  //         // <RewardsPage data={data} />
+  //       )} */}
+
+  //       {admin && (
+  //         <div className={styles.filters}>
+  //           <Select
+  //             label="All groups"
+  //             value={groupFilter}
+  //             onChange={setGroupFilter}
+  //             options={groups.map((g) => ({ label: g.name, value: g._id }))}
+  //           />
+  //           <span className={styles.count}>{data.length} transactions</span>
+  //         </div>
+  //       )}
+
+  //       {/*  */}
+  //       {/* {DataTable({
+  //         headers: admin
+  //           ? [
+  //               "Intern",
+  //               "Group",
+  //               "Date",
+  //               "Transaction",
+  //               "Amount",
+  //               "Balance after",
+  //             ]
+  //           : ["Date", "Transaction", "Reference", "Amount", "Balance after"],
+  //         rows: data.map((t) => (
+  //           <tr key={t._id}>
+  //             <td>
+  //               {admin ? (
+  //                 <>
+  //                   <b>{t.intern?.name || "—"}</b>
+  //                   <small>{t.intern?.internId || ""}</small>
+  //                 </>
+  //               ) : (
+  //                 date(t.createdAt)
+  //               )}
+  //             </td>
+  //             {admin && <td>{t.group?.name || "—"}</td>}
+  //             <td>{admin ? date(t.createdAt) : t.description || t.type}</td>
+  //             <td>{admin ? t.description || t.type : t.reference || "—"}</td>
+  //             <td
+  //               className={
+  //                 Number(t.amount) >= 0 ? styles.positive : styles.negative
+  //               }
+  //             >
+  //               {Number(t.amount) > 0 ? "+" : ""}
+  //               {t.amount} IC
+  //             </td>
+  //             <td>{t.balanceAfter ?? "—"} IC</td>
+  //           </tr>
+  //         )),
+  //       })}
+  //       {data.length === 0 && <Empty text="No wallet transactions yet." />} */}
+
+  //       {/*  */}
+  //       {/* {modal === "adjust" && (
+  //         <Modal title="Adjust intern balance" close={() => setModal("")}>
+  //           <form
+  //             className={styles.formGrid}
+  //             onSubmit={(e) => {
+  //               e.preventDefault();
+  //               run(
+  //                 () =>
+  //                   api("/wallet/admin/adjust", {
+  //                     method: "POST",
+  //                     body: adjust,
+  //                   }),
+  //                 "Wallet balance adjusted and ledger entry recorded.",
+  //               );
+  //             }}
+  //           >
+  //             <label className={styles.full}>
+  //               Intern ID
+  //               <input
+  //                 value={adjust.internId}
+  //                 onChange={(e) =>
+  //                   setAdjust({ ...adjust, internId: e.target.value })
+  //                 }
+  //                 required
+  //                 placeholder="VLRINT202601234"
+  //               />
+  //             </label>
+  //             <label>
+  //               Amount (IC)
+  //               <input
+  //                 type="number"
+  //                 value={adjust.amount}
+  //                 onChange={(e) =>
+  //                   setAdjust({ ...adjust, amount: Number(e.target.value) })
+  //                 }
+  //                 required
+  //                 min="-100000"
+  //                 max="100000"
+  //               />
+  //             </label>
+  //             <label className={styles.full}>
+  //               Reason
+  //               <textarea
+  //                 rows="3"
+  //                 value={adjust.reason}
+  //                 onChange={(e) =>
+  //                   setAdjust({ ...adjust, reason: e.target.value })
+  //                 }
+  //                 required
+  //                 placeholder="Reason for credit or debit adjustment"
+  //               />
+  //             </label>
+  //             <div className={styles.modalActions}>
+  //               <button
+  //                 type="button"
+  //                 className={styles.ghost}
+  //                 onClick={() => setModal("")}
+  //               >
+  //                 Cancel
+  //               </button>
+  //               <button className={styles.primary} disabled={busy}>
+  //                 <Save size={15} /> Record adjustment
+  //               </button>
+  //             </div>
+  //           </form>
+  //         </Modal>
+  //       )} */}
+
+  //       {modal === "adjust" && (
+  //         <Modal title="Adjust intern balance" close={() => setModal("")}>
+  //           <form
+  //             className={styles.formGrid}
+  //             onSubmit={(e) => {
+  //               e.preventDefault();
+
+  //               const amount = Number(adjust.amount);
+
+  //               if (!Number.isSafeInteger(amount) || amount <= 0) {
+  //                 toast("Enter a positive whole-number amount.", "error");
+  //                 return;
+  //               }
+
+  //               if (adjust.reason.trim().length < 5) {
+  //                 toast("Reason must contain at least 5 characters.", "error");
+  //                 return;
+  //               }
+
+  //               run(
+  //                 () =>
+  //                   api("/wallet/admin/adjust", {
+  //                     method: "POST",
+  //                     body: {
+  //                       internId: adjust.internId,
+  //                       amount,
+  //                       direction: adjust.direction,
+  //                       reason: adjust.reason.trim(),
+  //                     },
+  //                   }),
+  //                 "Wallet balance adjusted and ledger entry recorded.",
+  //               );
+  //             }}
+  //           >
+  //             <label className={styles.full}>
+  //               Intern ID
+  //               <input
+  //                 value={adjust.internId}
+  //                 onChange={(e) =>
+  //                   setAdjust({
+  //                     ...adjust,
+  //                     internId: e.target.value.toUpperCase(),
+  //                   })
+  //                 }
+  //                 required
+  //                 placeholder="VLRINT202601234"
+  //               />
+  //             </label>
+
+  //             <label className={styles.full}>
+  //               Adjustment type
+  //               <select
+  //                 value={adjust.direction}
+  //                 onChange={(e) =>
+  //                   setAdjust({
+  //                     ...adjust,
+  //                     direction: e.target.value,
+  //                   })
+  //                 }
+  //                 required
+  //               >
+  //                 <option value="credit">Credit · Add InternCash</option>
+  //                 <option value="debit">Debit · Deduct InternCash</option>
+  //               </select>
+  //             </label>
+
+  //             <label className={styles.full}>
+  //               Amount (IC)
+  //               <input
+  //                 type="number"
+  //                 min="1"
+  //                 step="1"
+  //                 value={adjust.amount}
+  //                 onChange={(e) =>
+  //                   setAdjust({
+  //                     ...adjust,
+  //                     amount: e.target.value,
+  //                   })
+  //                 }
+  //                 required
+  //               />
+  //             </label>
+
+  //             <label className={styles.full}>
+  //               Reason
+  //               <textarea
+  //                 rows="3"
+  //                 value={adjust.reason}
+  //                 onChange={(e) =>
+  //                   setAdjust({
+  //                     ...adjust,
+  //                     reason: e.target.value,
+  //                   })
+  //                 }
+  //                 minLength={5}
+  //                 maxLength={300}
+  //                 required
+  //                 placeholder="Reason for credit or debit adjustment"
+  //               />
+  //             </label>
+
+  //             <div className={styles.modalActions}>
+  //               <button
+  //                 type="button"
+  //                 className={styles.ghost}
+  //                 onClick={() => setModal("")}
+  //               >
+  //                 Cancel
+  //               </button>
+
+  //               <button className={styles.primary} disabled={busy}>
+  //                 <Save size={15} />
+  //                 {busy ? "Processing..." : "Record adjustment"}
+  //               </button>
+  //             </div>
+  //           </form>
+  //         </Modal>
+  //       )}
+  //     </div>
+  //   );
+
+  if (path === "/admin/wallet") {
+    const selectedTransactions = walletDetailIntern
+      ? data.filter(
+          (t) => String(t.intern?._id || "") === String(walletDetailIntern._id),
+        )
+      : [];
+
+    const totalCredits = selectedTransactions
+      .filter((t) => Number(t.amount) > 0)
+      .reduce((sum, t) => sum + Number(t.amount), 0);
+
+    const totalDebits = selectedTransactions
+      .filter((t) => Number(t.amount) < 0)
+      .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
+
+    const attendance = walletDetailIntern?.attendanceSummary || {};
+
     return (
       <div className={styles.page}>
         <Head
-          title={path === "/wallet" ? "My InternCash wallet" : title}
-          sub={
-            path === "/wallet"
-              ? "Your current balance and every credit or debit in one place."
-              : "Review credit and debit logs for all interns."
-          }
+          title="InternCash Wallet"
+          sub="Monitor intern transactions, balances and attendance performance."
           action={
-            <div style={{ display: "flex", gap: 8 }}>
-              {admin && (
-                <button
-                  className={styles.primary}
-                  onClick={() => setModal("adjust")}
-                >
-                  <Plus size={15} /> Adjust balance
-                </button>
-              )}
-              <button className={styles.ghost} onClick={load}>
-                <RefreshCw size={15} /> Refresh
-              </button>
-            </div>
+            <button className={styles.ghost} onClick={load}>
+              <RefreshCw size={15} /> Refresh
+            </button>
           }
         />
 
-        {/* {path === "/wallet" && (
-          // <div className={styles.balance}>
-          //   <small>Available balance</small>
-          //   <strong>
-          //     {extra.balance ?? user?.internCashBalance ?? 0} <span>IC</span>
-          //   </strong>
-          //   <p>
-          //     1 InternCash ≈ ₹{extra.conversion ?? 0.5}. Rewards are recorded
-          //     after approval.
-          //   </p>
-          // </div>
-          // <RewardsPage data={data} />
-        )} */}
+        {/* GROUP FILTER */}
+        <div className={styles.filters}>
+          <Select
+            label="Select internship group"
+            value={groupFilter}
+            onChange={setGroupFilter}
+            options={groups.map((g) => ({
+              label: g.name,
+              value: g._id,
+            }))}
+          />
 
-        {admin && (
-          <div className={styles.filters}>
-            <Select
-              label="All groups"
-              value={groupFilter}
-              onChange={setGroupFilter}
-              options={groups.map((g) => ({ label: g.name, value: g._id }))}
+          <div className={styles.search}>
+            <Search size={16} />
+            <input
+              type="text"
+              placeholder="Search by name, intern ID or email..."
+              value={walletInternSearch}
+              onChange={(e) => setWalletInternSearch(e.target.value)}
             />
-            <span className={styles.count}>{data.length} transactions</span>
-          </div>
-        )}
-
-        {/*  */}
-        {/* {DataTable({
-          headers: admin
-            ? [
-                "Intern",
-                "Group",
-                "Date",
-                "Transaction",
-                "Amount",
-                "Balance after",
-              ]
-            : ["Date", "Transaction", "Reference", "Amount", "Balance after"],
-          rows: data.map((t) => (
-            <tr key={t._id}>
-              <td>
-                {admin ? (
-                  <>
-                    <b>{t.intern?.name || "—"}</b>
-                    <small>{t.intern?.internId || ""}</small>
-                  </>
-                ) : (
-                  date(t.createdAt)
-                )}
-              </td>
-              {admin && <td>{t.group?.name || "—"}</td>}
-              <td>{admin ? date(t.createdAt) : t.description || t.type}</td>
-              <td>{admin ? t.description || t.type : t.reference || "—"}</td>
-              <td
-                className={
-                  Number(t.amount) >= 0 ? styles.positive : styles.negative
-                }
+            {walletInternSearch && (
+              <button
+                type="button"
+                className={styles.iconButton}
+                onClick={() => setWalletInternSearch("")}
+                title="Clear search"
               >
-                {Number(t.amount) > 0 ? "+" : ""}
-                {t.amount} IC
-              </td>
-              <td>{t.balanceAfter ?? "—"} IC</td>
-            </tr>
-          )),
-        })}
-        {data.length === 0 && <Empty text="No wallet transactions yet." />} */}
+                ×
+              </button>
+            )}
+          </div>
 
-        {/*  */}
-        {modal === "adjust" && (
-          <Modal title="Adjust intern balance" close={() => setModal("")}>
-            <form
-              className={styles.formGrid}
-              onSubmit={(e) => {
-                e.preventDefault();
-                run(
-                  () =>
-                    api("/wallet/admin/adjust", {
-                      method: "POST",
-                      body: adjust,
-                    }),
-                  "Wallet balance adjusted and ledger entry recorded.",
+          <span className={styles.count}>
+            {walletInterns.length} interns · {data.length} transactions
+          </span>
+
+          <button
+            className={styles.primary}
+            onClick={() => {
+              setAdjust({
+                internId: "",
+                amount: 1,
+                mode: "credit",
+                reason: "",
+              });
+              setModal("adjust");
+            }}
+          >
+            <Plus size={15} /> Adjust balance
+          </button>
+        </div>
+
+        {/* INTERN DIRECTORY */}
+        <section>
+          <Head
+            title="Intern directory"
+            sub="Select an intern to inspect attendance and complete wallet history."
+          />
+
+          {/* {walletInterns.length ? (
+            <div className={styles.noticeList}>
+              {walletInterns.map((intern) => {
+                const summary = intern.attendanceSummary || {};
+
+                const internTransactions = data.filter(
+                  (t) => String(t.intern?._id || "") === String(intern._id),
                 );
-              }}
-            >
-              <label className={styles.full}>
-                Intern ID
-                <input
-                  value={adjust.internId}
-                  onChange={(e) =>
-                    setAdjust({ ...adjust, internId: e.target.value })
+
+                return (
+                  <article className={styles.noticeCard} key={intern._id}>
+                    <div className={styles.noticeIcon}>
+                      <UserRound size={18} />
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <b>{intern.name}</b>
+
+                      <p>
+                        {intern.internId || "No intern ID"}
+                        {" · "}
+                        {intern.group?.name || "No group"}
+                        {" · "}
+                        {intern.domain || "Domain not assigned"}
+                      </p>
+
+                      <small>
+                        {intern.email}
+                        {" · "}
+                        Attendance: {summary.attendancePercentage ?? 0}%{" · "}
+                        Transactions: {internTransactions.length}
+                      </small>
+
+                      <div style={{ marginTop: 10 }}>
+                        <button
+                          type="button"
+                          className={styles.primary}
+                          onClick={() => setWalletDetailIntern(intern)}
+                        >
+                          <UserRound size={14} />
+                          View details
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <Empty text="No interns found in the selected group." />
+          )} */}
+
+          {walletInterns.filter((intern) => {
+            const query = walletInternSearch.trim().toLowerCase();
+
+            if (!query) return true;
+
+            return [intern.name, intern.internId, intern.email].some((value) =>
+              String(value || "")
+                .toLowerCase()
+                .includes(query),
+            );
+          }).length ? (
+            <div className={styles.noticeList}>
+              {walletInterns
+                .filter((intern) => {
+                  const query = walletInternSearch.trim().toLowerCase();
+
+                  if (!query) return true;
+
+                  return [intern.name, intern.internId, intern.email].some(
+                    (value) =>
+                      String(value || "")
+                        .toLowerCase()
+                        .includes(query),
+                  );
+                })
+                .map((intern) => {
+                  const summary = intern.attendanceSummary || {};
+
+                  const internTransactions = data.filter(
+                    (t) => String(t.intern?._id || "") === String(intern._id),
+                  );
+
+                  return (
+                    <article className={styles.noticeCard} key={intern._id}>
+                      <div className={styles.noticeIcon}>
+                        <UserRound size={18} />
+                      </div>
+
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <b>{intern.name}</b>
+
+                        <p>
+                          {intern.internId || "No intern ID"}
+                          {" · "}
+                          {intern.group?.name || "No group"}
+                          {" · "}
+                          {intern.domain || "Domain not assigned"}
+                        </p>
+
+                        <small>
+                          {intern.email}
+                          {" · "}
+                          Attendance: {summary.attendancePercentage ?? 0}%
+                          {" · "}
+                          Transactions: {internTransactions.length}
+                        </small>
+
+                        {/* <div style={{ marginTop: 10 }}>
+                          <button
+                            type="button"
+                            className={styles.primary}
+                            onClick={() => setWalletDetailIntern(intern)}
+                          >
+                            <UserRound size={14} />
+                            View details
+                          </button>
+                        </div> */}
+                        <div
+                          style={{
+                            marginTop: 10,
+                            display: "flex",
+                            gap: 8,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <button
+                            type="button"
+                            className={styles.primary}
+                            onClick={() => setWalletDetailIntern(intern)}
+                          >
+                            <UserRound size={14} />
+                            View details
+                          </button>
+
+                          <button
+                            type="button"
+                            className={styles.primary}
+                            onClick={() => {
+                              setAdjust({
+                                internId: intern.internId || intern._id,
+                                amount: 1,
+                                mode: "credit",
+                                reason: "",
+                              });
+                              setModal("adjust");
+                            }}
+                          >
+                            <Plus size={14} />
+                            Adjust balance
+                          </button>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+            </div>
+          ) : (
+            <Empty
+              text={
+                walletInternSearch.trim()
+                  ? "No interns match your search."
+                  : "No interns found in the selected group."
+              }
+            />
+          )}
+        </section>
+
+        {/* ALL TRANSACTIONS */}
+        <section style={{ marginTop: 24 }}>
+          <Head
+            title="All wallet transactions"
+            sub="Complete transaction history for the selected group."
+          />
+
+          {DataTable({
+            headers: [
+              "Intern",
+              "Intern ID",
+              "Group",
+              "Transaction",
+              "Amount",
+              "Balance after",
+              "Date",
+            ],
+
+            rows: data.map((t) => (
+              <tr key={t._id}>
+                <td>
+                  <b>{t.intern?.name || "Unknown intern"}</b>
+                  <small>{t.intern?.email || "—"}</small>
+                </td>
+
+                <td className={styles.code}>{t.intern?.internId || "—"}</td>
+
+                <td>{t.group?.name || t.intern?.group?.name || "—"}</td>
+
+                <td>
+                  {t.description || String(t.type || "").replaceAll("_", " ")}
+                </td>
+
+                <td
+                  className={
+                    Number(t.amount) >= 0 ? styles.positive : styles.negative
                   }
-                  required
-                  placeholder="VLRINT202601234"
-                />
-              </label>
-              <label>
-                Amount (IC)
-                <input
-                  type="number"
-                  value={adjust.amount}
-                  onChange={(e) =>
-                    setAdjust({ ...adjust, amount: Number(e.target.value) })
-                  }
-                  required
-                  min="-100000"
-                  max="100000"
-                />
-              </label>
-              <label className={styles.full}>
-                Reason
-                <textarea
-                  rows="3"
-                  value={adjust.reason}
-                  onChange={(e) =>
-                    setAdjust({ ...adjust, reason: e.target.value })
-                  }
-                  required
-                  placeholder="Reason for credit or debit adjustment"
-                />
-              </label>
-              <div className={styles.modalActions}>
-                <button
-                  type="button"
-                  className={styles.ghost}
-                  onClick={() => setModal("")}
                 >
-                  Cancel
-                </button>
-                <button className={styles.primary} disabled={busy}>
-                  <Save size={15} /> Record adjustment
-                </button>
+                  {Number(t.amount) > 0 ? "+" : ""}
+                  {t.amount} IC
+                </td>
+
+                <td>{t.balanceAfter ?? "—"} IC</td>
+
+                <td>{date(t.createdAt)}</td>
+              </tr>
+            )),
+          })}
+
+          {!data.length && <Empty text="No transactions found." />}
+        </section>
+
+        {/* ADJUST INTERN BALANCE MODAL */}
+        {modal === "adjust" &&
+          (() => {
+            const adjustmentIntern = walletInterns.find(
+              (intern) =>
+                String(intern.internId || "").toUpperCase() ===
+                  String(adjust.internId || "").toUpperCase() ||
+                String(intern._id) === String(adjust.internId || ""),
+            );
+
+            const currentBalance = Number(
+              adjustmentIntern?.internCashBalance ?? 0,
+            );
+
+            const enteredAmount = Number(adjust.amount);
+
+            const previewBalance =
+              adjust.mode === "credit"
+                ? currentBalance + enteredAmount
+                : adjust.mode === "debit"
+                  ? currentBalance - enteredAmount
+                  : enteredAmount;
+
+            return (
+              <Modal
+                title="Adjust InternCash Balance"
+                close={() => setModal("")}
+              >
+                <form
+                  className={styles.formGrid}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+
+                    if (!adjust.internId.trim()) {
+                      toast("Enter an intern ID.", "error");
+                      return;
+                    }
+
+                    if (
+                      !Number.isSafeInteger(enteredAmount) ||
+                      enteredAmount < 0
+                    ) {
+                      toast("Enter a valid whole-number amount.", "error");
+                      return;
+                    }
+
+                    if (adjust.mode !== "set" && enteredAmount <= 0) {
+                      toast("Amount must be greater than zero.", "error");
+                      return;
+                    }
+
+                    if (adjust.mode === "debit" && previewBalance < 0) {
+                      toast(
+                        "The intern does not have sufficient balance.",
+                        "error",
+                      );
+                      return;
+                    }
+
+                    if (adjust.reason.trim().length < 5) {
+                      toast(
+                        "Reason must contain at least 5 characters.",
+                        "error",
+                      );
+                      return;
+                    }
+
+                    run(
+                      () =>
+                        api("/wallet/admin/adjust", {
+                          method: "POST",
+                          body: {
+                            internId: adjust.internId.trim(),
+                            amount: enteredAmount,
+                            mode: adjust.mode,
+                            reason: adjust.reason.trim(),
+                          },
+                        }),
+                      "InternCash balance adjusted successfully.",
+                    );
+                  }}
+                >
+                  <label className={styles.full}>
+                    Intern ID
+                    <input
+                      value={adjust.internId}
+                      onChange={(e) =>
+                        setAdjust({
+                          ...adjust,
+                          internId: e.target.value.toUpperCase(),
+                        })
+                      }
+                      placeholder="Enter intern ID"
+                      required
+                    />
+                  </label>
+
+                  {adjustmentIntern && (
+                    <div
+                      className={styles.full}
+                      style={{
+                        padding: 14,
+                        borderRadius: 12,
+                        background: "rgba(120, 120, 120, 0.10)",
+                      }}
+                    >
+                      <small>Selected intern</small>
+                      <h3 style={{ margin: "5px 0" }}>
+                        {adjustmentIntern.name}
+                      </h3>
+                      <small>{adjustmentIntern.email}</small>
+                      <p style={{ margin: "8px 0 0" }}>
+                        {adjustmentIntern.group?.name || "No group assigned"}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className={styles.full}>
+                    <small>Current balance</small>
+                    <h2 style={{ margin: "6px 0 14px" }}>
+                      {adjustmentIntern
+                        ? currentBalance.toLocaleString("en-IN")
+                        : "Intern not loaded"}{" "}
+                      IC
+                    </h2>
+                  </div>
+
+                  <label className={styles.full}>
+                    Adjustment mode
+                    <select
+                      value={adjust.mode}
+                      onChange={(e) =>
+                        setAdjust({
+                          ...adjust,
+                          mode: e.target.value,
+                        })
+                      }
+                    >
+                      <option value="credit">Add InternCash (+)</option>
+                      <option value="debit">Deduct InternCash (-)</option>
+                      <option value="set">Set exact balance (=)</option>
+                    </select>
+                  </label>
+
+                  <label className={styles.full}>
+                    {adjust.mode === "set"
+                      ? "New exact balance (IC)"
+                      : "Adjustment amount (IC)"}
+
+                    <input
+                      type="number"
+                      min="0"
+                      step="1"
+                      value={adjust.amount}
+                      onChange={(e) =>
+                        setAdjust({
+                          ...adjust,
+                          amount: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </label>
+
+                  <div
+                    className={styles.full}
+                    style={{
+                      padding: 14,
+                      borderRadius: 12,
+                      background: "rgba(120, 120, 120, 0.10)",
+                    }}
+                  >
+                    <small>Balance after adjustment</small>
+                    <h2
+                      style={{
+                        margin: "6px 0 0",
+                        color: previewBalance < 0 ? "#ef4444" : "inherit",
+                      }}
+                    >
+                      {Number.isFinite(previewBalance)
+                        ? previewBalance.toLocaleString("en-IN")
+                        : "—"}{" "}
+                      IC
+                    </h2>
+                  </div>
+
+                  <label className={styles.full}>
+                    Reason for adjustment
+                    <textarea
+                      rows={3}
+                      value={adjust.reason}
+                      onChange={(e) =>
+                        setAdjust({
+                          ...adjust,
+                          reason: e.target.value,
+                        })
+                      }
+                      minLength={5}
+                      maxLength={300}
+                      required
+                      placeholder="Explain why this balance is being adjusted..."
+                    />
+                  </label>
+
+                  <div className={styles.modalActions}>
+                    <button
+                      type="button"
+                      className={styles.ghost}
+                      onClick={() => setModal("")}
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.primary}
+                      disabled={busy}
+                    >
+                      <Save size={15} />
+                      {busy ? "Processing..." : "Confirm adjustment"}
+                    </button>
+                  </div>
+                </form>
+              </Modal>
+            );
+          })()}
+
+        {/* INDIVIDUAL INTERN DETAILS MODAL */}
+        {walletDetailIntern && (
+          <Modal
+            title="Intern wallet details"
+            close={() => setWalletDetailIntern(null)}
+          >
+            <div className={styles.detailsGrid}>
+              <div>
+                <small>Intern ID</small>
+                <b>{walletDetailIntern.internId || "—"}</b>
               </div>
-            </form>
+
+              <div>
+                <small>Full name</small>
+                <b>{walletDetailIntern.name || "—"}</b>
+              </div>
+
+              <div>
+                <small>Email address</small>
+                <b>{walletDetailIntern.email || "—"}</b>
+              </div>
+
+              <div>
+                <small>Internship group</small>
+                <b>{walletDetailIntern.group?.name || "Unassigned"}</b>
+              </div>
+
+              <div>
+                <small>Domain</small>
+                <b>{walletDetailIntern.domain || "Not assigned"}</b>
+              </div>
+
+              <div>
+                <small>InternCash balance</small>
+                <b>
+                  {Number(
+                    walletDetailIntern.internCashBalance || 0,
+                  ).toLocaleString("en-IN")}{" "}
+                  IC
+                </b>
+              </div>
+
+              <div>
+                <small>Total attendance</small>
+                <b>
+                  {attendance.attended || 0} / {attendance.total || 0}
+                </b>
+              </div>
+
+              <div>
+                <small>Attendance percentage</small>
+                <b>{attendance.attendancePercentage ?? 0}%</b>
+              </div>
+
+              <div>
+                <small>Total transactions</small>
+                <b>{selectedTransactions.length}</b>
+              </div>
+
+              <div>
+                <small>Total credits</small>
+                <b>{totalCredits.toLocaleString("en-IN")} IC</b>
+              </div>
+
+              <div>
+                <small>Total debits</small>
+                <b>{totalDebits.toLocaleString("en-IN")} IC</b>
+              </div>
+
+              <div>
+                <small>Pending attendance</small>
+                <b>{attendance.pending || 0}</b>
+              </div>
+            </div>
+
+            <h3 style={{ margin: "22px 0 12px" }}>
+              Complete transaction history
+            </h3>
+
+            {DataTable({
+              headers: ["Transaction", "Amount", "Balance", "Date"],
+
+              rows: selectedTransactions.map((t) => (
+                <tr key={t._id}>
+                  <td>
+                    <b>{t.description || t.type}</b>
+                  </td>
+
+                  <td
+                    className={
+                      Number(t.amount) >= 0 ? styles.positive : styles.negative
+                    }
+                  >
+                    {Number(t.amount) > 0 ? "+" : ""}
+                    {t.amount} IC
+                  </td>
+
+                  <td>{t.balanceAfter ?? "—"} IC</td>
+
+                  <td>{date(t.createdAt)}</td>
+                </tr>
+              )),
+            })}
+
+            {!selectedTransactions.length && (
+              <Empty text="This intern has no wallet transactions." />
+            )}
           </Modal>
         )}
       </div>
     );
+  }
+
   if (path === "/admin/promos")
     return (
       <div className={styles.page}>

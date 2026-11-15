@@ -11,6 +11,7 @@ import PromoCode from "../models/PromoCode.js";
 import Notification from "../models/Notification.js";
 import GroupArchive from "../models/GroupArchive.js";
 import AuditLog from "../models/AuditLog.js";
+import ExcelJS from "exceljs";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { HttpError } from "../utils/httpError.js";
@@ -87,6 +88,107 @@ const addDays = (date, days) => {
   d.setDate(d.getDate() + Number(days || 0));
   return d;
 };
+
+const IST = "Asia/Kolkata";
+
+const groupDateKey = (date) =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: IST,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(date));
+
+const parseGroupDate = (key) => new Date(`${key}T12:00:00+05:30`);
+
+const isGroupSunday = (key) => parseGroupDate(key).getDay() === 0;
+
+const getGroupWorkingDates = (startDate, durationDays) => {
+  if (!startDate) return [];
+
+  const dates = [];
+  const cursor = new Date(startDate);
+  cursor.setHours(12, 0, 0, 0);
+
+  while (dates.length < Number(durationDays || 0)) {
+    const key = groupDateKey(cursor);
+
+    if (!isGroupSunday(key)) dates.push(key);
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return dates;
+};
+
+const maskEmail = (email) => {
+  const [name, domain] = String(email || "").split("@");
+  if (!name || !domain) return "—";
+
+  const visible = name.length <= 2 ? name[0] : name.slice(0, 2);
+  return `${visible}${"*".repeat(Math.max(3, name.length - visible.length))}@${domain}`;
+};
+
+const attendanceSummaryForIntern = (intern, records, workingDates) => {
+  const bySlot = new Map(
+    records.map((record) => [
+      `${record.dateKey}-${record.sessionNumber}`,
+      record,
+    ]),
+  );
+
+  let attended = 0;
+  let missed = 0;
+  let pending = 0;
+  let rejected = 0;
+
+  const daily = workingDates.map((dateKey) => {
+    let dayAttended = 0;
+
+    for (const sessionNumber of [1, 2]) {
+      const record = bySlot.get(`${dateKey}-${sessionNumber}`);
+
+      if (
+        record &&
+        ["approved", "admin_corrected_present"].includes(record.status)
+      ) {
+        attended += 1;
+        dayAttended += 1;
+      } else if (
+        record &&
+        ["missed", "admin_corrected_absent", "rejected"].includes(record.status)
+      ) {
+        missed += 1;
+        if (record.status === "rejected") rejected += 1;
+      } else if (record?.status === "pending") {
+        pending += 1;
+      }
+    }
+
+    return {
+      dateKey,
+      attended: dayAttended,
+      total: 2,
+    };
+  });
+
+  const total = workingDates.length * 2;
+
+  return {
+    internId: intern.internId || "—",
+    attended,
+    missed,
+    pending,
+    rejected,
+    total,
+    attendancePercentage: total
+      ? Number(((attended / total) * 100).toFixed(2))
+      : 0,
+    missedPercentage: total ? Number(((missed / total) * 100).toFixed(2)) : 0,
+    daily,
+  };
+};
+
 const safeGroup = (g) => {
   const x = g?.toObject ? g.toObject() : { ...g };
   delete x.inviteTokenHash;
@@ -281,11 +383,21 @@ router.patch(
         throw new HttpError(400, "Choose a valid actual start date.");
       group.actualStartDate = d;
     }
-    if (group.status === "active" && group.actualStartDate)
-      group.actualEndDate = addDays(
+    // if (group.status === "active" && group.actualStartDate)
+    //   group.actualEndDate = addDays(
+    //     group.actualStartDate,
+    //     Number(group.durationDays || 28),
+    //   );
+    if (group.status === "active" && group.actualStartDate) {
+      const workingDates = getGroupWorkingDates(
         group.actualStartDate,
-        Number(group.durationDays || 28),
+        group.durationDays,
       );
+
+      group.actualEndDate = workingDates.length
+        ? parseGroupDate(workingDates[workingDates.length - 1])
+        : group.actualStartDate;
+    }
     if (group.status === "completed") group.archivedAt = undefined;
     await group.save();
     await AuditLog.create({
@@ -378,7 +490,12 @@ router.post(
     group.status = "active";
     group.actualStartDate = start;
     group.durationDays = Number(group.durationDays || 28);
-    group.actualEndDate = addDays(start, group.durationDays);
+    // group.actualEndDate = addDays(start, group.durationDays);
+    const workingDates = getGroupWorkingDates(start, group.durationDays);
+
+    group.actualEndDate = workingDates.length
+      ? parseGroupDate(workingDates[workingDates.length - 1])
+      : start;
     await group.save();
     await AuditLog.create({
       action: "group_started",
@@ -480,6 +597,21 @@ router.post(
     });
   }),
 );
+// router.get(
+//   "/:id/interns",
+//   requireAuth,
+//   requireAdmin,
+//   asyncHandler(async (req, res) => {
+//     const group = await InternshipGroup.findById(req.params.id);
+//     if (!group) throw new HttpError(404, "Group not found.");
+//     const interns = await User.find({ group: group._id, role: "intern" })
+//       .select("-passwordHash -googleSub")
+//       .sort({ name: 1 })
+//       .lean();
+//     res.json({ group: safeGroup(group), interns });
+//   }),
+// );
+
 router.get(
   "/:id/interns",
   requireAuth,
@@ -487,11 +619,519 @@ router.get(
   asyncHandler(async (req, res) => {
     const group = await InternshipGroup.findById(req.params.id);
     if (!group) throw new HttpError(404, "Group not found.");
-    const interns = await User.find({ group: group._id, role: "intern" })
+
+    const interns = await User.find({
+      group: group._id,
+      role: "intern",
+    })
       .select("-passwordHash -googleSub")
       .sort({ name: 1 })
       .lean();
-    res.json({ group: safeGroup(group), interns });
+
+    const startDate = group.actualStartDate || group.plannedStartDate;
+    const workingDates = getGroupWorkingDates(startDate, group.durationDays);
+
+    const attendance = await Attendance.find({
+      group: group._id,
+      intern: { $in: interns.map((intern) => intern._id) },
+    }).lean();
+
+    const attendanceByIntern = new Map();
+
+    for (const record of attendance) {
+      const key = String(record.intern);
+      if (!attendanceByIntern.has(key)) {
+        attendanceByIntern.set(key, []);
+      }
+      attendanceByIntern.get(key).push(record);
+    }
+
+    const enrichedInterns = interns.map((intern) => ({
+      ...intern,
+      attendanceSummary: attendanceSummaryForIntern(
+        intern,
+        attendanceByIntern.get(String(intern._id)) || [],
+        workingDates,
+      ),
+    }));
+
+    res.json({
+      group: safeGroup(group),
+      interns: enrichedInterns,
+      attendancePolicy: {
+        mandatoryPercentage: 75,
+        totalWorkingDays: workingDates.length,
+        totalScheduledSessions: workingDates.length * 2,
+        workingDates,
+      },
+    });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: manually add an intern to a group                                   */
+/* -------------------------------------------------------------------------- */
+
+router.post(
+  "/:id/interns",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+
+    if (!group) throw new HttpError(404, "Group not found.");
+
+    if (["completed", "completion_pending"].includes(group.status)) {
+      throw new HttpError(
+        409,
+        "Interns cannot be added to a completed or completion-pending group.",
+      );
+    }
+
+    const name = String(req.body.name || "").trim();
+    const email = String(req.body.email || "")
+      .trim()
+      .toLowerCase();
+    const internId = String(req.body.internId || "")
+      .trim()
+      .toUpperCase();
+    const password = String(req.body.password || "");
+    const domain = String(req.body.domain || "").trim();
+    const whatsappNumber = String(req.body.whatsappNumber || "").trim();
+    const gender = String(req.body.gender || "").trim();
+
+    if (name.length < 2) {
+      throw new HttpError(400, "Enter the intern's full name.");
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new HttpError(400, "Enter a valid email address.");
+    }
+
+    if (!/^[A-Z0-9_-]{5,30}$/.test(internId)) {
+      throw new HttpError(
+        400,
+        "Intern ID must be 5–30 characters and contain only letters, numbers, _ or -.",
+      );
+    }
+
+    if (password.length < 8) {
+      throw new HttpError(400, "Password must contain at least 8 characters.");
+    }
+
+    if (!domain) {
+      throw new HttpError(400, "Select or enter an internship domain.");
+    }
+
+    if (
+      gender &&
+      !["Female", "Male", "Non-binary", "Prefer not to say"].includes(gender)
+    ) {
+      throw new HttpError(400, "Choose a valid gender option.");
+    }
+
+    const [existingEmail, existingId] = await Promise.all([
+      User.findOne({ email }).select("_id"),
+      User.findOne({ internId }).select("_id"),
+    ]);
+
+    if (existingEmail) {
+      throw new HttpError(409, "An account with this email already exists.");
+    }
+
+    if (existingId) {
+      throw new HttpError(409, "This intern ID is already in use.");
+    }
+
+    const bcryptHash = await bcrypt.hash(password, 12);
+    const startDate = req.body.internshipStartDate
+      ? new Date(req.body.internshipStartDate)
+      : group.actualStartDate || group.plannedStartDate || new Date();
+
+    if (Number.isNaN(startDate.getTime())) {
+      throw new HttpError(400, "Choose a valid internship start date.");
+    }
+
+    const intern = await User.create({
+      role: "intern",
+      name,
+      email,
+      internId,
+      passwordHash: bcryptHash,
+      domain,
+      whatsappNumber,
+      gender: gender || undefined,
+      group: group._id,
+      whatsappGroupName: group.name,
+      whatsappGroupCode: group.whatsappGroupCode,
+      internshipStartDate: startDate,
+      registrationComplete: true,
+      status: "active",
+      termsAccepted: Boolean(req.body.termsAccepted),
+      termsAcceptedAt: req.body.termsAccepted ? new Date() : null,
+      offerSent: false,
+      offerSentStatus: "manual_admin_addition",
+    });
+
+    await AuditLog.create({
+      action: "intern_manually_added",
+      group: group._id,
+      intern: intern._id,
+      actor: req.user._id,
+      details: {
+        internId: intern.internId,
+        email: intern.email,
+        domain: intern.domain,
+        source: "admin_manual_addition",
+        offerLetterVerification: "not_required",
+      },
+    });
+
+    const safeIntern = await User.findById(intern._id)
+      .select("-passwordHash -googleSub")
+      .lean();
+
+    res.status(201).json({
+      message: "Intern added to the group successfully.",
+      intern: safeIntern,
+    });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: terminate an intern's group access                                  */
+/* -------------------------------------------------------------------------- */
+
+router.post(
+  "/:id/interns/:internId/terminate",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+    if (!group) throw new HttpError(404, "Group not found.");
+
+    const intern = await User.findOne({
+      _id: req.params.internId,
+      group: group._id,
+      role: "intern",
+    });
+
+    if (!intern) throw new HttpError(404, "Intern not found in this group.");
+
+    if (intern.status === "terminated" || intern.termination?.isTerminated) {
+      throw new HttpError(409, "This intern is already terminated.");
+    }
+
+    const reason = String(req.body.reason || "").trim();
+
+    if (reason.length < 5) {
+      throw new HttpError(
+        400,
+        "Provide a termination reason of at least 5 characters.",
+      );
+    }
+
+    intern.status = "terminated";
+    intern.termination = {
+      ...(intern.termination?.toObject?.() || intern.termination || {}),
+      isTerminated: true,
+      reason: reason.slice(0, 1000),
+      terminatedAt: new Date(),
+      terminatedBy: req.user._id,
+      groupAtTermination: group._id,
+      reinstatedAt: null,
+      reinstatedBy: null,
+      reinstatementNote: "",
+    };
+
+    await intern.save();
+
+    // Remove unconsumed attendance sessions so an old session cannot be used.
+    await AttendanceSession.deleteMany({
+      intern: intern._id,
+      group: group._id,
+      consumedAt: null,
+    });
+
+    await AuditLog.create({
+      action: "intern_terminated",
+      group: group._id,
+      intern: intern._id,
+      actor: req.user._id,
+      details: {
+        reason,
+        terminatedAt: intern.termination.terminatedAt,
+      },
+    });
+
+    res.json({
+      message: `${intern.name}'s internship access has been revoked.`,
+      intern: {
+        _id: intern._id,
+        internId: intern.internId,
+        status: intern.status,
+        termination: intern.termination,
+      },
+    });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: reinstate a terminated intern                                       */
+/* -------------------------------------------------------------------------- */
+
+router.post(
+  "/:id/interns/:internId/reinstate",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+    if (!group) throw new HttpError(404, "Group not found.");
+
+    const intern = await User.findOne({
+      _id: req.params.internId,
+      role: "intern",
+      "termination.groupAtTermination": group._id,
+    });
+
+    if (!intern || !intern.termination?.isTerminated) {
+      throw new HttpError(
+        404,
+        "No active termination was found for this intern.",
+      );
+    }
+
+    if (group.status === "completed") {
+      if (!group.completedAt) {
+        throw new HttpError(
+          409,
+          "The group completion timestamp is missing. Contact technical support.",
+        );
+      }
+
+      const deadline = new Date(group.completedAt);
+      deadline.setDate(deadline.getDate() + 7);
+
+      if (new Date() > deadline) {
+        throw new HttpError(
+          409,
+          "The seven-day reinstatement window has closed. This termination can no longer be revoked.",
+        );
+      }
+    }
+
+    if (["completion_pending"].includes(group.status)) {
+      throw new HttpError(
+        409,
+        "Reinstatement is unavailable while group completion is awaiting approval.",
+      );
+    }
+
+    const note = String(req.body.note || "").trim();
+
+    intern.status = "active";
+    intern.termination.isTerminated = false;
+    intern.termination.reinstatedAt = new Date();
+    intern.termination.reinstatedBy = req.user._id;
+    intern.termination.reinstatementNote = note.slice(0, 1000);
+
+    await intern.save();
+
+    await AuditLog.create({
+      action: "intern_reinstated",
+      group: group._id,
+      intern: intern._id,
+      actor: req.user._id,
+      details: {
+        note,
+        reinstatedAt: intern.termination.reinstatedAt,
+      },
+    });
+
+    res.json({
+      message: `${intern.name}'s internship access has been restored.`,
+      intern: {
+        _id: intern._id,
+        internId: intern.internId,
+        status: intern.status,
+        termination: intern.termination,
+      },
+    });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: export group attendance workbook                                    */
+/* -------------------------------------------------------------------------- */
+
+router.get(
+  "/:id/attendance-export",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+    if (!group) throw new HttpError(404, "Group not found.");
+
+    const interns = await User.find({
+      group: group._id,
+      role: "intern",
+    })
+      .select("name email internId domain status")
+      .sort({ name: 1 })
+      .lean();
+
+    const workingDates = getGroupWorkingDates(
+      group.actualStartDate || group.plannedStartDate,
+      group.durationDays,
+    );
+
+    const attendance = await Attendance.find({
+      group: group._id,
+      intern: { $in: interns.map((intern) => intern._id) },
+    }).lean();
+
+    const attendanceByIntern = new Map();
+
+    for (const record of attendance) {
+      const key = String(record.intern);
+      if (!attendanceByIntern.has(key)) {
+        attendanceByIntern.set(key, []);
+      }
+      attendanceByIntern.get(key).push(record);
+    }
+
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = "VELOop Rewards";
+    workbook.created = new Date();
+
+    const sheet = workbook.addWorksheet("Group Attendance", {
+      views: [{ state: "frozen", ySplit: 1, xSplit: 5 }],
+    });
+
+    const headers = [
+      "Intern Name",
+      "Intern ID",
+      "Masked Email",
+      "Attendance %",
+      "Missed %",
+      ...workingDates.map((key) => key.split("-").reverse().join("/")),
+    ];
+
+    sheet.addRow(headers);
+
+    const header = sheet.getRow(1);
+    header.height = 32;
+    header.eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: "FFFFFFFF" } };
+      cell.fill = {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "FF183D31" },
+      };
+      cell.alignment = { vertical: "middle", horizontal: "center" };
+    });
+
+    for (const intern of interns) {
+      const summary = attendanceSummaryForIntern(
+        intern,
+        attendanceByIntern.get(String(intern._id)) || [],
+        workingDates,
+      );
+
+      const row = sheet.addRow([
+        intern.name || "—",
+        intern.internId || "—",
+        maskEmail(intern.email),
+        `${summary.attendancePercentage}%`,
+        `${summary.missedPercentage}%`,
+        // ...summary.daily.map((day) => `${day.attended}/2`),
+        ...summary.daily.map((day) => ({
+          richText: [
+            {
+              text: String(day.attended),
+              font: { bold: true, color: { argb: "FFDC3545" } },
+            },
+            {
+              text: "/2",
+              font: { bold: true, color: { argb: "FF2563EB" } },
+            },
+          ],
+        })),
+      ]);
+
+      row.height = 24;
+      row.alignment = { vertical: "middle", horizontal: "center" };
+
+      row.getCell(1).alignment = { vertical: "middle", horizontal: "left" };
+      row.getCell(4).font = { bold: true, color: { argb: "FF16834A" } };
+      row.getCell(5).font = { bold: true, color: { argb: "FFDC3545" } };
+
+      // for (let index = 6; index <= row.cellCount; index += 1) {
+      //   const cell = row.getCell(index);
+      //   const attended = Number(String(cell.value).split("/")[0] || 0);
+
+      //   cell.font = {
+      //     bold: true,
+      //     color: { argb: attended > 0 ? "FFDC3545" : "FF64748B" },
+      //   };
+      //   cell.fill = {
+      //     type: "pattern",
+      //     pattern: "solid",
+      //     fgColor: { argb: attended > 0 ? "FFFFF1F2" : "FFF1F5F9" },
+      //   };
+      // }
+      for (let index = 6; index <= row.cellCount; index += 1) {
+        const cell = row.getCell(index);
+        const attended = summary.daily[index - 6]?.attended || 0;
+
+        cell.alignment = {
+          vertical: "middle",
+          horizontal: "center",
+        };
+
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: {
+            argb: attended > 0 ? "FFFFF1F2" : "FFF1F5F9",
+          },
+        };
+      }
+    }
+
+    sheet.columns = [
+      { width: 26 },
+      { width: 20 },
+      { width: 30 },
+      { width: 17 },
+      { width: 17 },
+      ...workingDates.map(() => ({ width: 14 })),
+    ];
+
+    sheet.addRow([]);
+    const policyRow = sheet.addRow([
+      "MANDATORY ATTENDANCE POLICY",
+      "Minimum 75% attendance is required.",
+    ]);
+    policyRow.getCell(1).font = { bold: true, color: { argb: "FF183D31" } };
+    policyRow.getCell(2).font = { bold: true, color: { argb: "FFDC3545" } };
+
+    sheet.autoFilter = {
+      from: { row: 1, column: 1 },
+      to: { row: 1, column: headers.length },
+    };
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="VELOop-${group.name.replace(/[^a-z0-9-_]/gi, "-")}-Attendance-${new Date().toISOString().slice(0, 10)}.xlsx"`,
+    );
+
+    await workbook.xlsx.write(res);
+    res.end();
   }),
 );
 router.post(
@@ -661,7 +1301,7 @@ router.post(
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv"`,
+      `attachment; filename="VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv"`,
     );
     res.send("\uFEFF" + buildCsv(archives));
   }),
@@ -728,7 +1368,7 @@ router.get(
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv"`,
+      `attachment; filename="VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv"`,
     );
     res.send("\uFEFF" + buildCsv(archives));
   }),

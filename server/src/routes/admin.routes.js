@@ -25,6 +25,125 @@ const MISSED_STATUSES = [
   "admin_corrected_absent",
 ];
 
+const directoryDateKey = (date) =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(date));
+
+// const directoryWorkingDays = (startDate, duration) => {
+//   if (!startDate || !duration) return [];
+
+//   const dates = [];
+//   const cursor = new Date(startDate);
+//   cursor.setHours(12, 0, 0, 0);
+
+//   while (dates.length < Number(duration)) {
+//     const key = directoryDateKey(cursor);
+//     const date = new Date(`${key}T12:00:00+05:30`);
+
+//     if (date.getDay() !== 0) dates.push(key);
+
+//     cursor.setDate(cursor.getDate() + 1);
+//   }
+
+//   return dates;
+// };
+
+const directoryWorkingDays = (startDate, duration, actualEndDate) => {
+  if (!startDate) return [];
+
+  const dates = [];
+  const cursor = new Date(startDate);
+  cursor.setHours(12, 0, 0, 0);
+
+  const endKey = actualEndDate ? directoryDateKey(actualEndDate) : null;
+
+  if (!endKey && (!duration || Number(duration) < 1)) {
+    return [];
+  }
+
+  while (true) {
+    const key = directoryDateKey(cursor);
+
+    if (endKey && key > endKey) break;
+    if (!endKey && dates.length >= Number(duration)) break;
+
+    const date = new Date(`${key}T12:00:00+05:30`);
+
+    if (date.getDay() !== 0) {
+      dates.push(key);
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return dates;
+};
+
+const buildDirectoryAttendance = (intern, records) => {
+  const group = intern.group || {};
+  // const dates = directoryWorkingDays(
+  //   group.actualStartDate ||
+  //     group.plannedStartDate ||
+  //     intern.internshipStartDate,
+  //   group.durationDays || intern.durationDays,
+  // );
+  const dates = directoryWorkingDays(
+    group.actualStartDate ||
+      group.plannedStartDate ||
+      intern.internshipStartDate,
+    group.durationDays || intern.durationDays,
+    group.actualEndDate,
+  );
+
+  const recordMap = new Map(
+    records.map((record) => [
+      `${record.dateKey}:${record.sessionNumber}`,
+      record,
+    ]),
+  );
+
+  let attended = 0;
+  let missed = 0;
+  let pending = 0;
+
+  for (const date of dates) {
+    for (const session of [1, 2]) {
+      const record = recordMap.get(`${date}:${session}`);
+
+      if (
+        record &&
+        ["approved", "admin_corrected_present"].includes(record.status)
+      ) {
+        attended += 1;
+      } else if (
+        record &&
+        ["missed", "rejected", "admin_corrected_absent"].includes(record.status)
+      ) {
+        missed += 1;
+      } else if (record?.status === "pending") {
+        pending += 1;
+      }
+    }
+  }
+
+  const total = dates.length * 2;
+
+  return {
+    attended,
+    missed,
+    pending,
+    total,
+    attendancePercentage: total
+      ? Number(((attended / total) * 100).toFixed(2))
+      : 0,
+    missedPercentage: total ? Number(((missed / total) * 100).toFixed(2)) : 0,
+  };
+};
+
 const PENDING_STATUS = "pending";
 
 const defaultSchedule = {
@@ -344,6 +463,70 @@ router.get(
 /* Admin intern directory                                                     */
 /* -------------------------------------------------------------------------- */
 
+// router.get(
+//   "/interns",
+//   requireAuth,
+//   requireAdmin,
+//   asyncHandler(async (req, res) => {
+//     const query = String(req.query.q || "").trim();
+
+//     const filter = {
+//       role: "intern",
+//     };
+
+//     if (req.query.groupId) {
+//       filter.group = req.query.groupId;
+//     }
+
+//     if (query) {
+//       filter.$or = [
+//         {
+//           name: {
+//             $regex: query,
+//             $options: "i",
+//           },
+//         },
+//         {
+//           email: {
+//             $regex: query,
+//             $options: "i",
+//           },
+//         },
+//         {
+//           internId: {
+//             $regex: query,
+//             $options: "i",
+//           },
+//         },
+//         {
+//           whatsappNumber: {
+//             $regex: query,
+//             $options: "i",
+//           },
+//         },
+//         {
+//           domain: {
+//             $regex: query,
+//             $options: "i",
+//           },
+//         },
+//       ];
+//     }
+
+//     const interns = await User.find(filter)
+//       .select("-passwordHash -googleSub")
+//       .populate("group", "name status")
+//       .sort({
+//         createdAt: -1,
+//       })
+//       .limit(1000)
+//       .lean();
+
+//     res.json({
+//       interns,
+//     });
+//   }),
+// );
 router.get(
   "/interns",
   requireAuth,
@@ -361,50 +544,56 @@ router.get(
 
     if (query) {
       filter.$or = [
-        {
-          name: {
-            $regex: query,
-            $options: "i",
-          },
-        },
-        {
-          email: {
-            $regex: query,
-            $options: "i",
-          },
-        },
-        {
-          internId: {
-            $regex: query,
-            $options: "i",
-          },
-        },
-        {
-          whatsappNumber: {
-            $regex: query,
-            $options: "i",
-          },
-        },
-        {
-          domain: {
-            $regex: query,
-            $options: "i",
-          },
-        },
+        { name: { $regex: query, $options: "i" } },
+        { email: { $regex: query, $options: "i" } },
+        { internId: { $regex: query, $options: "i" } },
+        { whatsappNumber: { $regex: query, $options: "i" } },
+        { domain: { $regex: query, $options: "i" } },
       ];
     }
 
     const interns = await User.find(filter)
       .select("-passwordHash -googleSub")
-      .populate("group", "name status")
-      .sort({
-        createdAt: -1,
-      })
+      .populate(
+        "group",
+        "name status durationDays actualStartDate actualEndDate plannedStartDate completedAt",
+      )
+      .sort({ createdAt: -1 })
       .limit(1000)
       .lean();
 
+    const internIds = interns.map((intern) => intern._id);
+
+    const attendance = await Attendance.find({
+      intern: { $in: internIds },
+    }).lean();
+
+    const attendanceByIntern = new Map();
+
+    for (const record of attendance) {
+      const key = String(record.intern);
+
+      if (!attendanceByIntern.has(key)) {
+        attendanceByIntern.set(key, []);
+      }
+
+      attendanceByIntern.get(key).push(record);
+    }
+
+    const enrichedInterns = interns.map((intern) => ({
+      ...intern,
+      attendanceSummary: buildDirectoryAttendance(
+        intern,
+        attendanceByIntern.get(String(intern._id)) || [],
+      ),
+    }));
+
     res.json({
-      interns,
+      interns: enrichedInterns,
+      attendancePolicy: {
+        mandatoryPercentage: 75,
+        sessionsPerWorkingDay: 2,
+      },
     });
   }),
 );

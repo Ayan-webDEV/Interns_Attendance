@@ -281,7 +281,7 @@ export default function Manage({ user }) {
         });
         saveBlob(
           blob,
-          `VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
+          `VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
         );
       }, "Group completed and the cumulative CSV archive was downloaded.");
       return;
@@ -294,7 +294,7 @@ export default function Manage({ user }) {
         });
         saveBlob(
           blob,
-          `VELOop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
+          `VELoop-Complete-Archive-Latest-${new Date().toISOString().slice(0, 10)}.csv`,
         );
       }, "Archive exported.");
       return;
