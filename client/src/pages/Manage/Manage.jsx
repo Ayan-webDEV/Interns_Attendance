@@ -87,6 +87,8 @@ export default function Manage({ user }) {
     [editing, setEditing] = useState(null),
     [modal, setModal] = useState(""),
     [target, setTarget] = useState(null),
+    [terminationReason, setTerminationReason] = useState(""),
+    [reinstatementNote, setReinstatementNote] = useState(""),
     [inviteUrl, setInviteUrl] = useState(""),
     [groupInterns, setGroupInterns] = useState([]),
     [extra, setExtra] = useState({}),
@@ -226,6 +228,89 @@ export default function Manage({ user }) {
       setBusy(false);
     }
   };
+
+  const openTermination = (intern, groupId) => {
+    setTarget({
+      ...intern,
+      actionGroupId: groupId,
+    });
+    setTerminationReason("");
+    setModal("terminateIntern");
+  };
+
+  const openReinstatement = (intern, groupId) => {
+    setTarget({
+      ...intern,
+      actionGroupId: groupId,
+    });
+    setReinstatementNote("");
+    setModal("reinstateIntern");
+  };
+
+  const submitTermination = async (e) => {
+    e.preventDefault();
+
+    if (!target?.actionGroupId || !target?._id) {
+      toast("Intern or group information is missing.", "error");
+      return;
+    }
+
+    const reason = terminationReason.trim();
+
+    if (reason.length < 5) {
+      toast("Please enter a reason of at least 5 characters.", "error");
+      return;
+    }
+
+    await run(
+      () =>
+        api(`/groups/${target.actionGroupId}/interns/${target._id}/terminate`, {
+          method: "POST",
+          body: { reason },
+        }),
+      "Intern terminated successfully.",
+    );
+
+    // Refresh the group details list if the modal was opened there.
+    if (path === "/admin/groups") {
+      try {
+        const response = await api(`/groups/${target.actionGroupId}/interns`);
+        setGroupInterns(response.interns || []);
+      } catch (error) {
+        toast(error.message, "error");
+      }
+    }
+  };
+
+  const submitReinstatement = async (e) => {
+    e.preventDefault();
+
+    if (!target?.actionGroupId || !target?._id) {
+      toast("Intern or group information is missing.", "error");
+      return;
+    }
+
+    await run(
+      () =>
+        api(`/groups/${target.actionGroupId}/interns/${target._id}/reinstate`, {
+          method: "POST",
+          body: {
+            note: reinstatementNote.trim(),
+          },
+        }),
+      "Intern reinstated successfully.",
+    );
+
+    if (path === "/admin/groups") {
+      try {
+        const response = await api(`/groups/${target.actionGroupId}/interns`);
+        setGroupInterns(response.interns || []);
+      } catch (error) {
+        toast(error.message, "error");
+      }
+    }
+  };
+
   const openGroup = (g = null) => {
     setEditing(g ? g._id : null);
     setForm(
@@ -666,7 +751,7 @@ export default function Manage({ user }) {
                 <div className={styles.cardActions}>
                   {!["completed", "completion_pending"].includes(g.status) && (
                     <button onClick={() => openManualIntern(g)}>
-                      <Plus size={14} /> Add Intern
+                      <Plus size={14} /> <div>Add Intern</div>
                     </button>
                   )}
                   <button
@@ -686,6 +771,10 @@ export default function Manage({ user }) {
                   </button>
                   <button onClick={() => groupAction("invite", g)}>
                     <LinkIcon size={14} /> Get link
+                  </button>
+
+                  <button onClick={() => openGroup(g)}>
+                    <Edit3 size={14} /> Edit
                   </button>
 
                   <button
@@ -712,29 +801,10 @@ export default function Manage({ user }) {
                     Export Yesterday
                   </button>
 
-                  <button onClick={() => openGroup(g)}>
-                    <Edit3 size={14} /> Edit
-                  </button>
-
                   <button onClick={() => groupAction("reset", g)}>
                     <RefreshCw size={14} /> Reset link
                   </button>
-                  {g.status === "registration" && (
-                    <button
-                      className={styles.greenBtn}
-                      onClick={() => groupAction("start", g)}
-                    >
-                      <Play size={14} /> Start internship
-                    </button>
-                  )}
-                  {g.status === "active" && (
-                    <button
-                      className={styles.amberBtn}
-                      onClick={() => groupAction("complete", g)}
-                    >
-                      <CheckCircle2 size={14} /> Complete group
-                    </button>
-                  )}
+
                   {g.status === "completion_pending" && (
                     <button
                       className={styles.greenBtn}
@@ -748,13 +818,32 @@ export default function Manage({ user }) {
                       <Download size={14} /> Export full CSV
                     </button>
                   )}
-
-                  <button
-                    className={styles.dangerBtn}
-                    onClick={() => groupAction("delete", g)}
+                  <div
+                    className={`flex gap-3 mt-1 md:w-full justify-center ${styles.actionCont} `}
                   >
-                    <Trash2 size={14} /> Delete group
-                  </button>
+                    {g.status === "registration" && (
+                      <button
+                        className={`${styles.greenBtn} w-[60%]`}
+                        onClick={() => groupAction("start", g)}
+                      >
+                        <Play size={14} /> Start internship
+                      </button>
+                    )}
+                    {g.status === "active" && (
+                      <button
+                        className={`${styles.amberBtn} w-[60%]`}
+                        onClick={() => groupAction("complete", g)}
+                      >
+                        <CheckCircle2 size={14} /> Complete group
+                      </button>
+                    )}
+                    <button
+                      className={`${styles.dangerBtn} w-[40%]`}
+                      onClick={() => groupAction("delete", g)}
+                    >
+                      <Trash2 size={14} /> Delete group
+                    </button>
+                  </div>
                 </div>
               </article>
             ))}
@@ -1034,7 +1123,7 @@ export default function Manage({ user }) {
                   disabled={busy}
                 >
                   <Plus size={15} />
-                  {busy ? "Adding..." : "Add Intern"}
+                  <span>{busy ? "Adding..." : "Add Intern"}</span>
                 </button>
               </div>
             </form>
@@ -1214,6 +1303,7 @@ export default function Manage({ user }) {
                     <th>Attendance %</th>
                     <th>Missed %</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
 
@@ -1281,6 +1371,18 @@ export default function Manage({ user }) {
                           </b>
                         </td>
 
+                        {/* <td>
+                          <span
+                            style={{
+                              color: terminated ? "#DC3545" : "#16834A",
+                              fontWeight: 700,
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {terminated ? "Terminated" : "Active"}
+                          </span>
+                        </td> */}
+
                         <td>
                           <span
                             style={{
@@ -1291,6 +1393,32 @@ export default function Manage({ user }) {
                           >
                             {terminated ? "Terminated" : "Active"}
                           </span>
+                        </td>
+
+                        <td>
+                          <div className={styles.internActions}>
+                            {terminated ? (
+                              <button
+                                type="button"
+                                className={styles.reinstateBtn}
+                                onClick={() =>
+                                  openReinstatement(i, target?._id)
+                                }
+                              >
+                                <ShieldCheck size={13} />
+                                Reinstate
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                className={styles.terminateBtn}
+                                onClick={() => openTermination(i, target?._id)}
+                              >
+                                <Power size={13} />
+                                Terminate
+                              </button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     );
@@ -1320,6 +1448,122 @@ export default function Manage({ user }) {
             >
               View intern directory <ArrowUpRight size={15} />
             </button>
+          </Modal>
+        )}
+        {modal === "terminateIntern" && (
+          <Modal
+            title={`Terminate ${target?.name || "intern"}`}
+            close={() => {
+              if (busy) return;
+              setModal("");
+              setTerminationReason("");
+            }}
+          >
+            <div className={styles.modalSub}>
+              <p>
+                You are about to revoke internship access for{" "}
+                <b>{target?.name}</b>.
+              </p>
+              <p>
+                This action will be recorded in the intern's termination
+                history.
+              </p>
+            </div>
+
+            <form className={styles.formGrid} onSubmit={submitTermination}>
+              <label className={styles.full}>
+                Reason for termination
+                <textarea
+                  required
+                  minLength={5}
+                  maxLength={1000}
+                  rows={4}
+                  value={terminationReason}
+                  onChange={(e) => setTerminationReason(e.target.value)}
+                  placeholder="Explain why this intern is being terminated..."
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  disabled={busy}
+                  onClick={() => {
+                    setModal("");
+                    setTerminationReason("");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.terminateBtn}
+                  disabled={busy}
+                >
+                  <Power size={14} />
+                  {busy ? "Processing..." : "Confirm termination"}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {modal === "reinstateIntern" && (
+          <Modal
+            title={`Reinstate ${target?.name || "intern"}`}
+            close={() => {
+              if (busy) return;
+              setModal("");
+              setReinstatementNote("");
+            }}
+          >
+            <div className={styles.modalSub}>
+              <p>
+                You are restoring internship access for <b>{target?.name}</b>.
+              </p>
+              <p>
+                Previous termination records will remain available in the
+                intern's history.
+              </p>
+            </div>
+
+            <form className={styles.formGrid} onSubmit={submitReinstatement}>
+              <label className={styles.full}>
+                Reinstatement note (optional)
+                <textarea
+                  rows={4}
+                  maxLength={1000}
+                  value={reinstatementNote}
+                  onChange={(e) => setReinstatementNote(e.target.value)}
+                  placeholder="Enter the reason for reinstating this intern..."
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  disabled={busy}
+                  onClick={() => {
+                    setModal("");
+                    setReinstatementNote("");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.reinstateBtn}
+                  disabled={busy}
+                >
+                  <ShieldCheck size={14} />
+                  {busy ? "Processing..." : "Confirm reinstatement"}
+                </button>
+              </div>
+            </form>
           </Modal>
         )}
       </div>
@@ -1388,6 +1632,8 @@ export default function Manage({ user }) {
             "Group",
             "Start date",
             "InternCash",
+            "Status",
+            "Actions",
           ]}
           rows={data.map((x) => (
             <tr key={x._id}>
@@ -1422,6 +1668,42 @@ export default function Manage({ user }) {
                 >
                   <ArrowUpRight size={14} />
                 </button>
+              </td>
+
+              <td>
+                {x.status === "terminated" ||
+                x.termination?.isTerminated === true ? (
+                  <span className={styles.terminatedStatus}>Terminated</span>
+                ) : (
+                  <span className={styles.activeStatus}>Active</span>
+                )}
+              </td>
+
+              <td>
+                {x.group?._id ? (
+                  x.status === "terminated" ||
+                  x.termination?.isTerminated === true ? (
+                    <button
+                      type="button"
+                      className={styles.reinstateBtn}
+                      onClick={() => openReinstatement(x, x.group._id)}
+                    >
+                      <ShieldCheck size={13} />
+                      Reinstate
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={styles.terminateBtn}
+                      onClick={() => openTermination(x, x.group._id)}
+                    >
+                      <Power size={13} />
+                      Terminate
+                    </button>
+                  )
+                ) : (
+                  <span>—</span>
+                )}
               </td>
             </tr>
           ))}
@@ -1497,6 +1779,124 @@ export default function Manage({ user }) {
                 </button>
                 <button className={styles.primary} disabled={busy}>
                   <ArrowUpRight size={15} /> Transfer intern
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {modal === "terminateIntern" && (
+          <Modal
+            title={`Terminate ${target?.name || "intern"}`}
+            close={() => {
+              if (busy) return;
+              setModal("");
+              setTerminationReason("");
+            }}
+          >
+            <div className={styles.modalSub}>
+              <p>
+                You are about to revoke internship access for{" "}
+                <b>{target?.name}</b>.
+              </p>
+              <p>
+                This action will be recorded in the intern's termination
+                history.
+              </p>
+            </div>
+
+            <form className={styles.formGrid} onSubmit={submitTermination}>
+              <label className={styles.full}>
+                Reason for termination
+                <textarea
+                  required
+                  minLength={5}
+                  maxLength={1000}
+                  rows={4}
+                  value={terminationReason}
+                  onChange={(e) => setTerminationReason(e.target.value)}
+                  placeholder="Explain why this intern is being terminated..."
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  disabled={busy}
+                  onClick={() => {
+                    setModal("");
+                    setTerminationReason("");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.terminateBtn}
+                  disabled={busy}
+                >
+                  <Power size={14} />
+                  {busy ? "Processing..." : "Confirm termination"}
+                </button>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {modal === "reinstateIntern" && (
+          <Modal
+            title={`Reinstate ${target?.name || "intern"}`}
+            close={() => {
+              if (busy) return;
+              setModal("");
+              setReinstatementNote("");
+            }}
+          >
+            <div className={styles.modalSub}>
+              <p>
+                You are restoring internship access for <b>{target?.name}</b>.
+              </p>
+
+              <p>
+                Previous termination records will remain available in the
+                intern's history.
+              </p>
+            </div>
+
+            <form className={styles.formGrid} onSubmit={submitReinstatement}>
+              <label className={styles.full}>
+                Reinstatement note (optional)
+                <textarea
+                  rows={4}
+                  maxLength={1000}
+                  value={reinstatementNote}
+                  onChange={(e) => setReinstatementNote(e.target.value)}
+                  placeholder="Enter the reason for reinstating this intern..."
+                />
+              </label>
+
+              <div className={styles.modalActions}>
+                <button
+                  type="button"
+                  className={styles.ghost}
+                  disabled={busy}
+                  onClick={() => {
+                    setModal("");
+                    setReinstatementNote("");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className={styles.reinstateBtn}
+                  disabled={busy}
+                >
+                  <ShieldCheck size={14} />
+                  {busy ? "Processing..." : "Confirm reinstatement"}
                 </button>
               </div>
             </form>

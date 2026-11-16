@@ -3,12 +3,33 @@ import User from "../models/User.js";
 
 export async function requireAuth(req, res, next) {
   // Reuse an already authenticated request user.
+  // if (req.user?._id) {
+  //   if (req.user.status === "terminated") {
+  //     return res.status(403).json({
+  //       code: "INTERN_TERMINATED",
+  //       message: "Your internship access has been terminated.",
+  //       termination: req.user.termination || null,
+  //     });
+  //   }
+
+  //   return next();
+  // }
   if (req.user?._id) {
-    if (req.user.status === "terminated") {
+    if (
+      req.user.status === "terminated" ||
+      req.user.termination?.isTerminated
+    ) {
       return res.status(403).json({
         code: "INTERN_TERMINATED",
         message: "Your internship access has been terminated.",
         termination: req.user.termination || null,
+      });
+    }
+
+    if (req.user.status !== "active") {
+      return res.status(401).json({
+        code: "ACCOUNT_UNAVAILABLE",
+        message: "Your account is currently unavailable.",
       });
     }
 

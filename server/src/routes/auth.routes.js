@@ -187,6 +187,29 @@ router.post(
     });
 
     if (user) {
+      // Block terminated interns before updating their Google identity.
+      if (
+        user.role === "intern" &&
+        (user.status === "terminated" || user.termination?.isTerminated)
+      ) {
+        return res.status(403).json({
+          code: "INTERN_TERMINATED",
+          message: "Your internship access has been terminated.",
+          termination: {
+            reason: user.termination?.reason || "",
+            terminatedAt: user.termination?.terminatedAt || null,
+          },
+        });
+      }
+
+      // Block suspended accounts too.
+      if (user.status !== "active") {
+        throw new HttpError(
+          403,
+          "Your account is currently suspended. Please contact the administrator.",
+        );
+      }
+
       if (user.role === "admin") {
         const allowedAdmins = (process.env.ADMIN_EMAILS || "")
           .split(",")
@@ -207,31 +230,67 @@ router.post(
 
       if (!user.googleSub) {
         user.googleSub = profile.sub;
-        await user.save();
       }
 
       user.lastLoginAt = new Date();
-
       await user.save();
 
       return res.json({
         token: issue(user, "google"),
         user: publicUser(user),
-
         onboardingRequired:
           user.role === "intern" && !user.registrationComplete,
       });
     }
-    if (user.status === "terminated" || user.termination?.isTerminated) {
-      return res.status(403).json({
-        code: "INTERN_TERMINATED",
-        message: "Your internship access has been terminated.",
-        termination: {
-          reason: user.termination?.reason || "",
-          terminatedAt: user.termination?.terminatedAt || null,
-        },
-      });
-    }
+
+    // No existing account: continue with the existing onboarding-ticket flow.
+
+    // if (user) {
+    //   if (user.role === "admin") {
+    //     const allowedAdmins = (process.env.ADMIN_EMAILS || "")
+    //       .split(",")
+    //       .map((value) => value.trim().toLowerCase())
+    //       .filter(Boolean);
+
+    //     if (!allowedAdmins.includes(email)) {
+    //       throw new HttpError(403, "This admin account is not authorized.");
+    //     }
+    //   }
+
+    //   if (user.googleSub && user.googleSub !== profile.sub) {
+    //     throw new HttpError(
+    //       409,
+    //       "This email is linked to a different Google identity. Contact support.",
+    //     );
+    //   }
+
+    //   if (!user.googleSub) {
+    //     user.googleSub = profile.sub;
+    //     await user.save();
+    //   }
+
+    //   user.lastLoginAt = new Date();
+
+    //   await user.save();
+
+    //   return res.json({
+    //     token: issue(user, "google"),
+    //     user: publicUser(user),
+
+    //     onboardingRequired:
+    //       user.role === "intern" && !user.registrationComplete,
+    //   });
+    // }
+    // if (user.status === "terminated" || user.termination?.isTerminated) {
+    //   return res.status(403).json({
+    //     code: "INTERN_TERMINATED",
+    //     message: "Your internship access has been terminated.",
+    //     termination: {
+    //       reason: user.termination?.reason || "",
+    //       terminatedAt: user.termination?.terminatedAt || null,
+    //     },
+    //   });
+    // }
 
     // const onboardingTicket = jwt.sign(
     //   {
