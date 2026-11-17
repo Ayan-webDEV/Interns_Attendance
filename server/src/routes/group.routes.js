@@ -15,6 +15,8 @@ import ExcelJS from "exceljs";
 import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { HttpError } from "../utils/httpError.js";
+import { generateLorPdf } from "../services/lorPdf.service.js";
+
 const router = Router();
 const hash = (s) => crypto.createHash("sha256").update(s).digest("hex");
 const encryptionKey = () =>
@@ -665,6 +667,42 @@ router.get(
         workingDates,
       },
     });
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: generate LOR selection record PDF                                  */
+/* -------------------------------------------------------------------------- */
+
+router.post(
+  "/:id/lor/generate",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+
+    if (!group) {
+      throw new HttpError(404, "Group not found.");
+    }
+
+    const result = await generateLorPdf({
+      ...req.body,
+      groupName: String(req.body.groupName || group.name).trim(),
+    });
+
+    const safeGroupName = result.groupName
+      .replace(/[<>:"/\\|?*\x00-\x1F]/g, "-")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 90);
+
+    const filename = `LOR-List-${safeGroupName || "VELoop"}.pdf`;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Length", result.pdfBytes.length);
+
+    res.send(Buffer.from(result.pdfBytes));
   }),
 );
 

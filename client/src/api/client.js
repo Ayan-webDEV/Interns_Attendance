@@ -105,10 +105,18 @@ export async function api(path, options = {}) {
     throw error;
   }
 
+  // if (
+  //   type.includes("text/csv") ||
+  //   type.includes("spreadsheetml") ||
+  //   type.includes("application/octet-stream")
+  // ) {
+  //   return res.blob();
+  // }
   if (
     type.includes("text/csv") ||
     type.includes("spreadsheetml") ||
-    type.includes("application/octet-stream")
+    type.includes("application/octet-stream") ||
+    type.includes("application/pdf")
   ) {
     return res.blob();
   }

@@ -27,6 +27,7 @@ import {
   Clock3,
   Check,
   AlertTriangle,
+  FileText,
 } from "lucide-react";
 import { api, saveBlob } from "../../api/client";
 import { useToast } from "../../components/Toast/Toast";
@@ -39,8 +40,7 @@ import Promos from "../Promos/Promos";
 import RewardsPage from "../RewardsPage/RewardsPage";
 import CertificatePage from "../Certificate/CertificatePage";
 import ApprovalsPage from "../admin/pages/ApprovalsPage/ApprovalsPage";
-// import ApprovalsPage from "./ApprovalsPage/ApprovalsPage";
-// import ApprovalsPage from "./ApprovalsPage/"
+import LORGenerator from "./components/LORGenerator/LORGenerator";
 
 const blankGroup = {
   name: "",
@@ -61,6 +61,7 @@ export default function Manage({ user }) {
   const [walletInterns, setWalletInterns] = useState([]);
   const [walletInternSearch, setWalletInternSearch] = useState("");
   const [walletDetailIntern, setWalletDetailIntern] = useState(null);
+  const [lorGroup, setLorGroup] = useState(null);
   const [data, setData] = useState([]),
     [groups, setGroups] = useState([]),
     [loading, setLoading] = useState(true),
@@ -818,6 +819,13 @@ export default function Manage({ user }) {
                       <Download size={14} /> Export full CSV
                     </button>
                   )}
+                  <button
+                    onClick={() => setLorGroup(g)}
+                    title="Generate Letter of Recommendation selection list"
+                  >
+                    <FileText size={14} />
+                    Generate LOR List
+                  </button>
                   <div
                     className={`flex gap-3 mt-1 md:w-full justify-center ${styles.actionCont} `}
                   >
@@ -850,6 +858,13 @@ export default function Manage({ user }) {
         </div>
         {groups.length === 0 && (
           <Empty text="No groups yet. Create your first group to generate a secure registration link." />
+        )}
+        {lorGroup && (
+          <LORGenerator
+            group={lorGroup}
+            onClose={() => setLorGroup(null)}
+            onSuccess={() => setLorGroup(null)}
+          />
         )}
         {modal === "group" && (
           <Modal
