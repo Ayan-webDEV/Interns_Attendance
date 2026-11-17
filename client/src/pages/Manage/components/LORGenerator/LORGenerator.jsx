@@ -462,7 +462,13 @@ export default function LORGenerator({ group, onClose, onSuccess }) {
           )}
 
           {step === 3 && (
-            <form className={styles.stepContent} onSubmit={generatePdf}>
+            <form
+              id="lor-generate-form"
+              className={styles.stepContent}
+              onSubmit={generatePdf}
+            >
+              {/* {step === 3 && (
+            <form className={styles.stepContent} onSubmit={generatePdf}> */}
               {method === "select" && (
                 <>
                   <div
@@ -729,8 +735,27 @@ export default function LORGenerator({ group, onClose, onSuccess }) {
                 Back
               </button>
               {step > 2 ? (
+                // <button
+                //   type="submit"
+                //   className={styles.generateButton}
+                //   disabled={
+                //     generating ||
+                //     loadingInterns ||
+                //     (method === "select" &&
+                //       selectedKeys.length !== requiredCount)
+                //   }
+                // >
+                //   {generating ? (
+                //     <LoaderCircle className={styles.spinner} size={17} />
+                //   ) : (
+                //     <Download size={17} />
+                //   )}
+
+                //   {generating ? "Generating PDF..." : "Generate & Download PDF"}
+                // </button>
                 <button
                   type="submit"
+                  form="lor-generate-form"
                   className={styles.generateButton}
                   disabled={
                     generating ||
