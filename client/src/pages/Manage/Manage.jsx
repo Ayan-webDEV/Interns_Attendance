@@ -822,6 +822,7 @@ export default function Manage({ user }) {
                   <button
                     onClick={() => setLorGroup(g)}
                     title="Generate Letter of Recommendation selection list"
+                    className={styles.generateLORBtn}
                   >
                     <FileText size={14} />
                     Generate LOR List

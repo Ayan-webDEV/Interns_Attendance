@@ -311,6 +311,18 @@
   color: #77877b;
   border-radius: 8px;
 }
+.generateLORBtn {
+  background-color: #2b7fff !important;
+  color: white !important;
+  letter-spacing: 0.3px;
+  border: none !important;
+}
+.generateLORBtn:hover {
+  background-color: #1d62ca !important;
+  color: white !important;
+  letter-spacing: 0.3px;
+  border: none !important;
+}
 .iconButton:hover {
   background: #f1f7eb;
   color: #3c7147;
