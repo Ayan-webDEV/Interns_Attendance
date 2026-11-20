@@ -16,6 +16,8 @@ import { requireAuth, requireAdmin } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { HttpError } from "../utils/httpError.js";
 import { generateLorPdf } from "../services/lorPdf.service.js";
+import { generateStipendPdf } from "../services/stipendPdf.service.js";
+import { createStipendPdfFilename } from "../utils/stipendHelpers.js";
 
 const router = Router();
 const hash = (s) => crypto.createHash("sha256").update(s).digest("hex");
@@ -701,6 +703,92 @@ router.post(
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
     res.setHeader("Content-Length", result.pdfBytes.length);
+
+    res.send(Buffer.from(result.pdfBytes));
+  }),
+);
+
+/* -------------------------------------------------------------------------- */
+/* Admin: generate stipend list PDF                                            */
+/* -------------------------------------------------------------------------- */
+
+router.post(
+  "/:id/stipend/generate",
+  requireAuth,
+  requireAdmin,
+  asyncHandler(async (req, res) => {
+    const group = await InternshipGroup.findById(req.params.id);
+
+    if (!group) {
+      throw new HttpError(404, "Group not found.");
+    }
+
+    const source = String(req.body.source || "manual");
+    let interns = [];
+
+    if (source === "group") {
+      const selectedInternIds = Array.isArray(req.body.internIds)
+        ? req.body.internIds.map((id) => String(id).trim()).filter(Boolean)
+        : [];
+
+      if (selectedInternIds.length === 0) {
+        throw new HttpError(400, "Select at least one intern from the group.");
+      }
+
+      const uniqueIds = new Set(
+        selectedInternIds.map((id) => id.toLowerCase()),
+      );
+
+      if (uniqueIds.size !== selectedInternIds.length) {
+        throw new HttpError(400, "Duplicate intern IDs are not allowed.");
+      }
+
+      // const groupInterns = await User.find({
+      //   group: group._id,
+      //   role: "intern",
+      //   internId: { $in: selectedInternIds },
+      // }).select("name internId email domain");
+      const groupInterns = await User.find({
+        group: group._id,
+        role: "intern",
+        offerSentStatus: "manual_admin_addition",
+        internId: { $in: selectedInternIds },
+      }).select("name internId email domain offerSentStatus");
+
+      if (groupInterns.length !== selectedInternIds.length) {
+        throw new HttpError(
+          400,
+          "One or more selected interns do not belong to this group.",
+        );
+      }
+
+      interns = groupInterns.map((intern) => ({
+        name: intern.name,
+        internId: intern.internId,
+        email: intern.email,
+        domain: intern.domain,
+      }));
+    } else if (source === "manual") {
+      interns = Array.isArray(req.body.interns) ? req.body.interns : [];
+    } else {
+      throw new HttpError(400, "Invalid intern selection method.");
+    }
+
+    const result = await generateStipendPdf({
+      ...req.body,
+      groupName: String(req.body.groupName || group.name).trim(),
+      interns,
+    });
+
+    const filename = createStipendPdfFilename(
+      result.groupName,
+      result.template,
+    );
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);
+    res.setHeader("Content-Length", result.pdfBytes.length);
+    res.setHeader("Cache-Control", "no-store");
 
     res.send(Buffer.from(result.pdfBytes));
   }),

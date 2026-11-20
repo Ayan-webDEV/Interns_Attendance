@@ -41,6 +41,7 @@ import RewardsPage from "../RewardsPage/RewardsPage";
 import CertificatePage from "../Certificate/CertificatePage";
 import ApprovalsPage from "../admin/pages/ApprovalsPage/ApprovalsPage";
 import LORGenerator from "./components/LORGenerator/LORGenerator";
+import StipendListGenerator from "./components/StipendListGenerator/StipendListGenerator";
 
 const blankGroup = {
   name: "",
@@ -62,6 +63,7 @@ export default function Manage({ user }) {
   const [walletInternSearch, setWalletInternSearch] = useState("");
   const [walletDetailIntern, setWalletDetailIntern] = useState(null);
   const [lorGroup, setLorGroup] = useState(null);
+  const [stipendGroup, setStipendGroup] = useState(null);
   const [data, setData] = useState([]),
     [groups, setGroups] = useState([]),
     [loading, setLoading] = useState(true),
@@ -827,6 +829,14 @@ export default function Manage({ user }) {
                     <FileText size={14} />
                     Generate LOR List
                   </button>
+                  <button
+                    onClick={() => setStipendGroup(g)}
+                    title="Generate the stipend approval list for this group"
+                    className={styles.generateLORBtn}
+                  >
+                    <Wallet size={14} />
+                    Generate Stipend List
+                  </button>
                   <div
                     className={`flex gap-3 mt-1 md:w-full justify-center ${styles.actionCont} `}
                   >
@@ -865,6 +875,13 @@ export default function Manage({ user }) {
             group={lorGroup}
             onClose={() => setLorGroup(null)}
             onSuccess={() => setLorGroup(null)}
+          />
+        )}
+        {stipendGroup && (
+          <StipendListGenerator
+            group={stipendGroup}
+            onClose={() => setStipendGroup(null)}
+            onSuccess={() => setStipendGroup(null)}
           />
         )}
         {modal === "group" && (
