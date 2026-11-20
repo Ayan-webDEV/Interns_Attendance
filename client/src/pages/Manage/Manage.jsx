@@ -827,15 +827,15 @@ export default function Manage({ user }) {
                     className={styles.generateLORBtn}
                   >
                     <FileText size={14} />
-                    Generate LOR List
+                    LOR List
                   </button>
                   <button
                     onClick={() => setStipendGroup(g)}
                     title="Generate the stipend approval list for this group"
-                    className={styles.generateLORBtn}
+                    className={styles.generateStipendBtn}
                   >
                     <Wallet size={14} />
-                    Generate Stipend List
+                    Stipend List
                   </button>
                   <div
                     className={`flex gap-3 mt-1 md:w-full justify-center ${styles.actionCont} `}

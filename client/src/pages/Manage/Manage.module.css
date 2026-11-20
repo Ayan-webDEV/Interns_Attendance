@@ -311,17 +311,23 @@
   color: #77877b;
   border-radius: 8px;
 }
-.generateLORBtn {
-  background-color: #2b7fff !important;
-  color: white !important;
+.generateLORBtn,
+.generateStipendBtn {
   letter-spacing: 0.3px;
   border: none !important;
+  color: white !important;
+}
+.generateLORBtn {
+  background-color: #2b7fff !important;
 }
 .generateLORBtn:hover {
   background-color: #1d62ca !important;
-  color: white !important;
-  letter-spacing: 0.3px;
-  border: none !important;
+}
+.generateStipendBtn {
+  background-color: #800080 !important;
+}
+.generateStipendBtn:hover {
+  background-color: #530153 !important;
 }
 .iconButton:hover {
   background: #f1f7eb;
